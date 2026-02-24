@@ -1,0 +1,39 @@
+.subject
+{
+    /* border: 1px solid white; */
+    padding: 20px 30px;
+    /* flex: 0 0 calc((100% - 5px) / 4); */
+    background-color: #FAFBFD;
+    border-radius: 20px;
+    /* box-shadow: 0 0 8px #fff5; */
+    transition: all 250ms;
+    cursor: pointer;
+}
+.subject:hover
+{
+    scale: 1.02;
+}
+.sub-icon
+{
+    /* background-color: #000; */
+    background-color: #9872f0;
+    border-radius: 5px;
+    margin: 10px;
+    flex: 1;
+    padding: 8px;
+}
+.sub-name
+{
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+}
+.sub-teacher
+{
+    font-size: 14px;
+    padding: 0;
+    margin: 15px 0;
+    /* margin-top: 10px; */
+}

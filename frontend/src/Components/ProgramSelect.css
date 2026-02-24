@@ -1,0 +1,115 @@
+/* Container padding matches your main content area */
+.page-container {
+  padding: 3rem 4rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* .page-header {
+  margin-bottom: 3rem;
+} */
+.page-header {
+  max-width: 800px; /* Matches the width of your boxes */
+  margin: 0 auto 2rem auto; /* Centers the whole header block on the page */
+  width: 100%;
+  display: block; /* Prevents the text from splitting left and right */
+  text-align: left; /* Keeps the text aligned with the left edge of your boxes */
+}
+
+.page-header h1 {
+  font-size: 2.2rem;
+  color: #2d3748; /* Dark grey */
+  margin: 0 0 0.5rem 0;
+}
+
+.page-header .subtitle {
+  font-size: 1.1rem;
+  color: #64748b; /* Soft grey */
+  margin: 0;
+}
+
+/* Responsive Grid for the cards */
+/* .program-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+} */
+ /* Replace your old .program-grid with this to make it vertical */
+/* 2. Center the vertical list of boxes */
+.program-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto; /* Centers the boxes horizontally */
+}
+
+/* Individual Card Styling */
+.program-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover Effect: Lifts the card and adds a muted blue border */
+.program-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.04);
+  border-color: #a3b8cc; 
+}
+
+/* Icon box on the left */
+.program-icon {
+  font-size: 1.8rem;
+  margin-right: 1.5rem;
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a6583;
+}
+
+.program-details {
+  flex-grow: 1;
+}
+
+.program-details h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.4;
+}
+
+.program-details p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* The arrow on the right */
+.program-arrow {
+  color: #cbd5e1;
+  font-size: 1.5rem;
+  margin-left: 1rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* Animate the arrow on hover */
+.program-card:hover .program-arrow {
+  color: #4a6583;
+  transform: translateX(4px);
+}
+
+/* A subtle fade-in when the page loads */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

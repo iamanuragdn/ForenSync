@@ -1,0 +1,109 @@
+.syllabus-page {
+  max-width: 800px;
+  margin: 40px auto;
+  font-family: 'Inter', sans-serif; /* Or whatever your main font is */
+}
+
+.syllabus-header {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.syllabus-header h1 {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+}
+
+.credits-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.unit-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  background: white;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.unit-header {
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.unit-header:hover {
+  background-color: #f9fafb;
+}
+
+.unit-title-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.unit-number {
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.unit-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 1.05rem;
+}
+
+.unit-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hours-badge {
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dropdown-icon {
+  color: #9ca3af;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-icon.open {
+  transform: rotate(180deg);
+}
+
+.unit-content {
+  padding: 0 20px 20px 60px; /* Aligns text with the title */
+  border-top: 1px solid #f3f4f6;
+  background: #fafafa;
+}
+
+.unit-content ul {
+  margin: 15px 0 0 0;
+  padding-left: 20px;
+  color: #4b5563;
+}
+
+.unit-content li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}

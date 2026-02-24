@@ -1,0 +1,214 @@
+/* Container & Header */
+.page-container {
+  padding: 3rem 4rem;
+  animation: fadeIn 0.3s ease-out;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin: 0 0 2rem 0; /* Overrides any 'auto' margins that were centering it */
+  font-size: 0.9rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 100%; /* Overrides the restricted width from previous screens */
+  justify-content: flex-start;
+}
+
+.crumb-link { cursor: pointer; transition: color 0.2s ease; }
+.crumb-link:hover { color: #4a6583; text-decoration: underline; }
+.current-page { color: #2d3748; font-weight: 600; }
+
+.page-header {
+  margin: 0 0 2.5rem 0; /* Overrides centering margins */
+  width: 100%;
+  max-width: 100%; /* Overrides the 800px restriction */
+  text-align: left;
+  display: block;
+}
+
+.page-header h1 { 
+  font-size: 2.2rem; 
+  color: #2d3748; 
+  margin: 0 0 0.5rem 0; 
+}
+
+.page-header .subtitle { 
+  font-size: 1.1rem; 
+  color: #64748b; 
+  margin: 0; 
+}
+
+/* Status Messages */
+.status-message { padding: 2rem; border-radius: 8px; font-weight: 500; text-align: center; }
+.loading { color: #4a6583; background: #f0f4f8; }
+.error { color: #b91c1c; background: #fee2e2; }
+.empty { color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; }
+
+/* --- Stats Summary Bar --- */
+.semester-summary {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.summary-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.summary-divider {
+  width: 1px;
+  height: 40px;
+  background-color: #e2e8f0;
+  margin: 0 2rem;
+}
+
+/* Make it stack on smaller screens */
+@media (max-width: 768px) {
+  .semester-summary {
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .summary-divider {
+    display: none;
+  }
+  .summary-item {
+    min-width: 40%;
+  }
+}
+
+/* --- Table Styling --- */
+.table-container {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden; /* Keeps the rounded corners clean */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.subject-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+/* Headers */
+.subject-table th {
+  padding: 1rem 1.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc; /* Very light grey for header */
+}
+
+/* Rows & Cells */
+.subject-table td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.subject-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.subject-row:hover {
+  background-color: #f8fafc; /* Subtle highlight on hover */
+}
+
+/* Specific Column Styling */
+.serial-col {
+  color: #94a3b8;
+  font-weight: 500;
+  width: 5%;
+}
+
+.code-col {
+  color: #64748b;
+  font-weight: 500;
+  width: 15%;
+}
+
+.name-col {
+  font-weight: 600;
+  color: #2d3748;
+  width: 35%;
+}
+
+.credit-col {
+  font-weight: 500;
+  width: 10%;
+}
+
+/* Teacher Area with Avatar */
+.teacher-col {
+  width: 25%;
+}
+
+.teacher-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4a6583;
+  font-weight: 500;
+}
+
+.teacher-avatar {
+  width: 28px;
+  height: 28px;
+  background-color: #e0e7ff;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Type Badge */
+.type-col {
+  width: 10%;
+}
+
+.type-badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.type-badge.core { color: #64748b; }
+.type-badge.lab { color: #4a6583; background-color: #f0f4f8; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

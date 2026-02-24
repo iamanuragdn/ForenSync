@@ -1,0 +1,179 @@
+/* --- Global Layout --- */
+.landing-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+/* Styling for the new image logo */
+.brand-logo-img {
+  width: 200px; /* Adjust this number to make your logo bigger or smaller */
+  height: auto;
+  margin-bottom: 1rem;
+  display: block;
+  border-radius: 12px; /* Optional: Gives the logo soft rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+}
+
+/* --- LEFT SIDE: Intro & Image --- */
+.landing-intro {
+  flex: 1;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem;
+  color: #ffffff;
+}
+
+/* The dark muted-blue overlay over the campus image */
+.landing-intro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(30, 41, 59, 0.82); /* Muted slate overlay */
+  z-index: 1;
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2; /* Keeps text above the image overlay */
+  max-width: 550px;
+}
+
+.landing-logo {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #a3b8cc; /* Lighter muted blue */
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.intro-content h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  line-height: 1.2;
+}
+
+.intro-content p {
+  font-size: 1.1rem;
+  color: #cbd5e1; /* Soft light grey */
+  line-height: 1.6;
+}
+
+/* --- RIGHT SIDE: Login Card --- */
+.landing-auth {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f6f8; /* Soft grey background for the right half */
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 3rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+}
+
+.auth-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2d3748; /* Dark grey */
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.auth-card p {
+  color: #64748b; /* Muted grey */
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.auth-error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 0.85rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border: 1px solid #fca5a5;
+}
+
+/* --- Inputs & Buttons --- */
+.auth-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #cbd5e1; /* Soft grey border */
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #334155;
+  background-color: #f8fafc;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #5c7c99; /* Muted blue focus */
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(92, 124, 153, 0.15);
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #4a6583; /* Muted blue primary color */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auth-btn:hover {
+  background-color: #3b526b; /* Darker muted blue on hover */
+}
+
+.auth-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+  .landing-container {
+    flex-direction: column;
+  }
+  .landing-intro {
+    padding: 3rem 2rem;
+    min-height: 40vh; /* Gives the image some space on mobile */
+  }
+  .landing-auth {
+    padding: 2rem;
+    background-color: #ffffff; /* Seamless transition on mobile */
+  }
+  .auth-card {
+    box-shadow: none;
+    border: none;
+    padding: 1rem;
+  }
+
+  
+}
+
