@@ -32,10 +32,11 @@ function Sidebar() {
           <span className="nav-text">Practice</span>
         </NavLink>
 
-        <NavLink to="/notices" className="nav-item">
-          <span className="nav-icon">🔔</span>
-          <span className="nav-text">Notices</span>
+        <NavLink to="/pyq" className="nav-item">
+          <span className="nav-icon">📝</span>
+          <span className="nav-text">PYQ</span>
         </NavLink>
+
       </nav>
     </aside>
   );

@@ -1,0 +1,187 @@
+.pyq-notes-container {
+  padding: 30px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* --- Breadcrumb Styling --- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-bottom: 25px;
+}
+
+.breadcrumb a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+  color: #475569;
+}
+
+.breadcrumb .divider {
+  color: #cbd5e0;
+}
+
+.breadcrumb .current-page {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* --- Header Styling --- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.header-text h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.header-text p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.sync-btn {
+  background: #4a6583;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sync-btn:hover {
+  background: #334a66;
+}
+
+/* --- File List Styling --- */
+.files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.file-item:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+}
+
+/* Left side (Icon + Name) */
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.file-icon {
+  font-size: 24px;
+}
+
+.file-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Middle side (Google Drive text) */
+.file-meta {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Right side (Buttons) */
+.file-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.btn-view {
+  background: transparent;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn-view:hover {
+  background: #eff6ff;
+}
+
+.btn-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  background: white;
+  text-decoration: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-download:hover {
+  border-color: #cbd5e0;
+  color: #1e293b;
+  background: #f8fafc;
+}
+
+/* --- Empty State Styling --- */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e0;
+  color: #475569;
+}
+
+.empty-subtext {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 8px;
+}

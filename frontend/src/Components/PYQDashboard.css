@@ -1,0 +1,172 @@
+/* =========================================
+   1. MAIN CONTAINER & HEADERS
+   ========================================= */
+.home-container {
+  padding: 30px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #333;
+}
+
+.pyq-header {
+  margin-bottom: 25px;
+}
+
+.pyq-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.pyq-header p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* =========================================
+   2. FILTER CONTROLS (Dropdown & Buttons)
+   ========================================= */
+.pyq-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between the dropdown and the buttons */
+  margin-bottom: 30px;
+  flex-wrap: wrap; 
+}
+
+/* The custom dropdown */
+.theme-dropdown {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e0;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+  /* Prevents dark-mode browser overrides */
+  -webkit-appearance: auto;
+  appearance: auto; 
+}
+
+.theme-dropdown:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+}
+
+.theme-dropdown:focus {
+  border-color: #4a6583;
+}
+
+/* Exam Type Buttons */
+.exam-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.exam-tab-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.exam-tab-btn.active {
+  background-color: #4a6583;
+  color: #ffffff;
+  box-shadow: 0 4px 6px rgba(74, 101, 131, 0.2);
+}
+
+.exam-tab-btn.inactive {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.exam-tab-btn.inactive:hover {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+/* =========================================
+   3. SUBJECTS GRID & CARDS (Your Original CSS)
+   ========================================= */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.subject-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none; 
+  color: inherit; 
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+  border: 1px solid #eaeaea;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.subject-icon {
+  font-size: 24px;
+  background: #f8fafc;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.subject-info h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  color: #1e293b;
+}
+
+.subject-info p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 15px 0;
+}
+
+.subject-code {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+/* =========================================
+   4. EMPTY STATE (When no subjects exist)
+   ========================================= */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+  font-weight: 500;
+  background: #f8fafc;
+  border-radius: 12px;
+  grid-column: 1 / -1; /* Makes it span the full width of the grid */
+}

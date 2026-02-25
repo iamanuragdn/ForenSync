@@ -1,7 +1,7 @@
 // backend/syllabusData.js
 
 const syllabusData = {
-  "btech-mtech-cse": {
+  "btech-mtech-cybersecurity": {
     programName: "B.Tech - M.Tech Cyber Security",
     
     semesters: {
@@ -206,21 +206,21 @@ const syllabusData = {
         },
         "CTВT-BSC-102L": {
             name: "Engineering Physics Laboratory",
-            credits: 2,
+            credits: 1,
             teacher: "Dr. Bapi Dey",
             type: "Lab",
             units: [] // Labs often just have practicals, so we can leave this empty or add experiments here later
         },
         "CTBT-ESC-103L": {
             name: "Engineering Graphics Laboratory",
-            credits: 2,
+            credits: 1,
             teacher: "Mr. Abhijit Das",
             type: "Lab",
             units: [] 
         },
         "CTBT-ESC-102L": {
             name: "Programming for Problem Solving Laboratory",
-            credits: 2,
+            credits: 1,
             teacher: "Dr. Priya Saha",
             type: "Lab",
             units: []
@@ -397,7 +397,7 @@ const syllabusData = {
             },
             "CTBT-EMC-202": {
                 name: "Environment Science",
-                credits: 2,
+                credits: 0,
                 teacher: "null",
                 type: "Core",
                 units:[
@@ -430,14 +430,14 @@ const syllabusData = {
             },
             "CTВТ-PCС-201L": {
                 name: "Object Oriented Programming with C++ Laboratory",
-                credits: 2,
+                credits: 1,
                 teacher: "Dr. Sourav Dey Roy",
                 type: "Lab",
                 units: [] 
             },
             "CTBT-ESC-201L": {
                 name: "Digital Logic Design Laboratory",
-                credits: 2,
+                credits: 1,
                 teacher: "Dr. Mampi Devi",
                 type: "Lab",
                 units: [

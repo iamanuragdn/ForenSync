@@ -30,7 +30,7 @@ function Subjects() {
     setUser(parsedUser);
 
     // This safely converts the old ID in your database to the new one we are using
-    const activeProgramId = parsedUser.programId === "btech-mtech-cybersecurity" ? "btech-mtech-cse" : parsedUser.programId;
+    const activeProgramId = parsedUser.programId === "btech-mtech-cybersecurity" ? "btech-mtech-cybersecurity" : parsedUser.programId;
 
     // Use parsedUser here to prevent a crash on the very first millisecond load
     fetch(`http://localhost:5001/api/syllabus/${activeProgramId}/${viewingSemester}`)

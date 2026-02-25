@@ -7,7 +7,7 @@ function ProgramSelect() {
   // Your list of programs (you can eventually fetch this from Firebase!)
   const programs = [
     {
-      id: 'btech-mtech-cse',
+      id: 'btech-mtech-cybersecurity',
       name: 'B.Tech - M.Tech. CSE (Cyber Security)',
       department: 'Department of Cyber Security and Digital Forensics',
       icon: '🛡️' // Swap these emojis with your actual <img> tags if you prefer
