@@ -1,0 +1,235 @@
+/* =========================================
+   EXAM SCHEDULE - FORENSYNC MAIN THEME
+   ========================================= */
+
+.exams-page-container {
+  padding: 30px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: #F3F7F6; /* Matches your main dashboard background */
+  min-height: 100vh;
+}
+
+/* --- Header (Matches "Study Materials" from Home) --- */
+.exams-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  /* Removed the bulky white background and shadow to match Home! */
+}
+
+.header-title-box { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+
+.graduation-icon { 
+  font-size: 22px; 
+}
+
+.header-title-box h2 { 
+  margin: 0; 
+  font-size: 1.3rem; 
+  font-weight: 700; 
+  color: #1e293b; 
+}
+
+/* --- 2-Column Grid Setup --- */
+.exams-content-layout {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* --- Left Side: Events List --- */
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title h3 { 
+  margin: 0; 
+  font-size: 1.1rem; 
+  font-weight: 600; 
+  color: #334155; 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-back-today {
+  padding: 6px 14px; 
+  border-radius: 8px; 
+  border: 1px solid #e2e8f0; 
+  background: white; 
+  cursor: pointer; 
+  font-size: 12px; 
+  font-weight: 600;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.btn-back-today:hover { 
+  background: #F3F7F6; 
+  border-color: #cbd5e1;
+}
+
+.exams-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 16px; 
+}
+
+/* Matches your Home page cards perfectly */
+.exam-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+  gap: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exam-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.03);
+}
+
+/* Softened Countdown Boxes */
+.days-box {
+  width: 76px; 
+  height: 84px; 
+  border-radius: 12px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+}
+
+.days-box h2 { margin: 0; font-size: 26px; font-weight: 700; }
+.days-box p { margin: 0; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+
+/* Pale, modern background colors instead of harsh borders */
+.exam-yellow { background: #fffbeb; color: #b45309; border: none; }
+.exam-green { background: #f0fdf4; color: #15803d; border: none; }
+.exam-blue { background: #eff6ff; color: #1d4ed8; border: none; }
+.exam-red { background: #fef2f2; color: #b91c1c; border: none; }
+
+.exam-details { flex: 1; }
+.exam-code { font-size: 12px; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 4px 8px; border-radius: 6px;}
+.exam-details h4 { margin: 8px 0 4px 0; font-size: 17px; font-weight: 700; color: #1e293b; }
+.exam-date { font-size: 14px; color: #475569; margin: 0 0 4px 0; font-weight: 500;}
+.exam-meta { font-size: 13px; color: #94a3b8; margin: 0; }
+
+/* Matches the "View Details" button from the Home "Next Exam" widget */
+.btn-view-details {
+  background: transparent; 
+  border: 1px solid #e2e8f0; 
+  color: #475569;
+  padding: 8px 16px; 
+  border-radius: 8px; 
+  font-size: 13px;
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: all 0.2s ease;
+}
+
+.btn-view-details:hover { 
+  background: #F3F7F6; 
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+/* Empty State Styling */
+.empty-state {
+  padding: 40px; 
+  text-align: center; 
+  background: #ffffff; 
+  border-radius: 16px; 
+  border: 1px dashed #cbd5e1;
+}
+.empty-title { color: #64748b; font-weight: 600; font-size: 15px; margin: 0; }
+.empty-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+
+/* --- Right Side: Calendar Widget --- */
+.calendar-widget {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+}
+
+/* React-Calendar Clean Overrides */
+.react-calendar {
+  width: 100%; 
+  border: none !important; 
+  font-family: inherit; 
+  background: transparent !important;
+}
+
+.react-calendar__navigation { margin-bottom: 24px; }
+.react-calendar__navigation button { 
+  font-size: 15px; 
+  font-weight: 700; 
+  color: #1e293b; 
+  border-radius: 8px; 
+  background: transparent; 
+  border: none; 
+  cursor: pointer;
+  padding: 8px;
+}
+.react-calendar__navigation button:hover { background: #F3F7F6 !important; }
+
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase; 
+  font-weight: 700; 
+  font-size: 11px; 
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+.react-calendar__month-view__weekdays__weekday abbr { text-decoration: none; }
+
+.react-calendar__tile {
+  height: 48px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  padding: 10px 0 !important; 
+  font-size: 14px; 
+  font-weight: 500;
+  color: #475569; 
+  border-radius: 10px;
+  background: transparent; 
+  border: none; 
+  cursor: pointer; 
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.react-calendar__tile:hover { background: #F3F7F6 !important; color: #1e293b; }
+.react-calendar__tile--now { background: #f1f5f9 !important; font-weight: 700; color: #2563eb; }
+.react-calendar__tile--active { background: #2563eb !important; color: white !important; font-weight: 700; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); }
+.react-calendar__tile--active:hover { background: #1d4ed8 !important; color: white !important; }
+
+.cal-dot { width: 5px; height: 5px; border-radius: 50%; position: absolute; bottom: 8px; }
+
+/* Calendar Legend */
+.calendar-legend {
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+  margin-top: 24px; 
+  padding-top: 20px; 
+  border-top: 1px solid #f1f5f9;
+}
+
+.legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #64748b; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }

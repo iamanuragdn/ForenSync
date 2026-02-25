@@ -8,17 +8,23 @@ function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // // State for the Attendance Popover
+  const [showAttendance, setShowAttendance] = useState(false);
+  
+  // 🌟 NEW: State to hold the single closest upcoming exam
+  const [nextExam, setNextExam] = useState(null); 
+
   // Arrays to give the database subjects nice dynamic colors and icons
   const cardColors = ['purple', 'blue', 'green', 'pink', 'teal', 'orange'];
   const cardIcons = ['∑', '🔬', '💻', '💬', '⚡', '📐'];
 
-  // 1. Initialize viewingSemester directly from Local Storage so it's instantly accurate!
+  // 1. Initialize viewingSemester directly from Local Storage
   const [viewingSemester, setViewingSemester] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved).semesterId : "sem-1";
   });
 
-  // 2. Add viewingSemester to the dependency array so this re-runs when the dropdown changes!
+  // 2. Fetch Subjects
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (!savedUser) {
@@ -29,10 +35,8 @@ function Subjects() {
     const parsedUser = JSON.parse(savedUser);
     setUser(parsedUser);
 
-    // This safely converts the old ID in your database to the new one we are using
-    const activeProgramId = parsedUser.programId === "btech-mtech-cybersecurity" ? "btech-mtech-cybersecurity" : parsedUser.programId;
+    const activeProgramId = parsedUser.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : parsedUser.programId;
 
-    // Use parsedUser here to prevent a crash on the very first millisecond load
     fetch(`http://localhost:5001/api/syllabus/${activeProgramId}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
@@ -40,7 +44,7 @@ function Subjects() {
           const theorySubjects = data.subjects.filter(sub => sub.type !== "Lab");
           setSubjects(theorySubjects);
         } else {
-          setSubjects([]); // If folder doesn't exist, empty the screen!
+          setSubjects([]); 
         }
         setLoading(false);
       })
@@ -48,7 +52,44 @@ function Subjects() {
         setSubjects([]);
         setLoading(false);
       });
-  }, [navigate, viewingSemester]); // <--- The magic fix!
+  }, [navigate, viewingSemester]); 
+
+  // 🌟 3. NEW: Fetch Exams and find the closest one!
+  useEffect(() => {
+    if (!user) return;
+    
+    const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
+
+    fetch(`http://localhost:5001/api/exams/${activeProgramId}/${user.semesterId}`)
+      .then(res => res.json())
+      .then(data => {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        // Filter out past exams
+        const futureExams = data.filter(exam => {
+          const eDate = new Date(exam.examDate);
+          eDate.setHours(0,0,0,0);
+          return eDate >= today;
+        });
+
+        if (futureExams.length > 0) {
+          // Grab the very first upcoming exam
+          const closestExam = futureExams[0];
+          const eDate = new Date(closestExam.examDate);
+          eDate.setHours(0,0,0,0);
+          
+          // Calculate exact days left
+          const diffTime = eDate - today;
+          const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          setNextExam({ ...closestExam, daysLeft });
+        } else {
+          setNextExam(null); // No exams left!
+        }
+      })
+      .catch(err => console.error("Error fetching next exam:", err));
+  }, [user]); 
 
   const handleLogout = () => {
     localStorage.removeItem("forensync_user");
@@ -68,7 +109,8 @@ function Subjects() {
             <h1>Hello, {user.name.split(' ')[0]}</h1>
             <p>You're making great progress in {user.semesterId.toUpperCase()}. Let's keep the focus sharp.</p>
             <div className="welcome-actions">
-              <button className="btn-primary-gradient">📅 View Schedule</button>
+              {/* 🌟 Added navigation to the View Schedule button! */}
+              <button className="btn-primary-gradient" onClick={() => navigate('/exams')}>📅 View Schedule</button>
             </div>
           </div>
           <div className="progress-circle-container">
@@ -108,18 +150,17 @@ function Subjects() {
             subjects.map((sub, index) => (
             <div 
                 className="subject-card"
-                key={sub.id || index} // FIX 1: Changed sub.code to sub.id (and added a fallback)
+                key={sub.id || index} 
                 style={{ cursor: 'pointer' }}
-                /* Navigates based on the VIEWING semester, not the user's base semester! */
-                onClick={() => navigate(`/notes/${user.programId}/${viewingSemester}/${sub.id}`)} // FIX 2: Changed sub.code to sub.id
-                        >
+                onClick={() => navigate(`/notes/${user.programId}/${viewingSemester}/${sub.id}`)} 
+            >
                 <div className={`card-accent accent-${cardColors[index % cardColors.length]}`}></div>
                 <div className="subject-icon-box">{cardIcons[index % cardIcons.length]}</div>
                         
                 <h3>{sub.name}</h3>
                 <p>{sub.teacher}</p>
                 <div className="card-footer">
-                  <span className="subject-code-badge">{sub.id}</span> {/* FIX 3: Changed sub.code to sub.id */}
+                  <span className="subject-code-badge">{sub.id}</span> 
                   <span className="arrow-icon">→</span>
                 </div>
             </div>
@@ -130,36 +171,76 @@ function Subjects() {
 
       {/* RIGHT COLUMN */}
       <div className="dashboard-right">
-        {/* Next Exam Widget */}
+        
+        {/* 🌟 DYNAMIC NEXT EXAM WIDGET */}
         <div className="widget next-exam-widget">
           <div className="widget-header">
             <div className="header-left">
               <span className="icon">⏱️</span>
               <h3>Next Exam</h3>
             </div>
-            <span className="urgent-badge">Urgent</span>
+            {/* Only show "Urgent" if the exam is less than 7 days away! */}
+            {nextExam && nextExam.daysLeft <= 7 && <span className="urgent-badge">Urgent</span>}
           </div>
           
           <div className="countdown">
-            <h2>03 <span>days</span></h2>
-            <p>until Physics Finals</p>
+            {nextExam ? (
+              <>
+                <h2>
+                  {nextExam.daysLeft < 10 ? `0${nextExam.daysLeft}` : nextExam.daysLeft} 
+                  <span>days</span>
+                </h2>
+                <p>until {nextExam.name}</p>
+              </>
+            ) : (
+              <>
+                <h2>-- <span>days</span></h2>
+                <p>No upcoming exams</p>
+              </>
+            )}
           </div>
-          <button className="widget-btn-outline">View Details</button>
+          
+          {/* Added navigation to route smoothly to the Exams page! */}
+          <button className="widget-btn-outline" onClick={() => navigate('/exams')}>
+            View Details
+          </button>
         </div>
 
         {/* Mini Stats Row */}
+        {/* Mini Stats Row */}
         <div className="mini-stats-row">
-          <div className="mini-stat-card">
-            <div className="stat-icon green">✓</div>
-            <h2>12</h2>
-            <p>Tasks Done</p>
+          
+          {/* 🌟 THE INTERACTIVE ATTENDANCE CARD */}
+          <div 
+            className="mini-stat-card" 
+            style={{ position: 'relative', cursor: 'pointer' }}
+            onClick={() => setShowAttendance(!showAttendance)}
+          >
+            <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}>📊</div>
+            
+            {/* Reads straight from your database user object! */}
+            <h2>{user?.attendance?.total || "--"}%</h2>
+            <p>Attendance</p>
+
+            {/* The popover reads the exact subject breakdowns from DB */}
+            {showAttendance && user?.attendance && (
+              <div className="attendance-popover">
+                <h4>Attendance Breakdown</h4>
+                <div className="att-row"><span>C++ OOPs:</span> <span>{user.attendance.math}%</span></div>
+                <div className="att-row"><span>Prof. Ethics:</span> <span>{user.attendance.ethics}%</span></div>
+                <div className="att-row"><span>Physics:</span> <span>{user.attendance.physics}%</span></div>
+              </div>
+            )}
           </div>
+
           <div className="mini-stat-card">
             <div className="stat-icon blue">📈</div>
-            <h2>{user.cgpa}</h2>
+            {/* Using the real CGPA from the database! */}
+            <h2>{user?.cgpa || "--"}</h2>
             <p>CGPA</p>
           </div>
         </div>
+
       </div>
     </div>
   );

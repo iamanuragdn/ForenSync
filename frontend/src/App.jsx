@@ -11,6 +11,7 @@ import SubjectNotes from './Components/SubjectNotes.jsx';
 import MockTest from './Components/MockTest.jsx';
 import PYQDashboard from './Components/PYQDashboard'; // Adjust path if needed
 import PYQNotes from './Components/PYQNotes'; // Adjust path if needed
+import Exams from './Components/Exams';
 
 
 // Make sure you created LandingPage.jsx from my previous message!
@@ -64,6 +65,9 @@ function AppContent() {
 
             <Route path="/pyq" element={<PYQDashboard />} />
             <Route path="/pyq/:programId/:semesterId/:subjectId" element={<PYQNotes />} />
+
+            <Route path="/exams" element={<Exams />} />
+            
           </Routes>
         </div>
         </div> 

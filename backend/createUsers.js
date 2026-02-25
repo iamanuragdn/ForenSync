@@ -15,7 +15,8 @@ const teamMembers = [
     courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
     programId: "btech-mtech-cybersecurity",
     semesterId: "sem-2",
-    cgpa: 8.29
+    cgpa: 8.29,
+    attendance: { total: 82, math: 85, ethics: 78, physics: 83 }
   },
   {
     username: "anindya_bhar",
@@ -24,7 +25,8 @@ const teamMembers = [
     courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
     programId: "btech-mtech-cybersecurity",
     semesterId: "sem-2",
-    cgpa: 8.29
+    cgpa: 8.29,
+    attendance: { total: 75, math: 70, ethics: 80, physics: 75 }
   },
   {
     username: "reeji",
@@ -33,7 +35,8 @@ const teamMembers = [
     courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
     programId: "btech-mtech-cybersecurity",
     semesterId: "sem-2",
-    cgpa: 7.8
+    cgpa: 7.8,
+    attendance: { total: 91, math: 95, ethics: 88, physics: 90 }
   }
 ];
 

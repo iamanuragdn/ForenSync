@@ -278,6 +278,37 @@ async function processFileInBackground(fileBuffer, mimeType) {
     }
 }
 
+// ==========================================
+// FETCH EXAMS FOR CALENDAR
+// ==========================================
+app.get('/api/exams/:programId/:semesterId', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    
+    // Look inside your specific program and semester for the 'exams' collection
+    const snapshot = await db.collection("programs").doc(programId)
+                             .collection("semesters").doc(semesterId)
+                             .collection("exams")
+                             .orderBy("examDate", "asc") // Automatically sort by earliest date!
+                             .get();
+
+    if (snapshot.empty) {
+      return res.status(200).json([]); 
+    }
+
+    const exams = [];
+    snapshot.forEach(doc => {
+      exams.push({ id: doc.id, ...doc.data() });
+    });
+
+    res.status(200).json(exams);
+  } catch (error) {
+    console.error("Error fetching exams:", error);
+    res.status(500).json({ error: "Failed to fetch exams" });
+  }
+});
+
+
 app.post("/api/upload-pyq", upload.single("paper"), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
