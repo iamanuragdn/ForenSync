@@ -433,7 +433,7 @@ const syllabusData = {
                 credits: 2,
                 teacher: "Dr. Sourav Dey Roy",
                 type: "Lab",
-                units: [s] 
+                units: [] 
             },
             "CTBT-ESC-201L": {
                 name: "Digital Logic Design Laboratory",
