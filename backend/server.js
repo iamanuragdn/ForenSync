@@ -206,25 +206,59 @@ app.get("/api/programs/:programId/semesters", (req, res) => {
     }
 });
 
-app.get("/api/syllabus/:programId/:semesterId", (req, res) => {
-    try {
-        const { programId, semesterId } = req.params;
-        const program = syllabusData[programId];
 
-        if (!program || !program.semesters[semesterId]) {
-            return res.status(404).json({ error: "Semester data not found." });
-        }
+// GET SPECIFIC SUBJECT DETAILS
+// GET ALL SUBJECTS FOR A SPECIFIC SEMESTER
+// GET SPECIFIC SUBJECT DETAILS
+// GET ALL SUBJECTS FOR A SPECIFIC SEMESTER
 
-        const subjectsObj = program.semesters[semesterId];
-        const subjectsList = Object.keys(subjectsObj).map(subjectCode => ({
-            id: subjectCode,
-            ...subjectsObj[subjectCode]
-        }));
-
-        res.json({ stats: { title: `Details for ${semesterId}` }, subjects: subjectsList });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch syllabus." });
+app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    
+    const subjectsRef = db.collection('programs').doc(programId)
+                          .collection('semesters').doc(semesterId)
+                          .collection('subjects');
+                          
+    const snapshot = await subjectsRef.get();
+    
+    // If the semester exists but has no subjects yet, return an empty array
+    if (snapshot.empty) {
+      return res.json({ subjects: [] });
     }
+    
+    const subjects = [];
+    snapshot.forEach(doc => {
+      // Include the document ID so the frontend can use it for navigation
+      subjects.push({ id: doc.id, ...doc.data() });
+    });
+    
+    res.json({ subjects });
+  } catch (error) {
+    console.error("Error fetching subjects list:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get('/api/syllabus/:programId/:semesterId/:subjectId', async (req, res) => {
+  try {
+    const { programId, semesterId, subjectId } = req.params;
+    
+    const docRef = db.collection('programs').doc(programId)
+                     .collection('semesters').doc(semesterId)
+                     .collection('subjects').doc(subjectId);
+                     
+    const doc = await docRef.get();
+    
+    if (!doc.exists) {
+      return res.status(404).json({ error: `Subject ${subjectId} not found` });
+    }
+    
+    res.json(doc.data());
+  } catch (error) {
+    console.error("Error fetching subject details:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 
