@@ -225,16 +225,288 @@ const syllabusData = {
             type: "Lab",
             units: []
         }
-      },
-      "sem-2": {},
-      "sem-3": {},
-      "sem-4": {},
-      "sem-5": {},
-      "sem-6": {},
-      "sem-7": {},
-      "sem-8": {},
-      "sem-9": {},
-      "sem-10": {}
+        },
+
+        // ===============================
+
+        "sem-2": {
+            "CTВT-BSC-201": {
+                name: "Engineering Mathematics-II",
+                credits: 4,
+                teacher: "Dr. Suman Debnath",
+                type: "Core",
+                units: [
+                    { 
+                        unitNumber: "I",
+                        title: "Basics Statistics",
+                        topics: ["Measures of central tendency","Moments","Expectation","Dispersion","Skewness","Kurtosis","Expected value of two-dimensional random variables","Linear correlation","Correlation coefficient","Rank correlation coefficient","Regression"]
+                    },
+                    {
+                        unitNumber: "II",
+                        title: "Curve Fitting",
+                        topics: ["Method of least squares","Fitting of straight lines","Fitting of second degree parabola","Fitting of more general curves"]
+                    },
+                    {
+                        unitNumber: "III",
+                        title: "Probability",
+                        topics: ["Random experiment and trial","Sample point and sample space","Equally likely, mutually exclusive and exhaustive events","Classical, relative and axiomatic definitions of probability","Properties of probability","Conditional probability","Multiplicative law of probability","Independent events","Law of total probability","Bayes theorem and its applications","Binomial distribution","Poisson distribution","Normal distribution"]
+                    },
+                    {
+                        unitNumber: "IV",
+                        title: "Roots of Non-Linear Equations",
+                        topics: ["Bisection method","Regula-Falsi method","Secant method","Successive approximation method","Newton-Raphson method","Rate of convergence"]
+                    },
+                    {
+                        unitNumber: "V",
+                        title: "Finite Differences & Numerical Integration",
+                        topics: ["Finite differences","Interpolation","Newton’s formulae","Lagrange’s formula","Divided difference formula for unequal intervals","Newton-Cotes integration formulae","Trapezoidal rule","Simpson’s rules","Gaussian quadrature formulae (one, two and three point)"]
+                    }
+                ]
+            },
+            "CTВТ-HSM-201": {
+                name: "Professional Ethics",
+                credits: 3,
+                teacher: "Keshu Ahlawat",
+                type: "Core",
+                units: [
+                    { 
+                        unitNumber: "I",
+                        title: "Human Values",
+                        topics: ["Morals, values and ethics","Integrity and work ethic","Service learning and civil virtue","Respect for others and living peacefully","Caring and sharing","Honesty and courage","Valuing time","Cooperation and commitment","Empathy and self-confidence","Character and spirituality","Social expectations"]
+                    },
+                    {
+                        unitNumber: "II",
+                        title: "Engineering Ethics",
+                        topics: ["Senses of engineering ethics","Evolution of ethics over the years","Distinction between values and ethics","Variety of moral issues","Types of inquiry","Moral dilemmas and moral autonomy","Kohlberg’s theory","Gilligan’s theory","Consensus and controversy","Models of professional roles","Theories about right action","Self-interest","Customs and religion","Uses of ethical theories","Indian ethical traditions"]
+                    },
+                    {
+                        unitNumber: "III",
+                        title: "Professional Practices in Engineering",
+                        topics: ["Codes of ethics","Plagiarism and piracy","Balanced outlook on law","Professions and norms of professional conduct","Professional conduct vs profession","Responsibilities and obligations in professional ethics","Limits of predictability and responsibilities in engineering profession","Central responsibilities of engineers","Lessons from Bhopal Gas Tragedy","Lessons from SLV-3","Lessons from Indian Space Shuttle (Wings of Fire)","Lessons from international incidents: Titanic tragedy, Chernobyl nuclear tragedy, American Airline DC-10 crash, Kansas City Hyatt Regency walkway collapse"]
+                    },
+                    {
+                        unitNumber: "IV",
+                        title: "Responsibilities and Rights of Engineer",
+                        topics: ["Responsibilities and accountability in public issues (safety, hazards, risk)","Collegiality and loyalty","Obligation of loyalty and misguided loyalty","Respect for authority and its limitations","Bootlegging and collective bargaining","Commitments and convictions","Confidentiality","Occupational crime and industrial espionage","Whistle blowing and moral guidelines","Conflicts of interest","Bribes, gifts and kickbacks","Discrimination and preferential treatment","Harassment and rights of engineers","Engineers as managers and leaders promoting ethical climate"]
+                    },
+                    {
+                        unitNumber: "V",
+                        title: "Global Issues",
+                        topics: ["Introduction to global issues in professional ethics","Current scenario","Multinational corporations","Environmental ethics","Computer ethics","Weapon development","Engineers as managers","Consulting engineers","Engineers as expert witnesses and advisors"]
+                    }
+                ]
+            },
+            "CTBT-PCC-201": {
+                name: "Object Oriented Programming with C++",
+                credits: 3,
+                teacher: "Dr. Sourav Dey Roy",
+                type: "Core",
+                units: [
+                    { 
+                        unitNumber: "I",
+                        title: "Introduction to C++",
+                        topics: ["Overview of POP","Basic introduction to OOP","Basic concepts of OOP","Benefits and applications of OOP","Structure of C++ program","Simple C++ program","Tokens: keywords, identifiers, constants","Data types: fundamental, derived and user-defined","#define keyword","Variables","Basic operators and operators in C++","Conditional statements","Control structures"]
+                    },
+                    {
+                        unitNumber: "II",
+                        title: "Functions in C++",
+                        topics: ["Introduction to functions","User-defined functions","Function prototyping","Call by value","Call by reference","Inline function","Default arguments","Function overloading"]
+                    },
+                    {
+                        unitNumber: "III",
+                        title: "Classes and Objects",
+                        topics: ["Introduction to classes and objects","Structure vs class","Defining a class","Inline member functions","Access specifiers","Nesting of member functions","Arrays within a class","Static data members and member functions","Array of objects","Object as function argument and returning objects","Friend function","String manipulation using objects","Constructors: copy constructor, parameterized constructor","Destructor"]
+                    },
+                    {
+                        unitNumber: "IV",
+                        title: "Operator Overloading, Type Conversion and Inheritance",
+                        topics: ["Introduction to operator overloading","Rules of operator overloading","Overloading unary operators (prefix and postfix)","Overloading binary operators with and without friend function","Manipulation of string using operators","Type conversion: basic to class, class to basic, one type to another","Inheritance: introduction and defining a derived class","Types of inheritance: single, multilevel, multiple, hierarchical, hybrid","Virtual base class","Abstract classes","Introduction to containership"]
+                    },
+                    {
+                        unitNumber: "V",
+                        title: "Pointers, File Management & Exception Handling",
+                        topics: ["Pointers and pointers to objects","This pointer","Virtual functions and polymorphism","Pure virtual functions","File management: file stream classes","File operations and file modes","File pointers and manipulators","Updating a file","Error handling and command line arguments","Exception handling in C++","Templates","Standard Template Library (STL)"]
+                    }
+                ]
+            },
+            "CTBT-ESC-201": {
+                name: "Digital Logic Design",
+                credits: 3,
+                teacher: "Dr. Mampi Devi",
+                type: "Core",
+                units:[
+                    { 
+                        unitNumber: "I",
+                        title: "Introduction to Digital Systems Design",
+                        topics: ["Digital systems","Binary numbers","Number-base conversions","Octal and hexadecimal numbers","Complements and signed binary numbers","Binary codes","Binary storage and registers","Binary logic","Standard graphic symbols"]
+                    },
+                    {
+                        unitNumber: "II",
+                        title: "Boolean Algebra & Logic Gates",
+                        topics: ["Introduction to Boolean algebra","Axiomatic definition of Boolean algebra","Basic theorems and properties of Boolean algebra","Boolean functions","Canonical and standard forms","Logic operations","Introduction to logic gates and integrated circuits","Gate level minimization","Karnaugh Map (2-variable, 3-variable and 4-variable)","POS and SOP forms","Don’t care conditions","NAND and NOR implementations","Other two-level implementations","Exclusive-OR function","Parity generation"]
+                    },
+                    {
+                        unitNumber: "III",
+                        title: "Logic Circuits",
+                        topics: ["Introduction to logic circuits","Combinational logic circuits","Analysis and design procedure of CLC","Adders and subtractors (half and full)","Comparators","Multiplexers","Encoders and decoders","Sequential logic circuits","Synchronous sequential circuits","Latches and flip-flops","Asynchronous sequential circuits","Circuits with latches","Design and analysis procedures"]
+                    },
+                    {
+                        unitNumber: "IV",
+                        title: "Digital Circuits",
+                        topics: ["Registers and counters","Memory and programmable logic","RAM and ROM","Programmable Logic Array (PLA)","Programmable Array Logic (PAL)","Memory decoding","Error detection and correction","Transistors","MOS and CMOS","Special characteristics","Bipolar transistor characteristics"]
+                    },
+                    {
+                        unitNumber: "V",
+                        title: "Hardware Description Languages (HDLs)",
+                        topics: ["Introduction to HDL","Verilog, VHDL and SystemVerilog","Data types and naming conventions","Operators and explicit behavioural intent","Bottom-testing loop","Truth tables in HDL","HDL models of combinational circuits","VHDL process statements and variables","Writing simple testbench","Logic simulation","HDL models of registers and counters","RTL notations and descriptions","ASMs","HDL description of binary multiplier","Design with multiplexers","Switch level modelling with HDL"]
+                    }
+                ]
+            },
+            "CTBT-EMC-201": {
+                name: "Fundamentals of Forensic Science and Laws",
+                credits: 4,
+                teacher: "Nilanjan Saha",
+                type: "Core",
+                units:[
+                    { 
+                        unitNumber: "I",
+                        title: "Introduction to Forensic Science",
+                        topics: ["History and development of forensic science in India","Functions of forensic science","Historical aspects of forensic science","Definitions and concepts in forensic science","Scope and need of forensic science","Contemporary disciplines and applications","Basic principles of forensic science"]
+                    },
+                    {
+                        unitNumber: "II",
+                        title: "Forensic Science Requirements",
+                        topics: ["Contemporary developments in academics and practice","Advantages of scientific investigations","Tools and techniques in forensic science","Branches of forensic science","International perspectives (INTERPOL, FBI)","Duties and code of conduct of forensic scientists","Qualifications of forensic scientists","Data depiction and report writing"]
+                    },
+                    {
+                        unitNumber: "III",
+                        title: "Forensic Sciences and Government",
+                        topics: ["Academic institutions involvement","Organizational setup of forensic science laboratories in India","Central and State Forensic Science Laboratories","Government Examiners of Questioned Documents","Fingerprint Bureaus","National Crime Records Bureau (NCRB)","Police and Detective Training Schools","National Investigation Agency (NIA)","CCTNS","Bureau of Police Research & Development","Directorate of Forensic Science","Mobile Crime Laboratories","Police academies","Agencies involved in criminal investigation"]
+                    },
+                    {
+                        unitNumber: "IV",
+                        title: "Forensic Sciences and Laws",
+                        topics: ["Definition of law, court and judge","Basic legal terminology","Introduction to Criminal Procedure Code","FIR and difference between civil and criminal justice","Kinds and object of punishment","Primary and secondary functions of court","Classification of civil and criminal cases","Essential elements of criminal law","Hierarchy of criminal courts","Cognizable and non-cognizable offences","Bailable and non-bailable offences","Sentencing powers of Chief Judicial Magistrate","Bharatiya Sakshya Adhiniyam, 2023 (Evidence provisions)","Bharatiya Nagrik Suraksha Sanhita, 2023 (Investigation and procedure)","Bharatiya Nyaya Sanhita, 2023 (Offences: murder, conspiracy, attempt, sexual offences, counterfeiting, receiving stolen property)"]
+                    },
+                    {
+                        unitNumber: "V",
+                        title: "Cyber Laws",
+                        topics: ["Introduction to computer and its components","Types of storage media","Categories of cyber crime","Cyber law and IT Act 2000 with amendments","Digital Personal Data Protection Act, 2023 (DPDP)","International cyber laws","Cyber ethics","Child Sexual Abuse Material (CSAM) in cyber domain","Acts related to social media, privacy and security","Case studies"]
+                    }
+                ]
+            },
+            "CTBT-EMC-202": {
+                name: "Environment Science",
+                credits: 2,
+                teacher: "null",
+                type: "Core",
+                units:[
+                    { 
+                        unitNumber: "I",
+                        title: "The Multidisciplinary Nature of Environmental Studies",
+                        topics: ["Multidisciplinary nature of environmental studies","Concept of biosphere","Lithosphere, hydrosphere and atmosphere","Biogeochemical cycles"]
+                    },
+                    {
+                        unitNumber: "II",
+                        title: "Environment Concept",
+                        topics: ["Principles and scope of ecology","Concept of ecosystem","Population and community","Biotic interactions","Biomes","Ecological succession"]
+                    },
+                    {
+                        unitNumber: "III",
+                        title: "Natural Resources",
+                        topics: ["Renewable and non-renewable resources","Forest resources","Water resources","Mineral resources","Food resources","Energy resources","Land resources"]
+                    },
+                    {
+                        unitNumber: "IV",
+                        title: "Environmental Pollution",
+                        topics: ["Causes, effects and control measures of air pollution","Water pollution","Soil pollution","Marine pollution","Noise pollution","Thermal pollution","Nuclear hazards"]
+                    },
+                    {
+                        unitNumber: "V",
+                        title: "Biodiversity and Its Conservation",
+                        topics: ["Definition of genetic, species and ecosystem diversity","Biogeographical classification of India","Values of biodiversity: consumptive, productive, social, ethical, aesthetic and option values","Biodiversity at global, national and local levels","India as a mega-diversity nation","Hotspots of biodiversity","Threats to biodiversity: habitat loss, poaching, man-wildlife conflicts","Endangered and endemic species of India","In-situ and ex-situ conservation of biodiversity"]
+                    }
+                ]
+            },
+            "CTВТ-PCС-201L": {
+                name: "Object Oriented Programming with C++ Laboratory",
+                credits: 2,
+                teacher: "Dr. Sourav Dey Roy",
+                type: "Lab",
+                units: [s] 
+            },
+            "CTBT-ESC-201L": {
+                name: "Digital Logic Design Laboratory",
+                credits: 2,
+                teacher: "Dr. Mampi Devi",
+                type: "Lab",
+                units: [
+                    {
+                        experimentNumber: 1,
+                        title: "Digital Logic Gates",
+                        topics: ["Verify AND, OR, NAND, NOR, EX-OR, EX-NOR gates","Investigate Inverter and Buffer gates","Implementation using Universal NAND gate"]
+                    },
+                    {
+                        experimentNumber: 2,
+                        title: "Gate-Level Minimization",
+                        topics: ["Two-level implementation of Boolean functions","Multi-level implementation of Boolean functions"]
+                    },
+                    {
+                        experimentNumber: 3,
+                        title: "Combinational Circuits",
+                        topics: ["Design and test adders (Half and Full)","Design and test subtractors","Design and test comparators"]
+                    },
+                    {
+                        experimentNumber: 4,
+                        title: "Code Converters",
+                        topics: ["Gray code to binary converter","BCD to seven segment display"]
+                    },
+                    {
+                        experimentNumber: 5,
+                        title: "MUX/DEMUX Implementation",
+                        topics: ["Design and implementation of Boolean functions using Multiplexer","Design and implementation using Demultiplexer"]
+                    },
+                    {
+                        experimentNumber: 6,
+                        title: "Encoder and Decoder",
+                        topics: ["Design using encoder","Design using decoder"]
+                    },
+                    {
+                        experimentNumber: 7,
+                        title: "Flip-Flops",
+                        topics: ["SR flip-flop","D flip-flop","JK flip-flop","Testing and verification of flip-flop operations"]
+                    },
+                    {
+                        experimentNumber: 8,
+                        title: "Shift Registers",
+                        topics: ["Design of shift registers","Serial-in Serial-out (SISO)","Serial-in Parallel-out (SIPO)","Parallel-in Serial-out (PISO)","Parallel-in Parallel-out (PIPO)","Shift registers with parallel load"]
+                    },
+                    {
+                        experimentNumber: 9,
+                        title: "Counters",
+                        topics: ["Ripple counters","Synchronous counters","Decimal counter","Binary counter with parallel load"]
+                    },
+                    {
+                        experimentNumber: 10,
+                        title: "Binary Multiplier",
+                        topics: ["Design of binary multiplier","Implementation and testing"]
+                    },
+                    {
+                        experimentNumber: 11,
+                        title: "HDL Implementation",
+                        topics: ["Verilog/VHDL simulation","Implementation of experiments 1 to 10 using HDL"]
+                    }
+                ]
+            }
+        },
+        "sem-3": {},
+        "sem-4": {},
+        "sem-5": {},
+        "sem-6": {},
+        "sem-7": {},
+        "sem-8": {},
+        "sem-9": {},
+        "sem-10": {}
     }
   }
 };
