@@ -216,7 +216,7 @@ function MockTest() {
         {/* Card 2: Upload Test */}
         <div className="practice-card">
           <div className="card-icon-wrapper"><span className="card-icon">📄</span></div>
-          <h2>Instant Extraction</h2>
+          <h2>Instant Custom Test</h2>
           <p>Upload a PDF of a Past Year Question paper. Our engine will instantly extract it into a test.</p>
           
           <div className="action-area">
