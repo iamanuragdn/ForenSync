@@ -14,7 +14,7 @@ const teamMembers = [
     enrollmentNo: "250348004012", 
     courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
     programId: "btech-mtech-cybersecurity",
-    semesterId: "sem-1",
+    semesterId: "sem-2",
     cgpa: 8.29
   },
   {
@@ -23,7 +23,7 @@ const teamMembers = [
     enrollmentNo: "250348004015", 
     courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
     programId: "btech-mtech-cybersecurity",
-    semesterId: "sem-1",
+    semesterId: "sem-2",
     cgpa: 8.29
   },
   {
@@ -32,7 +32,7 @@ const teamMembers = [
     enrollmentNo: "250348004002",
     courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
     programId: "btech-mtech-cybersecurity",
-    semesterId: "sem-1",
+    semesterId: "sem-2",
     cgpa: 7.8
   }
 ];
