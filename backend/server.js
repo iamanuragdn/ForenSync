@@ -342,6 +342,27 @@ app.get('/api/exams/:programId/:semesterId', async (req, res) => {
   }
 });
 
+// GET SEMESTER METADATA (Start & End Dates)
+app.get('/api/semester-info/:programId/:semesterId', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    
+    const docRef = db.collection('programs').doc(programId)
+                     .collection('semesters').doc(semesterId);
+                     
+    const doc = await docRef.get();
+    
+    if (!doc.exists) {
+      return res.status(404).json({ error: "Semester not found" });
+    }
+    
+    res.json(doc.data());
+  } catch (error) {
+    console.error("Error fetching semester dates:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 app.post("/api/upload-pyq", upload.single("paper"), (req, res) => {
   try {

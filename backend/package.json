@@ -19,6 +19,7 @@
     "firebase-admin": "^13.6.1",
     "googleapis": "^171.4.0",
     "multer": "^2.0.2",
-    "react-router-dom": "^7.13.0"
+    "react-router-dom": "^7.13.0",
+    "stream": "^0.0.3"
   }
 }

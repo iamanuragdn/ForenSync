@@ -7,11 +7,12 @@ function Subjects() {
   const [user, setUser] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [semesterDates, setSemesterDates] = useState(null);
 
-  // // State for the Attendance Popover
+  // State for the Attendance Popover
   const [showAttendance, setShowAttendance] = useState(false);
   
-  // 🌟 NEW: State to hold the single closest upcoming exam
+  // State to hold the single closest upcoming exam
   const [nextExam, setNextExam] = useState(null); 
 
   // Arrays to give the database subjects nice dynamic colors and icons
@@ -54,7 +55,7 @@ function Subjects() {
       });
   }, [navigate, viewingSemester]); 
 
-  // 🌟 3. NEW: Fetch Exams and find the closest one!
+  // 3. Fetch Exams and find the closest one!
   useEffect(() => {
     if (!user) return;
     
@@ -91,10 +92,46 @@ function Subjects() {
       .catch(err => console.error("Error fetching next exam:", err));
   }, [user]); 
 
+  // 4. FETCH DYNAMIC SEMESTER DATES
+  useEffect(() => {
+    if (!user) return;
+    const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
+
+    fetch(`http://localhost:5001/api/semester-info/${activeProgramId}/${viewingSemester}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.startDate && data.endDate) {
+          setSemesterDates({ start: data.startDate, end: data.endDate });
+        } else {
+          setSemesterDates(null); // Fallback if dates aren't set yet
+        }
+      })
+      .catch(err => console.error("Error fetching dates:", err));
+  }, [user, viewingSemester]);
+
   const handleLogout = () => {
     localStorage.removeItem("forensync_user");
     navigate("/login");
   };
+
+  // 🌟 DYNAMIC SEMESTER PROGRESS CALCULATOR (Added Here!)
+  const getSemesterProgress = () => {
+    if (!semesterDates) return 0; // Shows 0% while loading
+
+    const startDate = new Date(semesterDates.start);
+    const endDate = new Date(semesterDates.end);
+    const today = new Date();
+
+    if (today < startDate) return 0;   
+    if (today > endDate) return 100;   
+
+    const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+    const passedDays = (today - startDate) / (1000 * 60 * 60 * 24);
+    
+    return Math.round((passedDays / totalDays) * 100);
+  };
+  
+  const progressPercentage = getSemesterProgress();
 
   if (loading || !user) return <div className="home-dashboard">Loading your dashboard...</div>;
 
@@ -109,16 +146,29 @@ function Subjects() {
             <h1>Hello, {user.name.split(' ')[0]}</h1>
             <p>You're making great progress in {user.semesterId.toUpperCase()}. Let's keep the focus sharp.</p>
             <div className="welcome-actions">
-              {/* 🌟 Added navigation to the View Schedule button! */}
               <button className="btn-primary-gradient" onClick={() => navigate('/exams')}>📅 View Schedule</button>
             </div>
           </div>
+          
+          {/* 🌟 DYNAMIC PROGRESS CIRCLE */}
+          {/* 🌟 DYNAMIC PROGRESS CIRCLE (Dark Theme) */}
           <div className="progress-circle-container">
-            <div className="progress-circle">
-              <span className="percentage">75%</span>
-              <span className="label">SEMESTER</span>
+            <div 
+              className="progress-circle"
+              style={{
+                /* 🌟 Draws the ring dynamically using your preferred dark slate color! */
+                background: `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#4B6583 ${progressPercentage}%, #f1f5f9 0)`
+              }}
+            >
+              <span className="percentage">
+                {progressPercentage}%
+              </span>
+              <span className="label">
+                SEMESTER
+              </span>
             </div>
           </div>
+
         </div>
 
         {/* The Semester Switcher UI */}
@@ -172,14 +222,13 @@ function Subjects() {
       {/* RIGHT COLUMN */}
       <div className="dashboard-right">
         
-        {/* 🌟 DYNAMIC NEXT EXAM WIDGET */}
+        {/* DYNAMIC NEXT EXAM WIDGET */}
         <div className="widget next-exam-widget">
           <div className="widget-header">
             <div className="header-left">
               <span className="icon">⏱️</span>
               <h3>Next Exam</h3>
             </div>
-            {/* Only show "Urgent" if the exam is less than 7 days away! */}
             {nextExam && nextExam.daysLeft <= 7 && <span className="urgent-badge">Urgent</span>}
           </div>
           
@@ -200,17 +249,15 @@ function Subjects() {
             )}
           </div>
           
-          {/* Added navigation to route smoothly to the Exams page! */}
           <button className="widget-btn-outline" onClick={() => navigate('/exams')}>
             View Details
           </button>
         </div>
 
         {/* Mini Stats Row */}
-        {/* Mini Stats Row */}
         <div className="mini-stats-row">
           
-          {/* 🌟 THE INTERACTIVE ATTENDANCE CARD */}
+          {/* THE INTERACTIVE ATTENDANCE CARD */}
           <div 
             className="mini-stat-card" 
             style={{ position: 'relative', cursor: 'pointer' }}
@@ -218,11 +265,9 @@ function Subjects() {
           >
             <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}>📊</div>
             
-            {/* Reads straight from your database user object! */}
             <h2>{user?.attendance?.total || "--"}%</h2>
             <p>Attendance</p>
 
-            {/* The popover reads the exact subject breakdowns from DB */}
             {showAttendance && user?.attendance && (
               <div className="attendance-popover">
                 <h4>Attendance Breakdown</h4>
@@ -235,7 +280,6 @@ function Subjects() {
 
           <div className="mini-stat-card">
             <div className="stat-icon blue">📈</div>
-            {/* Using the real CGPA from the database! */}
             <h2>{user?.cgpa || "--"}</h2>
             <p>CGPA</p>
           </div>

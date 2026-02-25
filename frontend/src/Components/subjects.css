@@ -91,18 +91,28 @@
 .btn-white:hover { background: #f0f4f8; }
 
 /* --- Progress Circle --- */
-.progress-circle-container {
-  width: 110px; height: 110px; /* Scaled down from 140px */
-  background: white; 
+.progress-circle {
+  width: 110px;  /* 🌟 Increased from 80px */
+  height: 110px; /* 🌟 Increased from 80px */
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  border: 6px solid #f1f5f9; 
-  border-top-color: #4a6583; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.progress-circle { display: flex; flex-direction: column; align-items: center; }
-.progress-circle .percentage { font-size: 1.6rem; font-weight: 700; color: #2d3748; }
-.progress-circle .label { font-size: 0.65rem; color: #64748b; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.progress-circle .percentage {
+  font-size: 26px; /* 🌟 Increased from 20px to match the bigger circle */
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.progress-circle .label {
+  font-size: 11px; 
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
 
 /* --- Subjects Section --- */
 .section-header { display: flex; justify-content: space-between; align-items: center; }

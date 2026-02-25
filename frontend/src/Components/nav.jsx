@@ -52,7 +52,7 @@ function Navbar() {
 
       {/* Right Side: Notifications & Profile */}
       <div className="nav-right">
-        <div className="notifications">🔔</div>
+        {/* <div className="notifications">🔔</div> */}
         
         {/* Profile Wrapper (Position Relative for Dropdown) */}
         <div className="profile-wrapper" ref={dropdownRef}>
