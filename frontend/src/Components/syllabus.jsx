@@ -1,97 +1,94 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './Syllabus.css';
 
 function Syllabus() {
-  // This tracks which unit is currently clicked open!
+  const { programId, semesterId, subjectId } = useParams();
+  const navigate = useNavigate();
+  
   const [openUnitIndex, setOpenUnitIndex] = useState(null);
+  const [subjectData, setSubjectData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Hardcoded data for testing the UI instantly
-  const subjectData = {
-    name: "Engineering Mathematics-1",
-    code: "CTBT-BSC-101",
-    credits: 4,
-    units: [
-      { 
-        unitNumber: "I", title: "Differential Calculus", hours: 15,
-        topics: [
-          "Successive differentiation",
-          "Leibniz's theorem (without proof)",
-          "Taylor's & McLaurin's series for a function of one variable",
-          "Evaluation of indeterminate forms by L'Hospital's rule",
-          "Infinite Series: Convergence by definition, Zero Test, Comparison Test, Ratio Test, Alternating Series."
-        ] 
-      },
-      { 
-        unitNumber: "II", title: "Partial Differentiation", hours: 10,
-        topics: [
-          "Functions of two variables",
-          "Limit and Continuity of function of several variables",
-          "Partial derivative, Total derivative, Chain rule",
-          "Jacobian, error and approximation, maxima and minima"
-        ] 
-      },
-      { 
-        unitNumber: "III", title: "Integral Calculus", hours: 10,
-        topics: [
-          "Reduction formula for sin^n x, cos^n x, tan^n x",
-          "Beta and Gamma functions and their properties (without proof)",
-          "Evaluation of improper integrals of type-I and type-II"
-        ] 
-      }
-    ]
-  };
+  useEffect(() => {
+    // Fetch the syllabus data dynamically from your Node backend!
+    fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.subjects && !data.error) {
+          // Find the specific subject from the database array
+          const currentSubject = data.subjects.find(sub => sub.id === subjectId);
+          setSubjectData(currentSubject);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching syllabus:", err);
+        setLoading(false);
+      });
+  }, [programId, semesterId, subjectId]);
 
-  // This function toggles the accordion open/closed
   const toggleUnit = (index) => {
-    // If clicking the one that's already open, close it. Otherwise, open the new one.
-    if (openUnitIndex === index) {
-      setOpenUnitIndex(null);
-    } else {
-      setOpenUnitIndex(index);
-    }
+    setOpenUnitIndex(openUnitIndex === index ? null : index);
   };
+
+  if (loading) return <div className="syllabus-page">Loading Syllabus...</div>;
+
+  if (!subjectData) return (
+    <div className="syllabus-page" style={{ textAlign: 'center', marginTop: '50px' }}>
+      <h2>Syllabus not found for {subjectId}</h2>
+      <button className="btn-primary-gradient" onClick={() => navigate(-1)}>Go Back</button>
+    </div>
+  );
 
   return (
     <div className="syllabus-page">
       {/* Top Header Banner */}
       <div className="syllabus-header">
-        <h1>{subjectData.name} ({subjectData.code})</h1>
-        <span className="credits-badge">{subjectData.credits} Credits</span>
+        <h1>{subjectData.name} ({subjectData.id || subjectId})</h1>
+        <span className="credits-badge">{subjectData.credits} Credits • {subjectData.type}</span>
       </div>
 
       {/* The List of Units */}
       <div className="units-container">
-        {subjectData.units.map((unit, index) => (
-          <div key={index} className="unit-card">
-            
-            {/* The clickable bar */}
-            <div className="unit-header" onClick={() => toggleUnit(index)}>
-              <div className="unit-title-group">
-                <span className="unit-number">Unit {unit.unitNumber}</span>
-                <span className="unit-name">{unit.title}</span>
-              </div>
+        {subjectData.units && subjectData.units.length > 0 ? (
+          subjectData.units.map((unit, index) => (
+            <div key={index} className="unit-card">
               
-              <div className="unit-meta">
-                <span className="hours-badge">{unit.hours} Hours</span>
-                <span className={`dropdown-icon ${openUnitIndex === index ? 'open' : ''}`}>
-                  ▼
-                </span>
+              {/* The clickable bar */}
+              <div className="unit-header" onClick={() => toggleUnit(index)}>
+                <div className="unit-title-group">
+                  <span className="unit-number">Unit {unit.unitNumber}</span>
+                  <span className="unit-name">{unit.title}</span>
+                </div>
+                
+                <div className="unit-meta">
+                  {/* Dynamically counts how many topics are in the array! */}
+                  <span className="hours-badge">{unit.topics ? unit.topics.length : 0} Topics</span>
+                  <span className={`dropdown-icon ${openUnitIndex === index ? 'open' : ''}`}>
+                    ▼
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* The dropdown content (Only shows if openUnitIndex matches this index) */}
-            {openUnitIndex === index && (
-              <div className="unit-content">
-                <ul>
-                  {unit.topics.map((topic, tIndex) => (
-                    <li key={tIndex}>{topic}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
+              {/* The dropdown content */}
+              {openUnitIndex === index && (
+                <div className="unit-content">
+                  <ul>
+                    {unit.topics && unit.topics.map((topic, tIndex) => (
+                      <li key={tIndex}>{topic}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+            </div>
+          ))
+        ) : (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+            No units uploaded for this subject yet.
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

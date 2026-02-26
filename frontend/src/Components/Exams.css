@@ -231,5 +231,27 @@
   border-top: 1px solid #f1f5f9;
 }
 
+/* 🌟 The new bold Prepare button */
+.btn-prepare {
+  background-color: #4a6583; /* Matches your dashboard's primary dark slate blue */
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-prepare:hover {
+  background-color: #3b526b; /* Slightly darker on hover */
+  transform: translateY(-2px); /* Gentle lift effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #64748b; }
 .dot { width: 10px; height: 10px; border-radius: 50%; }

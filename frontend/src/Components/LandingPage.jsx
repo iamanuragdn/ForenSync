@@ -61,7 +61,7 @@ function LandingPage() {
       <div className="landing-auth">
         <div className="auth-card">
           <h2>Welcome Back</h2>
-          <p>Enter your NFSU team username to continue.</p>
+          <p>Enter your username to continue.</p>
 
           {error && <div className="auth-error">{error}</div>}
 

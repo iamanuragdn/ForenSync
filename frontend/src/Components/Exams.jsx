@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Exams.css';
+import { useNavigate } from 'react-router-dom';
 
 function Exams() {
+  const navigate = useNavigate();
   const [date, setDate] = useState(new Date()); 
   const [upcomingExams, setUpcomingExams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,14 +111,24 @@ function Exams() {
                     <p className="exam-date">{new Date(exam.examDate).toDateString()}</p>
                     <p className="exam-meta">{exam.type} • {exam.time}</p>
                   </div>
-                  <div className="exam-action">
-                    {/* 🌟 View Details now shows a smart alert! */}
+                  <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
+                    
+                    {/* BUTTON 1: View Syllabus */}
                     <button 
                       className="btn-view-details"
-                      onClick={() => alert(`Seating arrangement and full syllabus guidelines for ${exam.name} will be published 7 days before the exam.`)}
+                      onClick={() => navigate(`/syllabus/${userContext.programId}/${userContext.semesterId}/${exam.code}`)} 
                     >
-                      View Details
+                      📋 Syllabus
                     </button>
+
+                    {/* BUTTON 2: Prepare (Goes to Notes) */}
+                    <button 
+                      className="btn-prepare"
+                      onClick={() => navigate(`/notes/${userContext.programId}/${userContext.semesterId}/${exam.code}`)}
+                    >
+                      🚀 Prepare
+                    </button>
+
                   </div>
                 </div>
               ))

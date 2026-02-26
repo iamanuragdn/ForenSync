@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './Components/sidebar.jsx';
 import Nav from './Components/nav.jsx'; 
-import Subjects from './Components/subjects.jsx'; 
+import Subjects from './Components/subjects.jsx';
+import Syllabus from './Components/syllabus'; 
 
 import ProgramSelect from './Components/ProgramSelect.jsx';
 import SemesterSelect from './Components/SemesterSelect.jsx';
@@ -70,6 +71,8 @@ function AppContent() {
             <Route path="/exams" element={<Exams />} />
 
             <Route path="/admin" element={<AdminConsole />} />
+
+            <Route path="/syllabus/:programId/:semesterId/:subjectId" element={<Syllabus />} />
             
           </Routes>
         </div>

@@ -257,11 +257,13 @@ function Subjects() {
         {/* Mini Stats Row */}
         <div className="mini-stats-row">
           
+
           {/* THE INTERACTIVE ATTENDANCE CARD */}
           <div 
             className="mini-stat-card" 
             style={{ position: 'relative', cursor: 'pointer' }}
-            onClick={() => setShowAttendance(!showAttendance)}
+            onMouseEnter={() => setShowAttendance(true)}
+            onMouseLeave={() => setShowAttendance(false)}
           >
             <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}>📊</div>
             
@@ -269,11 +271,20 @@ function Subjects() {
             <p>Attendance</p>
 
             {showAttendance && user?.attendance && (
-              <div className="attendance-popover">
+              <div className="attendance-details">
                 <h4>Attendance Breakdown</h4>
-                <div className="att-row"><span>Maths : </span> <span>{user.attendance.math}%</span></div>
-                <div className="att-row"><span>Prof. Ethics : </span> <span>{user.attendance.ethics}%</span></div>
-                <div className="att-row"><span>Physics : </span> <span>{user.attendance.physics}%</span></div>
+                <div className="att-row">
+                  <span className="subject-name">Mathematics</span> 
+                  <span className="subject-score">{user.attendance.math}%</span>
+                </div>
+                <div className="att-row">
+                  <span className="subject-name">Prof. Ethics</span> 
+                  <span className="subject-score">{user.attendance.ethics}%</span>
+                </div>
+                <div className="att-row">
+                  <span className="subject-name">Physics</span> 
+                  <span className="subject-score">{user.attendance.physics}%</span>
+                </div>
               </div>
             )}
           </div>

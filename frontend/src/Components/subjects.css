@@ -256,27 +256,90 @@
 }
 
 /* Ensure the cards have a consistent base width but can grow vertically */
+/* --- Mini Stats Row --- */
+.mini-stats-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start; /* Prevents the CGPA card from stretching */
+  margin-top: 20px;
+}
+
+/* 🌟 MERGED AND FIXED: Uniform card styling with relative positioning */
 .mini-stat-card {
   flex: 1;
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s ease; /* Smooths the expansion */
-  min-height: 140px; /* Keeps them uniform when closed */
+  text-align: center;
+  transition: all 0.3s ease;
+  min-height: 140px;
+  position: relative; /* 🌟 CRITICAL: Anchors the popover to this specific card */
 }
 
-.mini-stat-card { 
-  flex: 1; 
-  background: #ffffff; 
-  border-radius: 12px; 
-  padding: 16px; /* Compressed */
-  text-align: center; 
-  border: 1px solid #e2e8f0; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); 
+/* 🌟 Adds the smooth lift and drop-shadow to the card itself */
+.mini-stat-card:hover {
+  transform: translateY(-4px); 
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04); 
+  border-color: #cbd5e1;
+}
+
+/* ================================
+   INLINE EXPANDING ATTENDANCE CARD
+================================= */
+.attendance-details {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9; /* Adds a clean separator line */
+  animation: fadeInDown 0.2s ease-out forwards;
+}
+
+.attendance-details h4 {
+  font-size: 0.75rem;
+  color: #94a3b8; /* Subtle gray */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+  text-align: left; /* Aligns the header to the left */
+}
+
+.att-row {
+  display: flex;
+  justify-content: space-between; /* Pushes name to left, score to right */
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Matches the grayish-blue text of your other cards */
+.att-row .subject-name {
+  font-size: 0.85rem;
+  color: #64748b; 
+  font-weight: 500;
+}
+
+/* Highlights the numbers in bold dark slate */
+.att-row .subject-score {
+  font-size: 0.9rem;
+  color: #1e293b; 
+  font-weight: 700;
+}
+
+/* Smooth fade-in effect when it expands */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .stat-icon { 

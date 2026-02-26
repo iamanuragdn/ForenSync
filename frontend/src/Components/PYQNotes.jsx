@@ -98,23 +98,28 @@ function PYQNotes() {
       </div>
 
       {/* File List */}
+      {/* File List */}
       {loading ? (
         <p className="loading-text">Loading {selectedExam} papers...</p>
       ) : files.length > 0 ? (
         <div className="files-list">
           {files.map(file => (
-            <div key={file.id} className="file-item">
+            <div key={file.id} className="file-item" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
               
-              <div className="file-info">
-                <span className="file-icon">📕</span>
-                <span className="file-name">{file.name.replace(`${selectedExam} / `, '')}</span>
+              {/* 🌟 1. ICON MOVED HERE (Outside of file-info) */}
+              <div className="file-icon" style={{ fontSize: '1.5rem', background: '#f8fafc', padding: '10px', borderRadius: '8px' }}>
+                📕
               </div>
 
-              <div className="file-meta">
-                <span>Synced from Google Drive</span>
+              {/* 🌟 2. TEXT REMAINS IN ITS OWN COLUMN */}
+              <div className="file-info" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                <span className="file-name" title={file.name} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: '600', color: '#1e293b' }}>
+                  {file.name.replace(`${selectedExam} / `, '')}
+                </span>
               </div>
 
-              <div className="file-actions">
+              {/* 🌟 3. BUTTONS STAY ON THE RIGHT */}
+              <div className="file-actions" style={{ display: 'flex', gap: '10px' }}>
                 <a href={file.webViewLink} target="_blank" rel="noopener noreferrer" className="btn-view">
                   View
                 </a>
@@ -132,7 +137,7 @@ function PYQNotes() {
           <p className="empty-subtext">Make sure your Google Drive has a folder named "{selectedExam}" inside this subject's PYQ folder!</p>
         </div>
       )}
-    </div>
+      </div>
   );
 }
 

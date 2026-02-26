@@ -116,8 +116,25 @@
   font-size: 1.5rem;
 }
 
-.file-info h3 { margin: 0 0 0.25rem 0; color: #2d3748; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-.file-info p { margin: 0; color: #94a3b8; font-size: 0.85rem; }
+/* Add this wrapper rule to force flexbox to respect the ellipsis */
+.file-info {
+  flex: 1;
+  min-width: 0; /* 🌟 CRITICAL: This allows the text inside to truncate instead of breaking the card */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.file-info h3 { 
+  margin: 0; /* Removed the bottom margin since the subtitle text is gone! */
+  color: #2d3748; 
+  font-size: 1.05rem; 
+  font-weight: 600; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  width: 100%; 
+}
 
 .file-actions { display: flex; gap: 0.5rem; }
 
