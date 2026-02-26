@@ -37,6 +37,26 @@ const teamMembers = [
     semesterId: "sem-2",
     cgpa: 7.8,
     attendance: { total: 91, math: 95, ethics: 88, physics: 90 }
+  },
+  {
+    username: "kundu",
+    name: "Raunak Kundu",
+    enrollmentNo: "250348004026",
+    courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
+    programId: "btech-mtech-cybersecurity",
+    semesterId: "sem-2",
+    cgpa: 7.29,
+    attendance: { total: 91, math: 95, ethics: 88, physics: 90 }
+  },
+  {
+    username: "priyangshu",
+    name: "Priyangshu Paul",
+    enrollmentNo: "250348004006",
+    courseName: "B.Tech-M.Tech CSE (Cybersecurity)",
+    programId: "btech-mtech-cybersecurity",
+    semesterId: "sem-2",
+    cgpa: 7.67,
+    attendance: { total: 91, math: 95, ethics: 88, physics: 90 }
   }
 ];
 
