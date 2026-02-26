@@ -145,9 +145,9 @@ function Subjects() {
             <span className="welcome-badge">✨ Welcome back</span>
             <h1>Hello, {user.name.split(' ')[0]}</h1>
             <p>You're making great progress in {user.semesterId.toUpperCase()}. Let's keep the focus sharp.</p>
-            <div className="welcome-actions">
+            {/* <div className="welcome-actions">
               <button className="btn-primary-gradient" onClick={() => navigate('/exams')}>📅 View Schedule</button>
-            </div>
+            </div> */}
           </div>
           
           {/* 🌟 DYNAMIC PROGRESS CIRCLE */}
@@ -271,9 +271,9 @@ function Subjects() {
             {showAttendance && user?.attendance && (
               <div className="attendance-popover">
                 <h4>Attendance Breakdown</h4>
-                <div className="att-row"><span>C++ OOPs:</span> <span>{user.attendance.math}%</span></div>
-                <div className="att-row"><span>Prof. Ethics:</span> <span>{user.attendance.ethics}%</span></div>
-                <div className="att-row"><span>Physics:</span> <span>{user.attendance.physics}%</span></div>
+                <div className="att-row"><span>Maths : </span> <span>{user.attendance.math}%</span></div>
+                <div className="att-row"><span>Prof. Ethics : </span> <span>{user.attendance.ethics}%</span></div>
+                <div className="att-row"><span>Physics : </span> <span>{user.attendance.physics}%</span></div>
               </div>
             )}
           </div>
