@@ -9,6 +9,12 @@ function SubjectNotes() {
   // --- NEW: View Mode State (Defaults to 'list') ---
   const [viewMode, setViewMode] = useState('list');
 
+  // 🌟 NEW: State to hold the human-readable subject name
+  const [subjectName, setSubjectName] = useState(subjectId);
+  // Ensure these are at the top of your component!
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,15 +48,17 @@ function SubjectNotes() {
   const formatSemester = (id) => id.replace('-', ' ').toUpperCase();
 
   useEffect(() => {
+    // 🌟 1. ADD THIS: Triggers the loading text when auto-refreshing
+    setLoading(true); 
+
     fetch(`http://localhost:5001/api/notes/${programId}/${semesterId}/${subjectId}`)
       .then(res => res.json())
       .then(data => {
         if (data.error) {
           setError(data.error);
         } else {
-          // --- SORTING LOGIC ADDED HERE ---
+          // --- SORTING LOGIC STAYS EXACTLY THE SAME ---
           const sortedFiles = (data.files || []).sort((a, b) => {
-            // This compares the names alphabetically (Unit 1, Unit 2, etc.)
             return a.name.localeCompare(b.name, undefined, {
               numeric: true,
               sensitivity: 'base'
@@ -67,6 +75,23 @@ function SubjectNotes() {
         setFiles([]); 
         setLoading(false);
       });
+      
+  // 🌟 2. ADD THIS: Put `refreshTrigger` inside these bottom brackets!
+  }, [programId, semesterId, subjectId, refreshTrigger]);
+
+  // 🌟 NEW: Fetch the real subject name using the syllabus endpoint
+  useEffect(() => {
+    fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.subjects && !data.error) {
+          const currentSubject = data.subjects.find(sub => sub.id === subjectId);
+          if (currentSubject && currentSubject.name) {
+            setSubjectName(currentSubject.name); // Swaps the ID for the real name!
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching subject name:", err));
   }, [programId, semesterId, subjectId]);
 
   return (
@@ -78,14 +103,14 @@ function SubjectNotes() {
         <span className="separator">/</span> 
         <span>{formatSemester(semesterId)}</span> 
         <span className="separator">/</span> 
-        <span className="current-page">{subjectId} Notes</span>
+        <span className="current-page">{subjectName} Notes</span>
       </div>
 
       {/* Page Header with View Toggle & Sync Button */}
       <div className="notes-header">
         <div className="header-text">
-          <h1>Study Materials</h1>
-          <p className="subtitle">Access your synced Google Drive notes and past year questions for {subjectId}.</p>
+          <h1>{subjectName}</h1>
+          <p className="subtitle">Study Materials • Synced Notes</p>
         </div>
         
         <div className="header-actions">

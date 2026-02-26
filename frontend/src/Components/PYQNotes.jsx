@@ -14,6 +14,9 @@ function PYQNotes() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0); 
 
+  // 🌟 NEW: State to hold the human-readable subject name
+  const [subjectName, setSubjectName] = useState(subjectId);
+
   // Notice I added 'refreshTrigger' to the dependency array at the bottom!
   useEffect(() => {
     setLoading(true); // Show loading text when fetching
@@ -36,6 +39,21 @@ function PYQNotes() {
         setLoading(false);
       });
   }, [programId, semesterId, subjectId, selectedExam, refreshTrigger]);
+
+  // 🌟 NEW: Fetch the real subject name using the syllabus endpoint
+  useEffect(() => {
+    fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.subjects && !data.error) {
+          const currentSubject = data.subjects.find(sub => sub.id === subjectId);
+          if (currentSubject && currentSubject.name) {
+            setSubjectName(currentSubject.name); // Updates the UI with the real name!
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching subject name:", err));
+  }, [programId, semesterId, subjectId]);
 
   // NEW: The actual function to hit your backend crawler
   // NEW: The actual function to hit your backend crawler
@@ -75,14 +93,17 @@ function PYQNotes() {
         <span>🏠</span> 
         <Link to="/">Home</Link> <span className="divider">/</span>
         <Link to="/pyq">{formattedSem}</Link> <span className="divider">/</span>
-        <span className="current-page">{subjectId} {selectedExam} Papers</span>
+        <span className="current-page">{subjectName} {selectedExam} Papers</span>
       </div>
 
       {/* Page Header */}
       <div className="page-header">
         <div className="header-text">
-          <h1>Study Materials</h1>
-          <p>Access your synced Google Drive past year questions for {subjectId} ({selectedExam}).</p>
+          {/* 🌟 Make the actual subject name the giant main header! */}
+          <h1>{subjectName}</h1>
+          
+          {/* 🌟 Move the "Study Materials" text to the subtitle */}
+          <p>Study Materials • Past Year Questions ({selectedExam})</p>
         </div>
         <div className="header-actions">
           {/* NEW: The functional Sync Button */}
