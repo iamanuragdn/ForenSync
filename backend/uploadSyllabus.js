@@ -1,8 +1,7 @@
-// backend/uploadSyllabus.js
 const admin = require("firebase-admin");
-const syllabusData = require("./syllabusData"); // Your existing local data
+const syllabusData = require("./syllabusData"); //existing local data
 
-// Initialize Firebase (Assuming serviceAccountKey.json is in your backend folder)
+// Initialize Firebase
 const serviceAccount = require("./serviceAccountKey.json");
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -26,9 +25,8 @@ async function uploadToFirestore() {
           console.log(`  ↳ 📁 Processing Semester: ${semesterId}`);
           
           const semesterRef = programRef.collection("semesters").doc(semesterId);
-          const batch = db.batch(); // We use a batch to upload all subjects at once safely
+          const batch = db.batch(); 
 
-          // Count totals to save in the semester document!
           let totalCredits = 0;
           let totalSubjects = 0;
           let labCount = 0;
@@ -40,7 +38,6 @@ async function uploadToFirestore() {
 
             const subjectRef = semesterRef.collection("subjects").doc(subjectCode);
             
-            // Add this subject to the batch upload
             batch.set(subjectRef, {
               code: subjectCode,
               name: subjectDetails.name,
@@ -51,7 +48,6 @@ async function uploadToFirestore() {
             }, { merge: true });
           }
 
-          // Save the summary stats directly to the semester document
           batch.set(semesterRef, {
             semesterName: semesterId.replace('-', ' ').toUpperCase(),
             totalCredits: totalCredits,

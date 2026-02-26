@@ -9,12 +9,12 @@ const { google } = require('googleapis');
 
 const syllabusData = require("./syllabusData");
 
-// Import your teammate's extractor!
+// Import extractor
 const { extractQuestions } = require("./extractor"); 
 
 const stream = require("stream");
 
-// 1. Initialize Firebase Database Connection
+// Initialize Firebase Database Connection
 const serviceAccount = require("./serviceAccountKey.json");
 if (!admin.apps.length) {
     admin.initializeApp({
@@ -23,9 +23,9 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
-// 2. Initialize Express Server
+// Initialize Express Server
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" })); // React frontend
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
 // Serve static files for the downloaded PDFs
@@ -33,11 +33,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const upload = multer({ storage: multer.memoryStorage() });
 
 
-// ==========================================
-// GOOGLE DRIVE SYNC ENGINE (The New Crawler)
-// ==========================================
 
-// Helper to grab children (either folders or files) from a Drive folder
+// GOOGLE DRIVE SYNC
 async function getDriveChildren(parentId, drive, isFolder = true) {
     let q = `'${parentId}' in parents and trashed=false`;
     q += isFolder ? ` and mimeType='application/vnd.google-apps.folder'` : ` and mimeType!='application/vnd.google-apps.folder'`;
@@ -55,15 +52,11 @@ async function getDriveChildren(parentId, drive, isFolder = true) {
     }
 }
 
-// ==========================================
-// RECURSIVE DEEP FETCHER 
-// ==========================================
-// This function looks inside a folder. If it finds a file, it saves it.
-// If it finds a folder, it dives inside that folder automatically!
+
+// RECURSIVE DEEP FETCHER IN FOLDER (everyth)
 async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
     let allFiles = [];
     try {
-        // Notice we don't filter out folders here, we want everything!
         const res = await drive.files.list({
             q: `'${folderId}' in parents and trashed=false`,
             fields: 'files(id, name, webViewLink, webContentLink, mimeType)',
@@ -74,15 +67,11 @@ async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
 
         for (const item of items) {
             if (item.mimeType === 'application/vnd.google-apps.folder') {
-                // It's a folder! Call this exact same function again to look inside it.
-                // We also attach the folder name to the pathPrefix.
                 const subFiles = await fetchAllFilesRecursively(item.id, drive, `${pathPrefix}${item.name} / `);
                 allFiles = allFiles.concat(subFiles);
-            } else {
-                // It's a file! Add it to our list.
+            } else {             
                 allFiles.push({
-                    ...item,
-                    // This creates names like: "Question Bank / Paper.pdf"
+                    ...item,                   
                     displayName: `${pathPrefix}${item.name}` 
                 });
             }
@@ -104,37 +93,35 @@ app.post("/api/sync-drive", async (req, res) => {
         });
         const drive = google.drive({ version: 'v3', auth });
         
-        // 🌟 IMPORTANT: Put the ID of your top-level "NFSU" folder here
         const ROOT_NFSU_FOLDER_ID = '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
 
-        // 1. Crawl Programs (e.g., btech-mtech-cybersecurity)
+        // Crawl Programs (btech-mtech-cybersecurity)
         const programs = await getDriveChildren(ROOT_NFSU_FOLDER_ID, drive, true);
         
         for (const prog of programs) {
-            // 2. Crawl Semesters (e.g., sem-1)
+            // Crawl Semesters (sem-1)
             const semesters = await getDriveChildren(prog.id, drive, true);
             
             for (const sem of semesters) {
-                // 3. Crawl Types (e.g., Notes, PYQ)
+                // Crawl Types (Notes, PYQ,..)
                 const types = await getDriveChildren(sem.id, drive, true);
                 
                 for (const type of types) {
-                    // 4. Crawl Subjects (e.g., CTBT-BSC-101)
+                    // Crawl Subjects (CTBT-BSC-101...)
                     const subjects = await getDriveChildren(type.id, drive, true);
                     
                     for (const subj of subjects) {
-                        // 5. 🔥 Fetch ALL files, even the ones hidden inside sub-folders!
+                        // Fetch all folder even in subfolder
                         const files = await fetchAllFilesRecursively(subj.id, drive);
                         
                         for (const file of files) {
-                            // 6. Save to Firebase dynamically!
+                            // Save to Firebase dynamically!
                             const docRef = db.collection("programs").doc(prog.name)
                                              .collection("semesters").doc(sem.name)
                                              .collection("subjects").doc(subj.name)
                                              .collection(type.name).doc(file.id);
                             
                             await docRef.set({
-                                // Use the new displayName so the UI shows the folder path!
                                 name: file.displayName || file.name, 
                                 webViewLink: file.webViewLink || "#",
                                 webContentLink: file.webContentLink || "#",
@@ -156,15 +143,13 @@ app.post("/api/sync-drive", async (req, res) => {
 });
 
 
-// ==========================================
-// FAST FIREBASE FETCH (Lightning Fast Loading)
-// ==========================================
+// Firebase Fetch
 app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
     try {
         const { programId, semesterId, subjectId } = req.params;
-        const type = req.query.type || 'Notes'; // Defaults to Notes, but can fetch PYQ!
+        const type = req.query.type || 'Notes'; 
 
-        // Instantly grab the cached files from Firebase Database
+        // grab the cached files from Firebase Database
         const snapshot = await db.collection("programs").doc(programId)
                                  .collection("semesters").doc(semesterId)
                                  .collection("subjects").doc(subjectId)
@@ -185,9 +170,7 @@ app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
 });
 
 
-// ==========================================
 // SYLLABUS ROUTES
-// ==========================================
 app.get("/api/programs/:programId/semesters", (req, res) => {
     try {
         const { programId } = req.params;
@@ -209,11 +192,8 @@ app.get("/api/programs/:programId/semesters", (req, res) => {
 });
 
 
-// GET SPECIFIC SUBJECT DETAILS
-// GET ALL SUBJECTS FOR A SPECIFIC SEMESTER
-// GET SPECIFIC SUBJECT DETAILS
-// GET ALL SUBJECTS FOR A SPECIFIC SEMESTER
 
+// GET ALL SUBJECTS FOR A SPECIFIC SEMESTER
 app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
   try {
     const { programId, semesterId } = req.params;
@@ -231,7 +211,6 @@ app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
     
     const subjects = [];
     snapshot.forEach(doc => {
-      // Include the document ID so the frontend can use it for navigation
       subjects.push({ id: doc.id, ...doc.data() });
     });
     
@@ -264,9 +243,7 @@ app.get('/api/syllabus/:programId/:semesterId/:subjectId', async (req, res) => {
 });
 
 
-// ==========================================
 // USER ROUTES
-// ==========================================
 app.get("/api/users/:username", async (req, res) => {
     try {
         const { username } = req.params;
@@ -280,9 +257,7 @@ app.get("/api/users/:username", async (req, res) => {
 });
 
 
-// ==========================================
-// TEAMMATE'S ROUTES: Mock Test Engine
-// ==========================================
+// Reejit'S Routes: Mock Test Engine
 async function processFileInBackground(fileBuffer, mimeType) {
     try {
         const uploadsDir = path.join(__dirname, "uploads");
@@ -314,18 +289,16 @@ async function processFileInBackground(fileBuffer, mimeType) {
     }
 }
 
-// ==========================================
+
 // FETCH EXAMS FOR CALENDAR
-// ==========================================
 app.get('/api/exams/:programId/:semesterId', async (req, res) => {
   try {
     const { programId, semesterId } = req.params;
     
-    // Look inside your specific program and semester for the 'exams' collection
     const snapshot = await db.collection("programs").doc(programId)
                              .collection("semesters").doc(semesterId)
                              .collection("exams")
-                             .orderBy("examDate", "asc") // Automatically sort by earliest date!
+                             .orderBy("examDate", "asc")
                              .get();
 
     if (snapshot.empty) {
@@ -344,12 +317,9 @@ app.get('/api/exams/:programId/:semesterId', async (req, res) => {
   }
 });
 
-// ==========================================
 // ADMIN: MINI DRIVE EXPLORER
-// ==========================================
 app.get('/api/drive/folders', async (req, res) => {
     try {
-        // Defaults to your main NFSU folder if no parentId is provided
         const parentId = req.query.parentId || '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
         
         const auth = new google.auth.GoogleAuth({
@@ -358,7 +328,6 @@ app.get('/api/drive/folders', async (req, res) => {
         });
         const drive = google.drive({ version: 'v3', auth });
         
-        // Fetch ONLY folders (no files) so the admin can navigate
         const response = await drive.files.list({
             q: `'${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
             fields: 'files(id, name)',
@@ -372,9 +341,8 @@ app.get('/api/drive/folders', async (req, res) => {
     }
 });
 
-// ==========================================
+
 // ADMIN: DRIVE + FIREBASE UPLOADER
-// ==========================================
 app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     try {
         const { targetDriveFolderId, programId, semesterId, subjectId, type, fileName } = req.body;
@@ -382,18 +350,16 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
 
-        // 1. Authenticate with FULL Drive permissions to upload
+        // Authenticate with FULL Drive permissions to upload
         const uploadAuth = new google.auth.GoogleAuth({
             keyFile: './serviceAccountKey.json',
             scopes: ['https://www.googleapis.com/auth/drive'], 
         });
         const uploadDrive = google.drive({ version: 'v3', auth: uploadAuth });
 
-        // Convert the file buffer into a stream
         const bufferStream = new stream.PassThrough();
         bufferStream.end(fileObject.buffer);
 
-        // 2. Upload to the specific Drive Folder the admin navigated to
         const driveResponse = await uploadDrive.files.create({
             requestBody: {
                 name: fileName || fileObject.originalname,
@@ -408,13 +374,11 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         const fileId = driveResponse.data.id;
 
-        // 3. Make the file readable to students
         await uploadDrive.permissions.create({
             fileId: fileId,
             requestBody: { role: 'reader', type: 'anyone' },
         });
 
-        // 4. Save the exact same metadata to Firebase so the frontend can read it instantly
         const docRef = db.collection("programs").doc(programId)
                          .collection("semesters").doc(semesterId)
                          .collection("subjects").doc(subjectId)
@@ -506,6 +470,6 @@ app.post("/api/instant-test", upload.single("paper"), async (req, res) => {
   }
 });
 
-// 3. Start the Server
+// Start the Server
 const PORT = 5001;
 app.listen(PORT, () => console.log(`🚀 ForenSync Master Server running on port ${PORT}`));

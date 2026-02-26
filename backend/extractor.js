@@ -2,12 +2,9 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config(); 
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-// We removed the apiVersion restriction so the SDK can breathe!
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-/**
- * Extracts questions from a PDF using Gemini 2.5 Flash
- */
+//Extracts questions from a PDF using Gemini 2.5 Flash
 async function extractQuestions(fileBuffer, mimeType) {
     const prompt = `
     Analyze this exam paper. Extract all questions and also add 5 more related questions as per the difficulty.
@@ -34,7 +31,6 @@ async function extractQuestions(fileBuffer, mimeType) {
 
     const responseText = result.response.text();
     
-    // 🛡️ THE ULTIMATE CLEANER: Hunts down everything between the first '[' and the last ']'
     const jsonMatch = responseText.match(/\[[\s\S]*\]/);
     
     if (!jsonMatch) {

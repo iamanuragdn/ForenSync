@@ -2,7 +2,7 @@ const admin = require('firebase-admin');
 const { google } = require('googleapis');
 const serviceAccount = require('./serviceAccountKey.json'); 
 
-// 1. Initialize Firebase
+//Initialize Firebase
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -10,20 +10,18 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
-// 2. Initialize Google Drive
+//Initialize Google Drive
 const auth = new google.auth.GoogleAuth({
   keyFile: './serviceAccountKey.json',
   scopes: ['https://www.googleapis.com/auth/drive.readonly'],
 });
 const drive = google.drive({ version: 'v3', auth });
 
-// 🌟 THE NEW ROOT FOLDER: This is your 'NFSU' folder ID!
-const ROOT_NFSU_FOLDER_ID = '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
+const ROOT_NFSU_FOLDER_ID = '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; //NFSU folder ID!
 
 
-// ==========================================
+
 // HELPER FUNCTIONS (Same as your server.js!)
-// ==========================================
 async function getDriveChildren(parentId, drive, isFolder = true) {
     let q = `'${parentId}' in parents and trashed=false`;
     q += isFolder ? ` and mimeType='application/vnd.google-apps.folder'` : ` and mimeType!='application/vnd.google-apps.folder'`;
@@ -59,9 +57,8 @@ async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
     return allFiles;
 }
 
-// ==========================================
+
 // THE MAIN DEEP CRAWLER
-// ==========================================
 async function syncDriveToFirebase() {
     console.log("🚀 Starting Deep Google Drive Sync...");
 
@@ -74,30 +71,30 @@ async function syncDriveToFirebase() {
 
         let totalFilesSaved = 0;
 
-        // 1. Crawl Programs
+        //Crawl Programs
         for (const prog of programs) {
             console.log(`\n📂 Entering Program: ${prog.name}`);
             const semesters = await getDriveChildren(prog.id, drive, true);
             
-            // 2. Crawl Semesters
+            //Crawl Semesters
             for (const sem of semesters) {
                 console.log(`  ↳ Semester: ${sem.name}`);
                 const types = await getDriveChildren(sem.id, drive, true);
                 
-                // 3. Crawl Types (Notes / PYQ)
+                //Crawl Types (Notes/PYQ)
                 for (const type of types) {
                     console.log(`    ↳ Type: ${type.name}`);
                     const subjects = await getDriveChildren(type.id, drive, true);
                     
-                    // 4. Crawl Subjects (e.g., CTBT-BSC-101)
+                    //Crawl Subjects (CTBT-BSC-101)
                     for (const subj of subjects) {
                         
-                        // 5. Recursively fetch all files inside (handles CA1/CA2 folders!)
+                        //Recursively fetch all files inside (CA1/CA2 folders)
                         const files = await fetchAllFilesRecursively(subj.id, drive);
                         
                         if (files.length > 0) {
                             for (const file of files) {
-                                // Save to Firebase using the exact new structure!
+                                
                                 const docRef = db.collection("programs").doc(prog.name)
                                                  .collection("semesters").doc(sem.name)
                                                  .collection("subjects").doc(subj.name)

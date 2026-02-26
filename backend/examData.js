@@ -1,11 +1,10 @@
-// examData.js
 const examData = {
   "btech-mtech-cybersecurity": {
     "sem-2": [
       {
         code: 'CTBT-PCC-201',
         name: 'Object Oriented Programming with C++',
-        examDate: '2026-03-16', // Make sure format is exactly YYYY-MM-DD
+        examDate: '2026-03-16',
         type: 'CA2 (Mid-Sem)',
         time: '9:00 AM - 11:00 AM',
         colorClass: 'exam-blue',

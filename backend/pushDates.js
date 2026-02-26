@@ -14,16 +14,16 @@ async function pushSemesterDates() {
     await db.collection("programs").doc("btech-mtech-cybersecurity")
             .collection("semesters").doc("sem-1")
             .set({ 
-              startDate: "2025-08-01", 
-              endDate: "2025-12-15" 
+              startDate: "2025-08-11", 
+              endDate: "2025-12-05" 
             }, { merge: true }); // merge: true ensures we don't delete your existing subjects!
 
     // Semester 2 Dates (Your current semester)
     await db.collection("programs").doc("btech-mtech-cybersecurity")
             .collection("semesters").doc("sem-2")
             .set({ 
-              startDate: "2026-01-01", 
-              endDate: "2026-04-30" 
+              startDate: "2026-01-05", 
+              endDate: "2026-04-16" 
             }, { merge: true });
 
     console.log("✅ SUCCESS: Dates injected into database!");

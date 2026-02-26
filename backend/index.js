@@ -1,11 +1,11 @@
-// backend/server.js
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
 
-app.use(cors());          // allow frontend to access backend
-app.use(express.json());  // parse JSON
+//frontend to access backend
+app.use(cors());          
+app.use(express.json()); 
 
 app.get("/api/message", (req, res) => {
     res.json({ message: "Hello from bacdfgndkend 🚀" });

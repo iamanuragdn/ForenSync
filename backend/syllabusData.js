@@ -1,5 +1,3 @@
-// backend/syllabusData.js
-
 const syllabusData = {
   "btech-mtech-cybersecurity": {
     programName: "B.Tech - M.Tech Cyber Security",
@@ -209,7 +207,7 @@ const syllabusData = {
             credits: 1,
             teacher: "Dr. Bapi Dey",
             type: "Lab",
-            units: [] // Labs often just have practicals, so we can leave this empty or add experiments here later
+            units: []
         },
         "CTBT-ESC-103L": {
             name: "Engineering Graphics Laboratory",
@@ -512,81 +510,3 @@ const syllabusData = {
 };
 
 module.exports = syllabusData;
-
-// // backend/syllabusData.js
-
-// const syllabusData = {
-//   "btech-mtech-cybersecurity": {
-//     programName: "B.Tech - M.Tech Cyber Security",
-    
-//     semesters: {
-//       "sem-1": {
-//         "CTBT-BSC-101": {
-//           name: "Engineering Mathematics-1",
-//           credits: 4,
-//           units: [
-//             { 
-//               unitNumber: "I",
-//               title: "Differential Calculus", 
-//               topics: [
-//                 "Successive differentiation", "Leibniz's theorem (without proof)","Taylor's & McLaurin's series for a function of one variable","Evaluation of indeterminate forms by L'Hospital's rule","Infinite Series: Convergence of infinite Series by definition, Zero Test, Comparison Test, Ratio Test, Root Test, Alternating Series, Leibnitz's test, Power Series and radius of convergence"
-//               ] 
-//             },
-//             { 
-//               unitNumber: "II",
-//               title: "Partial Differentiation and their applications",
-//               topics: [
-//                 "Functions of two variables","Limit and Continuity of function of several variables","Partial derivative, Total derivative, Chain rule","Euler's theorem for homogeneous functions and examples based on it","Jacobian, error and approximation, maxima and minima"
-//               ] 
-//             },
-//             { 
-//               unitNumber: "III",
-//               title: "Integral Calculus",
-//               topics: [
-//                 "Reduction formula for sin^n x, cos^n x, sin^n x cos^m x, tan^n x, cot^n x, n ≥ 2, n ∈ N (without proof)","Beta and Gamma functions and their properties (without proof) and problems","Evaluation of improper integrals of type-I and type-II"
-//               ] 
-//             },
-//             { 
-//               unitNumber: "IV",
-//               title: "Multiple Integrals",
-//               topics: [
-//                 "Double integrals, Evaluation of double integrals","Change the order of integration, change of variables by Jacobian, change into polar co-ordinates","Triple integrals, Application of multiple integrals to find areas and volumes"
-//               ] 
-//             },
-//             { 
-//               unitNumber: "V",
-//               title: "Matrices",
-//               topics: [
-//                 "Types of Matrices, Elementary row operation, Rank of a matrix",
-//                 "Normal form, Consistency of system of simultaneous linear equations",
-//                 "Inverse of a matrix by Gauss Jordan method",
-//                 "Linearly dependent and independent vectors",
-//                 "Eigen values and eigen vectors, Cayley Hamilton theorem"
-//               ] 
-//             }
-//           ]
-//         },
-        
-//         "CTBT-ESC-101": {
-//           name: "Basic of Electrical Engineering",
-//           credits: 3,
-//           units: [
-//             { 
-//               unitNumber: "I",
-//               title: "DC Circuits", 
-//               hours: 8, // Placeholder
-//               topics: ["Ohm's Law", "Kirchhoff's Laws", "Nodal Analysis"] 
-//             }
-//           ]
-//         }
-//       }
-//     }
-//   },
-
-//   "bsc-msc-applied-sciences": {
-//       // You can add this program later!
-//   }
-// };
-
-// // Fixed the typo here!
-// module.exports = syllabusData;
