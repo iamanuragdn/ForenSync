@@ -1,16 +1,16 @@
 /* Sidebar Container */
 .app-sidebar {
   width: 180px;
-  min-height: 100vh;
+  height: 100vh;
   background-color: #ffffff;
   border-right: 1px solid #e2e8f0; /* Soft grey border */
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
 }
 
-/* Brand/Logo Area */
 /* Brand/Logo Area */
 .sidebar-brand {
   margin-bottom: 2.5rem;
@@ -87,4 +87,20 @@
 
 .nav-item.active .nav-icon {
   opacity: 1;
+}
+
+/* Pushes the Admin link to the bottom of the sidebar */
+.admin-link {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #d6dee8;  /* soft divider */
+  
+  background-color: #e4edf6;     /* very subtle highlight */
+  font-weight: 600;
+  color: #3b526b; 
+}
+
+.admin-link:hover {
+  background-color: #d6e3f1;     /* slightly stronger on hover */
+  color: #2f4358;
 }

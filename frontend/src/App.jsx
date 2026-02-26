@@ -13,6 +13,8 @@ import PYQDashboard from './Components/PYQDashboard'; // Adjust path if needed
 import PYQNotes from './Components/PYQNotes'; // Adjust path if needed
 import Exams from './Components/Exams';
 
+import AdminConsole from './Components/AdminConsole';
+
 
 // Make sure you created LandingPage.jsx from my previous message!
 import LandingPage from './Components/LandingPage.jsx'; 
@@ -38,7 +40,7 @@ function AppContent() {
 
   // 3. Otherwise, show the full ForenSync application layout!
   return (
-    <div className="main-layout" style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="main-layout" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       
       <Sidebar />
 
@@ -46,7 +48,6 @@ function AppContent() {
         <Nav /> 
 
         <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
-          <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
           <Routes>
             {/* 1. The Dashboard is the main hub */}
             <Route path="/dashboard" element={<Subjects />} />
@@ -67,10 +68,11 @@ function AppContent() {
             <Route path="/pyq/:programId/:semesterId/:subjectId" element={<PYQNotes />} />
 
             <Route path="/exams" element={<Exams />} />
+
+            <Route path="/admin" element={<AdminConsole />} />
             
           </Routes>
         </div>
-        </div> 
         
       </div> 
     </div> 

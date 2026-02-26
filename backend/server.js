@@ -12,6 +12,8 @@ const syllabusData = require("./syllabusData");
 // Import your teammate's extractor!
 const { extractQuestions } = require("./extractor"); 
 
+const stream = require("stream");
+
 // 1. Initialize Firebase Database Connection
 const serviceAccount = require("./serviceAccountKey.json");
 if (!admin.apps.length) {
@@ -340,6 +342,98 @@ app.get('/api/exams/:programId/:semesterId', async (req, res) => {
     console.error("Error fetching exams:", error);
     res.status(500).json({ error: "Failed to fetch exams" });
   }
+});
+
+// ==========================================
+// ADMIN: MINI DRIVE EXPLORER
+// ==========================================
+app.get('/api/drive/folders', async (req, res) => {
+    try {
+        // Defaults to your main NFSU folder if no parentId is provided
+        const parentId = req.query.parentId || '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
+        
+        const auth = new google.auth.GoogleAuth({
+            keyFile: './serviceAccountKey.json',
+            scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+        });
+        const drive = google.drive({ version: 'v3', auth });
+        
+        // Fetch ONLY folders (no files) so the admin can navigate
+        const response = await drive.files.list({
+            q: `'${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+            fields: 'files(id, name)',
+            spaces: 'drive'
+        });
+        
+        res.json(response.data.files || []);
+    } catch (error) {
+        console.error("Error fetching folders:", error);
+        res.status(500).json({ error: "Failed to fetch folders" });
+    }
+});
+
+// ==========================================
+// ADMIN: DRIVE + FIREBASE UPLOADER
+// ==========================================
+app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
+    try {
+        const { targetDriveFolderId, programId, semesterId, subjectId, type, fileName } = req.body;
+        const fileObject = req.file;
+
+        if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
+
+        // 1. Authenticate with FULL Drive permissions to upload
+        const uploadAuth = new google.auth.GoogleAuth({
+            keyFile: './serviceAccountKey.json',
+            scopes: ['https://www.googleapis.com/auth/drive'], 
+        });
+        const uploadDrive = google.drive({ version: 'v3', auth: uploadAuth });
+
+        // Convert the file buffer into a stream
+        const bufferStream = new stream.PassThrough();
+        bufferStream.end(fileObject.buffer);
+
+        // 2. Upload to the specific Drive Folder the admin navigated to
+        const driveResponse = await uploadDrive.files.create({
+            requestBody: {
+                name: fileName || fileObject.originalname,
+                parents: [targetDriveFolderId], 
+            },
+            media: {
+                mimeType: fileObject.mimetype,
+                body: bufferStream,
+            },
+            fields: 'id, webViewLink, webContentLink, mimeType',
+        });
+
+        const fileId = driveResponse.data.id;
+
+        // 3. Make the file readable to students
+        await uploadDrive.permissions.create({
+            fileId: fileId,
+            requestBody: { role: 'reader', type: 'anyone' },
+        });
+
+        // 4. Save the exact same metadata to Firebase so the frontend can read it instantly
+        const docRef = db.collection("programs").doc(programId)
+                         .collection("semesters").doc(semesterId)
+                         .collection("subjects").doc(subjectId)
+                         .collection(type).doc(fileId); // Use the Drive File ID as the Firebase Doc ID!
+        
+        await docRef.set({
+            name: fileName || fileObject.originalname,
+            webViewLink: driveResponse.data.webViewLink,
+            webContentLink: driveResponse.data.webContentLink,
+            mimeType: driveResponse.data.mimeType,
+            type: 'pdf',
+            lastSynced: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        res.status(200).json({ message: "Upload successful!" });
+    } catch (error) {
+        console.error("Upload error:", error);
+        res.status(500).json({ error: "Failed to upload file" });
+    }
 });
 
 // GET SEMESTER METADATA (Start & End Dates)

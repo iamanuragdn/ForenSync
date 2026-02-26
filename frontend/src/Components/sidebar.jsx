@@ -37,7 +37,14 @@ function Sidebar() {
           <span className="nav-text">PYQ</span>
         </NavLink>
 
+        {/* Admin Console pushed to the bottom */}
+        
+
       </nav>
+      <NavLink to="/admin" className="nav-item admin-link">
+          <span className="nav-icon">🔐</span>
+          <span className="nav-text">Admin</span>
+        </NavLink>
     </aside>
   );
 }
