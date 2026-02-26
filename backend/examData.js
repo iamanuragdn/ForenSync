@@ -5,7 +5,7 @@ const examData = {
       {
         code: 'CTBT-PCC-201',
         name: 'Object Oriented Programming with C++',
-        examDate: '2026-03-12', // Make sure format is exactly YYYY-MM-DD
+        examDate: '2026-03-16', // Make sure format is exactly YYYY-MM-DD
         type: 'CA2 (Mid-Sem)',
         time: '9:00 AM - 11:00 AM',
         colorClass: 'exam-blue',
@@ -23,7 +23,7 @@ const examData = {
       {
         code: 'CTBT-BSC-102',
         name: 'Engineering Physics',
-        examDate: '2026-04-05',
+        examDate: '2026-03-22',
         type: 'End Semester',
         time: '10:00 AM - 1:00 PM',
         colorClass: 'exam-red',
