@@ -54,7 +54,7 @@ function SyllabusDetail() {
           {formatSemester(semesterId)}
         </span>
         <span className="separator">/</span>
-        <span className="current-page">{subjectId}</span>
+        <span className="current-page">{subject?.name || subjectId}</span>
       </div>
 
       {isLoading ? (
@@ -67,20 +67,64 @@ function SyllabusDetail() {
         <div className="syllabus-detail-card">
           
           {/* Card Header (Matches your screenshot layout) */}
-          <div className="detail-header-row">
-            <div className="header-left">
-              <h2>
-                {subject.name} <span className="subject-code-dot">•</span> <span className="subject-code-text">{subjectId}</span>
-              </h2>
-              <p className="subject-meta-text">
-                Credits: {subject.credits} | Teacher: {subject.teacher || 'TBA'}
-              </p>
+          {/* 🌟 UPGRADED HEADER: Fixes the blank space and aligns perfectly */}
+          {/* 🌟 PERFECTED HEADER: Everything vertically centered on one row */}
+          <div 
+            className="detail-header-row"
+            style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', /* 🌟 Forces everything to center vertically */
+              flexWrap: 'wrap',     /* 🌟 Keeps it safe on smaller screens */
+              gap: '20px',
+              paddingBottom: '24px', 
+              borderBottom: '1px solid #e2e8f0', 
+              marginBottom: '24px' 
+            }}
+          >
+            {/* Left Side: Name, Badge, Credits, Teacher */}
+            <div className="header-left" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px', flex: 1 }}>
+              
+              <h1 style={{ fontSize: '1.75rem', color: '#1e293b', margin: '0', fontWeight: '700' }}>
+                {subject?.name || "Loading Subject..."}
+              </h1>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#64748b', fontSize: '0.9rem' }}>
+                {/* ID Badge */}
+                <span style={{ fontWeight: '600', color: '#4a6583', background: '#f0f4f8', padding: '5px 12px', borderRadius: '8px', letterSpacing: '0.5px' }}>
+                  {subjectId}
+                </span>
+                
+                {/* Meta Info with a clean divider */}
+                <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span>Credits: <strong style={{ color: '#475569' }}>{subject?.credits || '--'}</strong></span>
+                  <span style={{ color: '#cbd5e1' }}>|</span>
+                  <span>Teacher: <strong style={{ color: '#475569' }}>{subject?.teacher || 'TBA'}</strong></span>
+                </span>
+              </div>
+
             </div>
             
+            {/* Right Side: Back Button */}
             <div className="header-right">
               <button 
                 className="back-btn" 
                 onClick={() => navigate(`/syllabus/${programId}/${semesterId}`)}
+                style={{ 
+                  padding: '8px 16px', 
+                  background: 'white', 
+                  border: '1px solid #cbd5e1', 
+                  borderRadius: '8px', 
+                  cursor: 'pointer', 
+                  fontWeight: '600', 
+                  color: '#475569',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+                onMouseOver={(e) => { e.target.style.background = '#f8fafc'; e.target.style.borderColor = '#94a3b8'; }}
+                onMouseOut={(e) => { e.target.style.background = 'white'; e.target.style.borderColor = '#cbd5e1'; }}
               >
                 ← Back to Semester
               </button>
