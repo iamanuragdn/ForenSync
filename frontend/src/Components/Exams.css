@@ -5,7 +5,6 @@
   min-height: 100vh;
 }
 
-/* Header */
 .exams-page-header {
   display: flex;
   justify-content: space-between;
@@ -30,7 +29,6 @@
   color: #1e293b; 
 }
 
-/*2-Column Grid  */
 .exams-content-layout {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -38,7 +36,6 @@
   align-items: start;
 }
 
-/* Left Side: Events List */
 .section-title {
   display: flex;
   justify-content: space-between;

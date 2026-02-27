@@ -20,7 +20,6 @@
 .current-page { color: #2d3748; font-weight: 600; }
 .separator { color: #cbd5e1; }
 
-/* Status Messages */
 .status-message { padding: 2rem; border-radius: 8px; font-weight: 500; text-align: center; }
 .loading { color: #4a6583; background: #f0f4f8; }
 .error { color: #b91c1c; background: #fee2e2; }
