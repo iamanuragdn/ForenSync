@@ -70,19 +70,19 @@ The app will be running at http://localhost:5173.
 ## 📸 Sneak Peek
 
 ### 🏠 Main Dashboard
-![Home Dashboard](frontend/screenshot/Home.png)
+<img src="frontend/screenshot/Home.png" alt="Home Dashboard" width="600">
 
 ### 📚 Study Materials & Notes
-![Study Materials](frontend/screenshot/notes.png)
+<img src="frontend/screenshot/notes.png" alt="Study Material" width="600">
 
 ### 📚 Exam
-![Exam](frontend/screenshot/exam.png)
+<img src="frontend/screenshot/exam.png" alt="Exam" width="600">
 
 ### 🎯 Mock Test
-![Mock Test](frontend/screenshot/mock-test.png)
+<img src="frontend/screenshot/mock-test.png" alt="Mock Test" width="600">
 
 ### ⚙️ Admin Console
-![Admin Console](frontend/screenshot/admin-console.png)
+<img src="frontend/screenshot/admin-console.png" alt="Admin Console" width="600">
 
 ---
 
