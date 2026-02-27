@@ -9,7 +9,6 @@ function Exams() {
   const [date, setDate] = useState(new Date()); 
   const [upcomingExams, setUpcomingExams] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [userContext] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved) : { programId: "btech-mtech-cybersecurity", semesterId: "sem-2" };
@@ -76,18 +75,15 @@ function Exams() {
           <span className="graduation-icon">🎓</span>
           <h2>Exam Schedule</h2>
         </div>
-        {/* Search bar completely removed from here! */}
       </div>
 
       {/* TWO COLUMN LAYOUT */}
       <div className="exams-content-layout">
         
-        {/* LEFT COLUMN: EVENTS LIST */}
         <div className="exams-list-section">
           <div className="section-title">
             <h3>📅 {isSelectedDateToday ? "Upcoming Exams" : `Events for ${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}</h3>
             
-            {/* 🌟 The "Go to Today" button dynamically appears when you select a different date! */}
             {!isSelectedDateToday && (
               <button className="btn-back-today" onClick={() => setDate(new Date())}>
                 Go to Today
@@ -113,7 +109,7 @@ function Exams() {
                   </div>
                   <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
                     
-                    {/* BUTTON 1: View Syllabus */}
+                    {/* View Syllabus */}
                     <button 
                       className="btn-view-details"
                       onClick={() => navigate(`/syllabus/${userContext.programId}/${userContext.semesterId}/${exam.code}`)} 
@@ -121,7 +117,7 @@ function Exams() {
                       📋 Syllabus
                     </button>
 
-                    {/* BUTTON 2: Prepare (Goes to Notes) */}
+                    {/* Prepare (Goes to Notes) */}
                     <button 
                       className="btn-prepare"
                       onClick={() => navigate(`/notes/${userContext.programId}/${userContext.semesterId}/${exam.code}`)}
@@ -141,7 +137,7 @@ function Exams() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: CALENDAR */}
+        {/* CALENDAR */}
         <div className="exams-calendar-section">
           <div className="calendar-widget">
             <Calendar 
@@ -161,7 +157,6 @@ function Exams() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

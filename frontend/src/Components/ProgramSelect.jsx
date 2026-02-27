@@ -4,13 +4,12 @@ import './ProgramSelect.css';
 function ProgramSelect() {
   const navigate = useNavigate();
 
-  // Your list of programs (you can eventually fetch this from Firebase!)
   const programs = [
     {
       id: 'btech-mtech-cybersecurity',
       name: 'B.Tech - M.Tech. CSE (Cyber Security)',
       department: 'Department of Cyber Security and Digital Forensics',
-      icon: '🛡️' // Swap these emojis with your actual <img> tags if you prefer
+      icon: '🛡️' 
     },
     {
       id: 'bsc-msc-fs',
@@ -34,14 +33,12 @@ function ProgramSelect() {
 
   return (
     <div className="page-container">
-      
-      {/* Clean Page Header matching the Home page */}
+    
       <header className="page-header">
         <h1>Programs</h1>
         <p className="subtitle">Select a course to choose Semesters</p>
       </header>
 
-      {/* Grid of Program Cards */}
       <div className="program-grid">
         {programs.map((prog) => (
           <div 

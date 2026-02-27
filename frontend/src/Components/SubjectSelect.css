@@ -1,4 +1,3 @@
-/* Container & Header */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -7,14 +6,14 @@
 }
 
 .breadcrumb {
-  margin: 0 0 2rem 0; /* Overrides any 'auto' margins that were centering it */
+  margin: 0 0 2rem 0; 
   font-size: 0.9rem;
   color: #64748b;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  max-width: 100%; /* Overrides the restricted width from previous screens */
+  max-width: 100%; 
   justify-content: flex-start;
 }
 
@@ -23,9 +22,9 @@
 .current-page { color: #2d3748; font-weight: 600; }
 
 .page-header {
-  margin: 0 0 2.5rem 0; /* Overrides centering margins */
+  margin: 0 0 2.5rem 0; 
   width: 100%;
-  max-width: 100%; /* Overrides the 800px restriction */
+  max-width: 100%; 
   text-align: left;
   display: block;
 }
@@ -42,13 +41,12 @@
   margin: 0; 
 }
 
-/* Status Messages */
 .status-message { padding: 2rem; border-radius: 8px; font-weight: 500; text-align: center; }
 .loading { color: #4a6583; background: #f0f4f8; }
 .error { color: #b91c1c; background: #fee2e2; }
 .empty { color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; }
 
-/* --- Stats Summary Bar --- */
+
 .semester-summary {
   display: flex;
   align-items: center;
@@ -90,7 +88,6 @@
   margin: 0 2rem;
 }
 
-/* Make it stack on smaller screens */
 @media (max-width: 768px) {
   .semester-summary {
     flex-wrap: wrap;
@@ -104,12 +101,11 @@
   }
 }
 
-/* --- Table Styling --- */
 .table-container {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  overflow: hidden; /* Keeps the rounded corners clean */
+  overflow: hidden; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
@@ -119,7 +115,6 @@
   text-align: left;
 }
 
-/* Headers */
 .subject-table th {
   padding: 1rem 1.5rem;
   font-size: 0.75rem;
@@ -128,10 +123,9 @@
   color: #64748b;
   font-weight: 600;
   border-bottom: 1px solid #e2e8f0;
-  background-color: #f8fafc; /* Very light grey for header */
+  background-color: #f8fafc; 
 }
 
-/* Rows & Cells */
 .subject-table td {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #f1f5f9;
@@ -145,10 +139,10 @@
 }
 
 .subject-row:hover {
-  background-color: #f8fafc; /* Subtle highlight on hover */
+  background-color: #f8fafc; 
 }
 
-/* Specific Column Styling */
+
 .serial-col {
   color: #94a3b8;
   font-weight: 500;
@@ -172,7 +166,6 @@
   width: 10%;
 }
 
-/* Teacher Area with Avatar */
 .teacher-col {
   width: 25%;
 }
@@ -193,7 +186,6 @@
   display: inline-block;
 }
 
-/* Type Badge */
 .type-col {
   width: 10%;
 }

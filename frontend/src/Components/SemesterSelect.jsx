@@ -5,20 +5,17 @@ import './SemesterSelect.css';
 function SemesterSelect() {
   const navigate = useNavigate();
   const { programId } = useParams();
-
-  // 1. Set up state for our dynamic data
   const [semesters, setSemesters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 2. Fetch the data when the component loads or the programId changes
+  // Fetch data when component loads or programId changes
   useEffect(() => {
     const fetchSemesters = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        // Adjust this URL to match your actual backend endpoint!
         const response = await fetch(`http://localhost:5001/api/programs/${programId}/semesters`);
         
         if (!response.ok) {
@@ -37,7 +34,6 @@ function SemesterSelect() {
     fetchSemesters();
   }, [programId]);
 
-  // Formatting the URL parameter into a readable title
   const formatTitle = (id) => {
     if (id === 'btech-mtech-cybersecurity') return 'B.Tech - M.Tech (Cyber Security)';
     if (id === 'bsc-msc-applied-sciences') return 'B.Sc - M.Sc (Applied Sciences)';
@@ -47,12 +43,12 @@ function SemesterSelect() {
   return (
     <div className="semester-dashboard">
       
-      {/* Top Breadcrumb */}
+      
       <div className="breadcrumb">
         <span>🏠 Home</span> / <span>Courses</span> / <span className="current-page">Cyber Security</span>
       </div>
 
-      {/* Hero Banner Section */}
+      
       <div className="hero-section">
         <div className="hero-content">
           <h1>{formatTitle(programId)}</h1>
@@ -60,7 +56,7 @@ function SemesterSelect() {
           
           <div className="stats-row">
             <span>{semesters.length} Semesters</span>
-            <span>42 Subjects</span> {/* You can make this dynamic later too! */}
+            <span>42 Subjects</span> 
           </div>
         </div>
         
@@ -72,13 +68,13 @@ function SemesterSelect() {
         </div>
       </div>
 
-      {/* Main Grid Section */}
+      
       <div className="section-title">
         <div className="blue-line"></div>
         <h2>Select Semester</h2>
       </div>
 
-      {/* Conditional Rendering: Show loading, error, or the grid */}
+      
       {isLoading ? (
         <div className="loading-message" style={{ padding: '2rem', color: '#64748b' }}>
           Loading semesters...

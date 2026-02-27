@@ -3,43 +3,31 @@ import Sidebar from './Components/sidebar.jsx';
 import Nav from './Components/nav.jsx'; 
 import Subjects from './Components/subjects.jsx';
 import Syllabus from './Components/syllabus'; 
-
 import ProgramSelect from './Components/ProgramSelect.jsx';
 import SemesterSelect from './Components/SemesterSelect.jsx';
 import SubjectSelect from './Components/SubjectSelect.jsx';
 import SyllabusDetail from './Components/SyllabusDetail.jsx';
 import SubjectNotes from './Components/SubjectNotes.jsx';
 import MockTest from './Components/MockTest.jsx';
-import PYQDashboard from './Components/PYQDashboard'; // Adjust path if needed
-import PYQNotes from './Components/PYQNotes'; // Adjust path if needed
+import PYQDashboard from './Components/PYQDashboard';
+import PYQNotes from './Components/PYQNotes';
 import Exams from './Components/Exams';
-
 import AdminConsole from './Components/AdminConsole';
-
-
-// Make sure you created LandingPage.jsx from my previous message!
 import LandingPage from './Components/LandingPage.jsx'; 
-
 import './App.css';
 
-// We put the routing logic in a separate component so we can use "useLocation"
 function AppContent() {
   const location = useLocation();
-  
-  // 1. Check if we are on the root URL (The Landing Page)
   const isLandingPage = location.pathname === "/";
 
-  // 2. If we are on the landing page, ONLY show the landing page (No Sidebar or Nav!)
   if (isLandingPage) {
     return (
       <Routes>
-        {/* The Landing Page is now your main website entrance */}
         <Route path="/" element={<LandingPage />} />
       </Routes>
     );
   }
 
-  // 3. Otherwise, show the full ForenSync application layout!
   return (
     <div className="main-layout" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       
@@ -50,30 +38,19 @@ function AppContent() {
 
         <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
           <Routes>
-            {/* 1. The Dashboard is the main hub */}
             <Route path="/dashboard" element={<Subjects />} />
-            
-            {/* 2. The Subjects page gets its own route */}
             <Route path="/subjects" element={<Subjects />} />
-            
             <Route path="/notes/:programId/:semesterId/:subjectId" element={<SubjectNotes />} />
             <Route path="/practice" element={<MockTest />} />
-            
-            {/* The 4-Step Syllabus Funnel */}
             <Route path="/syllabus" element={<ProgramSelect />} />
             <Route path="/syllabus/:programId" element={<SemesterSelect />} />
             <Route path="/syllabus/:programId/:semesterId" element={<SubjectSelect />} />
             <Route path="/syllabus/:programId/:semesterId/:subjectId" element={<SyllabusDetail />} />
-
             <Route path="/pyq" element={<PYQDashboard />} />
             <Route path="/pyq/:programId/:semesterId/:subjectId" element={<PYQNotes />} />
-
             <Route path="/exams" element={<Exams />} />
-
             <Route path="/admin" element={<AdminConsole />} />
-
-            <Route path="/syllabus/:programId/:semesterId/:subjectId" element={<Syllabus />} />
-            
+            <Route path="/syllabus/:programId/:semesterId/:subjectId" element={<Syllabus />} />          
           </Routes>
         </div>
         
@@ -82,7 +59,6 @@ function AppContent() {
   );
 }
 
-// The main App component just wraps everything in the Router
 function App() {
   return (
     <BrowserRouter>

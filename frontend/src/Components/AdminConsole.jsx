@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './subjects.css'; // Reusing your existing styles
+import './AdminConsole.css';
 
 function AdminConsole() {
   const [folders, setFolders] = useState([]);
-  const [pathHistory, setPathHistory] = useState([{ id: '1bmI8_Bkn1airL4qznDJLWGc96wj76smp', name: 'NFSU Root' }]);
-  
-  // Upload Form State
+  const [pathHistory, setPathHistory] = useState([{ id: '1bmI8_Bkn1airL4qznDJLWGc96wj76smp', name: 'NFSU' }]);
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [programId, setProgramId] = useState('btech-mtech-cybersecurity');
@@ -13,10 +11,8 @@ function AdminConsole() {
   const [subjectId, setSubjectId] = useState('CTBT-BSC-101');
   const [type, setType] = useState('Notes');
   const [status, setStatus] = useState('');
-
   const currentFolderId = pathHistory[pathHistory.length - 1].id;
 
-  // Fetch folders whenever we navigate
   useEffect(() => {
     fetch(`http://localhost:5001/api/drive/folders?parentId=${currentFolderId}`)
       .then(res => res.json())
@@ -38,7 +34,7 @@ function AdminConsole() {
     e.preventDefault();
     if (!file) return setStatus("❌ Please select a file.");
 
-    setStatus("Uploading to Drive and syncing to Firebase... ⏳");
+    setStatus("⏳ Uploading to Drive and syncing to Firebase...");
 
     const formData = new FormData();
     formData.append('targetDriveFolderId', currentFolderId);
@@ -59,8 +55,9 @@ function AdminConsole() {
         setStatus("✅ Success! File uploaded and synced.");
         setFile(null);
         setFileName('');
+        document.getElementById('file-upload').value = '';
       } else {
-        setStatus("❌ Upload failed.");
+        setStatus("❌ Upload failed. Check server logs.");
       }
     } catch (error) {
       setStatus("❌ Server connection error.");
@@ -68,85 +65,116 @@ function AdminConsole() {
   };
 
   return (
-    <div className="home-dashboard">
-      <div className="dashboard-left" style={{ maxWidth: '900px', margin: '0 auto' }}>
-        
-        <div className="welcome-banner" style={{ background: '#1e293b', color: 'white' }}>
-          <h1>Admin Upload Console</h1>
-          <p>Navigate to the correct Google Drive folder below, then upload your file.</p>
+    <div className="admin-dashboard-container">
+      
+      <div className="page-header">
+        <div className="header-text">
+          <h1>Admin Console</h1>
+          <p>Navigate to the correct Google Drive folder, then upload your file metadata to Firestore.</p>
         </div>
+      </div>
 
-        {/* 🌟 1. THE MINI DRIVE BROWSER */}
-        <div className="subject-card" style={{ marginTop: '20px', padding: '20px', cursor: 'default' }}>
-          <h3>1. Choose Drive Destination</h3>
-          
-          <div style={{ padding: '10px', background: '#f8fafc', borderRadius: '8px', marginBottom: '15px', fontWeight: 'bold' }}>
-            Current Path: {pathHistory.map(p => p.name).join(' / ')}
+      <div className="admin-content-wrapper">
+        
+        <div className="admin-card">
+          <div className="card-header">
+            <h3>1. Choose Drive Destination</h3>
+            
+            <div className="path-display">
+              <span className="path-label">Current Path:</span>
+              <span className="path-text">{pathHistory.map(p => p.name).join(' / ')}</span>
+            </div>
           </div>
 
           {pathHistory.length > 1 && (
-            <button onClick={handleBackClick} className="btn-primary-gradient" style={{ marginBottom: '15px', background: '#64748b' }}>
-              ⬅ Go Back Up
+            <button onClick={handleBackClick} className="btn-back-up">
+              ← Go Back Up
             </button>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
+          <div className="folder-grid">
             {folders.map(folder => (
               <div 
                 key={folder.id} 
                 onClick={() => handleFolderClick(folder.id, folder.name)}
-                style={{ padding: '15px', background: '#e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}
+                className="folder-item"
               >
-                <span>📁</span> {folder.name}
+                <span className="folder-icon">📁</span> 
+                <span className="folder-name">{folder.name}</span>
               </div>
             ))}
-            {folders.length === 0 && <p>No subfolders here.</p>}
+            {folders.length === 0 && (
+              <div className="empty-folder-msg">No subfolders here. You can upload files to this directory.</div>
+            )}
           </div>
         </div>
 
-        {/* 🌟 2. THE FIREBASE METADATA FORM */}
-        <div className="subject-card" style={{ marginTop: '20px', padding: '20px', cursor: 'default' }}>
-          <h3>2. Upload File</h3>
+        <div className="admin-card">
+          <h3>2. Upload File Metadata</h3>
           
-          <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px' }}>
+          <form onSubmit={handleUpload} className="admin-upload-form">
             
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <select value={semesterId} onChange={(e) => setSemesterId(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '6px' }}>
-                <option value="sem-1">Semester 1</option>
-                <option value="sem-2">Semester 2</option>
-              </select>
-              <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '6px' }}>
-                <option value="CTBT-BSC-101">CTBT-BSC-101 (Maths)</option>
-                <option value="CTBT-PCC-201">CTBT-PCC-201 (C++)</option>
-                <option value="CTBT-ESC-201">CTBT-ESC-201 (DLD)</option>
-              </select>
-              <select value={type} onChange={(e) => setType(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '6px' }}>
-                <option value="Notes">Notes</option>
-                <option value="PYQ">PYQ</option>
-              </select>
+            <div className="form-row">
+              <div className="input-group">
+                <label>Semester</label>
+                <select value={semesterId} onChange={(e) => setSemesterId(e.target.value)} className="custom-select">
+                  <option value="sem-1">Semester 1</option>
+                  <option value="sem-2">Semester 2</option>
+                  <option value="sem-3">Semester 3</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>Subject ID</label>
+                <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)} className="custom-select">
+                  <option value="CTBT-BSC-101">CTBT-BSC-101 (Maths)</option>
+                  <option value="CTBT-PCC-201">CTBT-PCC-201 (C++)</option>
+                  <option value="CTBT-ESC-201">CTBT-ESC-201 (DLD)</option>
+                  <option value="CTBT-EMC-201">CTBT-EMC-201 (Forensics)</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>Material Type</label>
+                <select value={type} onChange={(e) => setType(e.target.value)} className="custom-select">
+                  <option value="Notes">Notes</option>
+                  <option value="PYQ">PYQ</option>
+                </select>
+              </div>
             </div>
 
-            <input 
-              type="text" 
-              placeholder="Display Name (e.g. Unit 1 Notes) - Leave blank to use original file name" 
-              value={fileName} 
-              onChange={(e) => setFileName(e.target.value)}
-              style={{ padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
-            />
+            <div className="input-group full-width">
+              <label>Custom Display Name (Optional)</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Unit 1 Complete Notes (Leave blank to use original file name)" 
+                value={fileName} 
+                onChange={(e) => setFileName(e.target.value)}
+                className="custom-input"
+              />
+            </div>
 
-            <input 
-              type="file" 
-              accept=".pdf" 
-              onChange={(e) => setFile(e.target.files[0])} 
-              required 
-              style={{ padding: '10px', border: '2px dashed #ccc', borderRadius: '6px' }}
-            />
+            <div className="file-drop-zone">
+              <input 
+                id="file-upload"
+                type="file" 
+                accept=".pdf" 
+                onChange={(e) => setFile(e.target.files[0])} 
+                required 
+                className="file-input"
+              />
+            </div>
 
-            <button type="submit" className="btn-primary-gradient" style={{ padding: '15px', fontSize: '1.1rem' }}>
-              Upload to Selected Folder
+            <button type="submit" className="btn-upload-submit">
+              🚀 Upload to ForenSync
             </button>
 
-            {status && <div style={{ textAlign: 'center', fontWeight: 'bold', marginTop: '10px' }}>{status}</div>}
+            {status && (
+              <div className={`status-banner ${status.includes('❌') ? 'error' : status.includes('✅') ? 'success' : 'loading'}`}>
+                {status}
+              </div>
+            )}
+            
           </form>
         </div>
 

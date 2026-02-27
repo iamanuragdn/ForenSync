@@ -1,6 +1,4 @@
-/* ==========================================
-   1. MENU UI (White Cards)
-   ========================================== */
+/* MENU UI (White Cards) */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -66,9 +64,9 @@
 }
 .dropzone-label:hover { background-color: #f1f5f9; border-color: #4a6583; }
 .dropzone-label.is-dragging {
-  background-color: #e0e7ff; /* Soft blue background */
-  border-color: #4f46e5;     /* Darker blue border */
-  transform: scale(1.02);    /* Slightly enlarge it */
+  background-color: #e0e7ff; 
+  border-color: #4f46e5;     
+  transform: scale(1.02);    
 }
 .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 .upload-text { font-size: 0.95rem; color: #475569; font-weight: 500; }
@@ -88,9 +86,7 @@
 .status-toast { padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem; text-align: center; }
 .status-toast.error { background-color: #fee2e2; color: #b91c1c; }
 
-/* ==========================================
-   2. FLASHCARD UI (Dark Overlay)
-   ========================================== */
+/* FLASHCARD UI (Dark Overlay) */
 .test-full-screen {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background-color: #1a202c; display: flex; align-items: center; justify-content: center;
@@ -100,14 +96,12 @@
 .test-card {
   background: #ffffff; 
   width: 100%; 
-  /* Increase max-width from 750px to 900px */
   max-width: 900px; 
   border-radius: 16px;
   overflow: hidden; 
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   display: flex; 
-  flex-direction: column; 
-  /* Increase min-height from 400px to 550px */
+  flex-direction: column;
   min-height: 550px; 
   animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }

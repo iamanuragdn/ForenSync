@@ -41,8 +41,6 @@ function SyllabusDetail() {
 
   return (
     <div className="page-container">
-      
-      {/* Breadcrumb Navigation */}
       <div className="breadcrumb">
         <span onClick={() => navigate('/dashboard')} className="crumb-link">🏠 Home</span> 
         <span className="separator">/</span>
@@ -66,23 +64,20 @@ function SyllabusDetail() {
       ) : (
         <div className="syllabus-detail-card">
           
-          {/* Card Header (Matches your screenshot layout) */}
-          {/* 🌟 UPGRADED HEADER: Fixes the blank space and aligns perfectly */}
-          {/* 🌟 PERFECTED HEADER: Everything vertically centered on one row */}
           <div 
             className="detail-header-row"
             style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
-              alignItems: 'center', /* 🌟 Forces everything to center vertically */
-              flexWrap: 'wrap',     /* 🌟 Keeps it safe on smaller screens */
+              alignItems: 'center', 
+              flexWrap: 'wrap',     
               gap: '20px',
               paddingBottom: '24px', 
               borderBottom: '1px solid #e2e8f0', 
               marginBottom: '24px' 
             }}
           >
-            {/* Left Side: Name, Badge, Credits, Teacher */}
+
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px', flex: 1 }}>
               
               <h1 style={{ fontSize: '1.75rem', color: '#1e293b', margin: '0', fontWeight: '700' }}>
@@ -90,12 +85,10 @@ function SyllabusDetail() {
               </h1>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#64748b', fontSize: '0.9rem' }}>
-                {/* ID Badge */}
                 <span style={{ fontWeight: '600', color: '#4a6583', background: '#f0f4f8', padding: '5px 12px', borderRadius: '8px', letterSpacing: '0.5px' }}>
                   {subjectId}
                 </span>
                 
-                {/* Meta Info with a clean divider */}
                 <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span>Credits: <strong style={{ color: '#475569' }}>{subject?.credits || '--'}</strong></span>
                   <span style={{ color: '#cbd5e1' }}>|</span>
@@ -104,8 +97,7 @@ function SyllabusDetail() {
               </div>
 
             </div>
-            
-            {/* Right Side: Back Button */}
+
             <div className="header-right">
               <button 
                 className="back-btn" 
@@ -131,7 +123,6 @@ function SyllabusDetail() {
             </div>
           </div>
 
-          {/* Table Content */}
           <table className="units-table">
             <thead>
               <tr>
@@ -149,7 +140,6 @@ function SyllabusDetail() {
                     </td>
                     <td className="content-col-data">
                       <div className="content-wrapper">
-                        {/* Title goes on the left, topics on the right */}
                         <div className="content-title">{unit.title}</div>
                         <div className="content-desc">{unit.topics.join(', ')}</div>
                       </div>

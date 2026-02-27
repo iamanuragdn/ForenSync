@@ -5,13 +5,12 @@ import './PYQDashboard.css';
 function PYQDashboard() {
   const [semesters, setSemesters] = useState([]);
   
-  // 🔥 THE FIX: Instantly grab the exact semesterId from forensync_user, just like Home.jsx!
+  // instantly grab the exact semesterId from user
   const [selectedSemester, setSelectedSemester] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved).semesterId : "sem-1";
   });
 
-  // Also making the programId dynamic so it matches the logged-in user perfectly
   const [programId, setProgramId] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved).programId : "btech-mtech-cybersecurity";
@@ -20,7 +19,7 @@ function PYQDashboard() {
   const [selectedExam, setSelectedExam] = useState('CA2'); 
   const [subjects, setSubjects] = useState([]);
 
-  // 1. Fetch available semesters
+  // Fetch available semesters
   useEffect(() => {
     fetch(`http://localhost:5001/api/programs/${programId}/semesters`)
       .then(res => res.json())
@@ -31,7 +30,7 @@ function PYQDashboard() {
       .catch(err => console.error(err));
   }, [programId]);
 
-  // 2. Fetch syllabus subjects when semester changes
+  // Fetch syllabus subjects when semester changes
   useEffect(() => {
     if (!selectedSemester) return;
 
@@ -46,16 +45,16 @@ function PYQDashboard() {
 
   return (
     <div className="home-container">
-      {/* 1. Clean Title Section */}
+      
       <div className="pyq-header">
         <h2>Past Year Questions</h2>
         <p>Select your semester, exam type, and subject.</p>
       </div>
 
-      {/* 2. Grouped Filter Row (Dropdown + Tabs) */}
+      
       <div className="pyq-filters-row">
         
-        {/* The beautifully themed dropdown */}
+        
         <select 
           className="theme-dropdown"
           value={selectedSemester} 
@@ -67,7 +66,7 @@ function PYQDashboard() {
           {semesters.length === 0 && <option value="sem-1">Semester 1</option>}
         </select>
 
-        {/* The Exam Buttons */}
+        
         <div className="exam-tabs">
           {['CA1', 'CA2', 'CA3', 'CA4'].map(exam => (
             <button 
@@ -82,7 +81,6 @@ function PYQDashboard() {
         
       </div>
 
-      {/* 3. The Subjects Grid */}
       <div className="subjects-grid">
         {subjects.length > 0 ? (
           subjects.map(subject => (

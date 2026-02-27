@@ -8,24 +8,16 @@ function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [semesterDates, setSemesterDates] = useState(null);
-
-  // State for the Attendance Popover
   const [showAttendance, setShowAttendance] = useState(false);
-  
-  // State to hold the single closest upcoming exam
   const [nextExam, setNextExam] = useState(null); 
-
-  // Arrays to give the database subjects nice dynamic colors and icons
   const cardColors = ['purple', 'blue', 'green', 'pink', 'teal', 'orange'];
   const cardIcons = ['∑', '🔬', '💻', '💬', '⚡', '📐'];
-
-  // 1. Initialize viewingSemester directly from Local Storage
   const [viewingSemester, setViewingSemester] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved).semesterId : "sem-1";
   });
 
-  // 2. Fetch Subjects
+  // Fetch Subjects
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (!savedUser) {
@@ -55,7 +47,7 @@ function Subjects() {
       });
   }, [navigate, viewingSemester]); 
 
-  // 3. Fetch Exams and find the closest one!
+  // Fetch Exams
   useEffect(() => {
     if (!user) return;
     
@@ -66,8 +58,7 @@ function Subjects() {
       .then(data => {
         const today = new Date();
         today.setHours(0,0,0,0);
-        
-        // Filter out past exams
+
         const futureExams = data.filter(exam => {
           const eDate = new Date(exam.examDate);
           eDate.setHours(0,0,0,0);
@@ -75,24 +66,21 @@ function Subjects() {
         });
 
         if (futureExams.length > 0) {
-          // Grab the very first upcoming exam
           const closestExam = futureExams[0];
           const eDate = new Date(closestExam.examDate);
           eDate.setHours(0,0,0,0);
-          
-          // Calculate exact days left
+
           const diffTime = eDate - today;
           const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
           
           setNextExam({ ...closestExam, daysLeft });
         } else {
-          setNextExam(null); // No exams left!
+          setNextExam(null); 
         }
       })
       .catch(err => console.error("Error fetching next exam:", err));
   }, [user]); 
 
-  // 4. FETCH DYNAMIC SEMESTER DATES
   useEffect(() => {
     if (!user) return;
     const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
@@ -103,7 +91,7 @@ function Subjects() {
         if (data.startDate && data.endDate) {
           setSemesterDates({ start: data.startDate, end: data.endDate });
         } else {
-          setSemesterDates(null); // Fallback if dates aren't set yet
+          setSemesterDates(null); 
         }
       })
       .catch(err => console.error("Error fetching dates:", err));
@@ -114,9 +102,8 @@ function Subjects() {
     navigate("/login");
   };
 
-  // 🌟 DYNAMIC SEMESTER PROGRESS CALCULATOR (Added Here!)
   const getSemesterProgress = () => {
-    if (!semesterDates) return 0; // Shows 0% while loading
+    if (!semesterDates) return 0; 
 
     const startDate = new Date(semesterDates.start);
     const endDate = new Date(semesterDates.end);
@@ -138,25 +125,19 @@ function Subjects() {
   return (
     <div className="home-dashboard">
       
-      {/* LEFT COLUMN */}
       <div className="dashboard-left">
         <div className="welcome-banner">
           <div className="welcome-content">
             <span className="welcome-badge">✨ Welcome back</span>
             <h1>Hello, {user.name.split(' ')[0]}</h1>
             <p>You're making great progress in {user.semesterId.toUpperCase()}. Let's keep the focus sharp.</p>
-            {/* <div className="welcome-actions">
-              <button className="btn-primary-gradient" onClick={() => navigate('/exams')}>📅 View Schedule</button>
-            </div> */}
           </div>
           
-          {/* 🌟 DYNAMIC PROGRESS CIRCLE */}
-          {/* 🌟 DYNAMIC PROGRESS CIRCLE (Dark Theme) */}
           <div className="progress-circle-container">
             <div 
               className="progress-circle"
               style={{
-                /* 🌟 Draws the ring dynamically using your preferred dark slate color! */
+          
                 background: `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#4B6583 ${progressPercentage}%, #f1f5f9 0)`
               }}
             >
@@ -171,7 +152,6 @@ function Subjects() {
 
         </div>
 
-        {/* The Semester Switcher UI */}
         <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '30px' }}>
           <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className="icon" style={{ fontSize: '1.5rem' }}>📚</span>
@@ -190,7 +170,6 @@ function Subjects() {
           </select>
         </div>
 
-        {/* DYNAMIC SUBJECTS FROM DATABASE! */}
         <div className="subjects-grid">
           {subjects.length === 0 ? (
             <div style={{ padding: '20px', color: '#64748b', backgroundColor: 'white', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
@@ -219,10 +198,9 @@ function Subjects() {
         </div>
       </div>
 
-      {/* RIGHT COLUMN */}
+
       <div className="dashboard-right">
         
-        {/* DYNAMIC NEXT EXAM WIDGET */}
         <div className="widget next-exam-widget">
           <div className="widget-header">
             <div className="header-left">
@@ -254,11 +232,8 @@ function Subjects() {
           </button>
         </div>
 
-        {/* Mini Stats Row */}
         <div className="mini-stats-row">
-          
 
-          {/* THE INTERACTIVE ATTENDANCE CARD */}
           <div 
             className="mini-stat-card" 
             style={{ position: 'relative', cursor: 'pointer' }}

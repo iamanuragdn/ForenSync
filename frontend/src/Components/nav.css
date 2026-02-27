@@ -1,4 +1,3 @@
-/* Navbar.css */
 .top-navbar {
   display: flex;
   justify-content: space-between;
@@ -47,7 +46,6 @@
   transform: scale(1.1);
 }
 
-/* --- Profile Button --- */
 .profile-wrapper {
   position: relative;
 }
@@ -96,7 +94,6 @@
   font-size: 1.2rem;
 }
 
-/* --- Google-Style Dropdown --- */
 .profile-dropdown {
   position: absolute;
   top: 60px;

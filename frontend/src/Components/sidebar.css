@@ -1,9 +1,8 @@
-/* Sidebar Container */
 .app-sidebar {
   width: 180px;
   height: 100vh;
   background-color: #ffffff;
-  border-right: 1px solid #e2e8f0; /* Soft grey border */
+  border-right: 1px solid #e2e8f0; 
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
@@ -11,19 +10,17 @@
   box-sizing: border-box;
 }
 
-/* Brand/Logo Area */
 .sidebar-brand {
   margin-bottom: 2.5rem;
   display: flex;         
   align-items: center;      
   justify-content: center;  
-  gap: 8px;              /* Slightly tighter gap for a more compact look */
+  gap: 8px;             
   padding: 0;               
   width: 100%;
 }
 
 .brand-logo {
-  /* Increased from 34px to 42px */
   width: 42px;           
   height: 42px;
   object-fit: contain;   
@@ -31,29 +28,27 @@
 
 .sidebar-brand h2 {
   color: #4a6583; 
-  /* Reduced from 1.6rem to 1.4rem */
+
   font-size: 1.4rem;     
-  /* Reduced from 800 to 700 for a cleaner look */
+
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.5px;
   line-height: 1;        
 }
 
-/* Navigation List */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* Space between links */
+  gap: 0.5rem; 
 }
 
-/* Individual Navigation Items */
 .nav-item {
   display: flex;
   align-items: center;
   padding: 0.85rem 1rem;
   text-decoration: none;
-  color: #64748b; /* Soft grey for inactive text */
+  color: #64748b;
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -68,20 +63,20 @@
   opacity: 0.7;
 }
 
-/* Hover State */
+
 .nav-item:hover {
-  background-color: #f8fafc; /* Very light grey */
-  color: #4a6583; /* Muted blue */
+  background-color: #f8fafc; 
+  color: #4a6583; 
 }
 
 .nav-item:hover .nav-icon {
   opacity: 1;
 }
 
-/* Active State (React Router handles applying this class!) */
+
 .nav-item.active {
-  background-color: #f0f4f8; /* Soft muted blue background */
-  color: #3b526b; /* Darker muted blue text */
+  background-color: #f0f4f8; 
+  color: #3b526b; 
   font-weight: 600;
 }
 
@@ -89,18 +84,16 @@
   opacity: 1;
 }
 
-/* Pushes the Admin link to the bottom of the sidebar */
 .admin-link {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid #d6dee8;  /* soft divider */
-  
-  background-color: #e4edf6;     /* very subtle highlight */
+  border-top: 1px solid #d6dee8;  
+  background-color: #e4edf6;     
   font-weight: 600;
   color: #3b526b; 
 }
 
 .admin-link:hover {
-  background-color: #d6e3f1;     /* slightly stronger on hover */
+  background-color: #d6e3f1;    
   color: #2f4358;
 }

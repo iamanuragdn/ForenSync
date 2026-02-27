@@ -11,12 +11,10 @@ function Syllabus() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the syllabus data dynamically from your Node backend!
     fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {
-          // Find the specific subject from the database array
           const currentSubject = data.subjects.find(sub => sub.id === subjectId);
           setSubjectData(currentSubject);
         }
@@ -43,19 +41,16 @@ function Syllabus() {
 
   return (
     <div className="syllabus-page">
-      {/* Top Header Banner */}
       <div className="syllabus-header">
         <h1>{subjectData.name} ({subjectData.id || subjectId})</h1>
         <span className="credits-badge">{subjectData.credits} Credits • {subjectData.type}</span>
       </div>
 
-      {/* The List of Units */}
       <div className="units-container">
         {subjectData.units && subjectData.units.length > 0 ? (
           subjectData.units.map((unit, index) => (
             <div key={index} className="unit-card">
               
-              {/* The clickable bar */}
               <div className="unit-header" onClick={() => toggleUnit(index)}>
                 <div className="unit-title-group">
                   <span className="unit-number">Unit {unit.unitNumber}</span>
@@ -63,7 +58,6 @@ function Syllabus() {
                 </div>
                 
                 <div className="unit-meta">
-                  {/* Dynamically counts how many topics are in the array! */}
                   <span className="hours-badge">{unit.topics ? unit.topics.length : 0} Topics</span>
                   <span className={`dropdown-icon ${openUnitIndex === index ? 'open' : ''}`}>
                     ▼
@@ -71,7 +65,6 @@ function Syllabus() {
                 </div>
               </div>
 
-              {/* The dropdown content */}
               {openUnitIndex === index && (
                 <div className="unit-content">
                   <ul>

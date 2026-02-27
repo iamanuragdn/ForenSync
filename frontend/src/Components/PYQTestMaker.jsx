@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 
 function PYQTestMaker() {
-  // States for the Setup Phase
+  // Setup Phase
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // States for the Active Test Phase
+  // Active Test Phase
   const [testActive, setTestActive] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Handle local file upload
+  // local file upload
   const handleFileUpload = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -26,7 +24,7 @@ function PYQTestMaker() {
     formData.append("paper", file);
 
     try {
-      // Calls your teammate's instant-test route!
+      // Calls instant-test route!
       const response = await fetch("http://localhost:5001/api/instant-test", {
         method: "POST",
         body: formData,
@@ -36,7 +34,7 @@ function PYQTestMaker() {
       
       const data = await response.json();
       setQuestions(data);
-      setTestActive(true); // Switch to the Test Card UI!
+      setTestActive(true); 
     } catch (err) {
       setError("Error extracting questions. Ensure it's a valid PDF.");
     } finally {
@@ -44,9 +42,7 @@ function PYQTestMaker() {
     }
   };
 
-  // -----------------------------------------------------
-  // UI: THE ACTIVE TEST CARD (Matches your screenshot)
-  // -----------------------------------------------------
+  // ACTIVE TEST CARD
   if (testActive && questions.length > 0) {
     const currentQ = questions[currentIndex];
 
@@ -54,7 +50,6 @@ function PYQTestMaker() {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', backgroundColor: '#1e293b', borderRadius: '12px', padding: '20px' }}>
         <div style={{ width: '100%', maxWidth: '800px', backgroundColor: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
           
-          {/* Header */}
           <div style={{ backgroundColor: '#2563eb', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <h2 style={{ color: 'white', margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>Practice Test</h2>
@@ -70,7 +65,6 @@ function PYQTestMaker() {
             </button>
           </div>
 
-          {/* Body */}
           <div style={{ padding: '40px 30px', minHeight: '250px' }}>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
               <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 'bold' }}>
@@ -85,7 +79,6 @@ function PYQTestMaker() {
             </h3>
           </div>
 
-          {/* Footer */}
           <div style={{ backgroundColor: '#f8fafc', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0' }}>
             <button 
               disabled={currentIndex === 0}
@@ -108,9 +101,7 @@ function PYQTestMaker() {
     );
   }
 
-  // -----------------------------------------------------
-  // UI: THE SETUP / UPLOAD SCREEN
-  // -----------------------------------------------------
+  //UPLOAD SCREEN
   return (
     <div className="page-content" style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '10px', color: '#1e293b' }}>📝 AI Test Maker</h1>
@@ -118,7 +109,6 @@ function PYQTestMaker() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
         
-        {/* Option 1: Upload Local File */}
         <div style={{ border: '2px dashed #cbd5e1', padding: '30px', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc' }}>
           <h3 style={{ marginBottom: '15px', color: '#334155' }}>Upload from Device</h3>
           <input 
@@ -136,8 +126,7 @@ function PYQTestMaker() {
           </button>
           {error && <p style={{ color: '#ef4444', marginTop: '10px', fontSize: '0.9rem' }}>{error}</p>}
         </div>
-
-        {/* Option 2: Select from Drive */}
+        
         <div style={{ border: '2px solid #e2e8f0', padding: '30px', borderRadius: '12px', textAlign: 'center', backgroundColor: 'white' }}>
           <h3 style={{ marginBottom: '15px', color: '#334155' }}>Select from Google Drive</h3>
           <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>

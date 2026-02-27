@@ -3,7 +3,6 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* --- Breadcrumb Styling --- */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -33,7 +32,6 @@
   font-weight: 600;
 }
 
-/* --- Header Styling --- */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -73,19 +71,18 @@
   background: #334a66;
 }
 
-/* --- File List Styling --- */
 .files-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* 🌟 Matches the tighter gap of SubjectNotes */
+  gap: 0.75rem; 
 }
 
 .file-item {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* 🌟 Perfect spacing between icon, text, and buttons */
+  gap: 1.5rem; 
   background: #ffffff;
-  padding: 1rem 1.5rem; /* 🌟 Slim padding to match the Notes list */
+  padding: 1rem 1.5rem; 
   border-radius: 12px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
@@ -93,12 +90,12 @@
 }
 
 .file-item:hover {
-  transform: translateY(-2px); /* 🌟 Adds the exact same lift effect */
+  transform: translateY(-2px); 
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.04);
   border-color: #cbd5e1;
 }
 
-/* 🌟 Forces the container to respect the ellipsis truncation */
+
 .file-info {
   flex: 1;
   min-width: 0; 
@@ -107,7 +104,7 @@
   justify-content: center;
 }
 
-/* 🌟 Lets the text stretch and truncate smoothly with ... */
+
 .file-info h3 { 
   margin: 0; 
   color: #2d3748; 
@@ -119,7 +116,7 @@
   width: 100%; 
 }
 
-/* If you have a .list-view .file-info h3 rule, make sure width is 100% there too! */
+
 .list-view .file-info h3 { 
   font-size: 1rem; 
   width: 100%; 
@@ -133,7 +130,7 @@
   justify-content: center;
   flex-shrink: 0; 
   background: transparent;
-  font-size: 1.8rem; /* 🌟 Matches the larger icon size from SubjectNotes */
+  font-size: 1.8rem; 
 }
 
 .file-name {
@@ -142,7 +139,7 @@
   color: #1e293b;
 }
 
-/* Middle side (Google Drive text) */
+
 .file-meta {
   flex: 1;
   text-align: center;
@@ -151,7 +148,7 @@
   font-weight: 500;
 }
 
-/* Right side (Buttons) */
+
 .file-actions {
   display: flex;
   align-items: center;
@@ -197,7 +194,6 @@
   background: #f8fafc;
 }
 
-/* --- Empty State Styling --- */
 .empty-state {
   text-align: center;
   padding: 60px 20px;

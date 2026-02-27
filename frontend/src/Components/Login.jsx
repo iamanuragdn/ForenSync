@@ -11,19 +11,17 @@ function Login() {
     setError("");
 
     try {
-      // Ask the backend to verify the username
+      // backend verify username
       const res = await fetch(`http://localhost:5001/api/users/${username}`);
       const userData = await res.json();
 
       if (userData.error) {
         setError("User not found. Try 'anurag' or 'anindya'.");
       } else {
-        // Success! Save user data to browser's local storage
+        // save users data local
         localStorage.setItem("forensync_user", JSON.stringify(userData));
         
-        // Redirect to the home dashboard
         navigate("/");
-        // Quick reload to ensure the sidebar/nav catch the new user
         window.location.reload(); 
       }
     } catch (err) {

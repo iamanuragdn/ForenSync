@@ -1,7 +1,7 @@
 .syllabus-page {
   max-width: 800px;
   margin: 40px auto;
-  font-family: 'Inter', sans-serif; /* Or whatever your main font is */
+  font-family: 'Inter', sans-serif; 
 }
 
 .syllabus-header {
@@ -92,7 +92,7 @@
 }
 
 .unit-content {
-  padding: 0 20px 20px 60px; /* Aligns text with the title */
+  padding: 0 20px 20px 60px; 
   border-top: 1px solid #f3f4f6;
   background: #fafafa;
 }

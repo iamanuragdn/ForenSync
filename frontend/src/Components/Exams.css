@@ -1,21 +1,16 @@
-/* =========================================
-   EXAM SCHEDULE - FORENSYNC MAIN THEME
-   ========================================= */
-
 .exams-page-container {
   padding: 30px;
   font-family: 'Inter', -apple-system, sans-serif;
-  background-color: #F3F7F6; /* Matches your main dashboard background */
+  background-color: #F3F7F6;
   min-height: 100vh;
 }
 
-/* --- Header (Matches "Study Materials" from Home) --- */
+/* Header */
 .exams-page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  /* Removed the bulky white background and shadow to match Home! */
 }
 
 .header-title-box { 
@@ -35,7 +30,7 @@
   color: #1e293b; 
 }
 
-/* --- 2-Column Grid Setup --- */
+/*2-Column Grid  */
 .exams-content-layout {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -43,7 +38,7 @@
   align-items: start;
 }
 
-/* --- Left Side: Events List --- */
+/* Left Side: Events List */
 .section-title {
   display: flex;
   justify-content: space-between;
@@ -84,7 +79,6 @@
   gap: 16px; 
 }
 
-/* Matches your Home page cards perfectly */
 .exam-card {
   display: flex;
   align-items: center;
@@ -102,7 +96,6 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.03);
 }
 
-/* Softened Countdown Boxes */
 .days-box {
   width: 76px; 
   height: 84px; 
@@ -116,19 +109,16 @@
 .days-box h2 { margin: 0; font-size: 26px; font-weight: 700; }
 .days-box p { margin: 0; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
 
-/* Pale, modern background colors instead of harsh borders */
 .exam-yellow { background: #fffbeb; color: #b45309; border: none; }
 .exam-green { background: #f0fdf4; color: #15803d; border: none; }
 .exam-blue { background: #eff6ff; color: #1d4ed8; border: none; }
 .exam-red { background: #fef2f2; color: #b91c1c; border: none; }
-
 .exam-details { flex: 1; }
 .exam-code { font-size: 12px; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 4px 8px; border-radius: 6px;}
 .exam-details h4 { margin: 8px 0 4px 0; font-size: 17px; font-weight: 700; color: #1e293b; }
 .exam-date { font-size: 14px; color: #475569; margin: 0 0 4px 0; font-weight: 500;}
 .exam-meta { font-size: 13px; color: #94a3b8; margin: 0; }
 
-/* Matches the "View Details" button from the Home "Next Exam" widget */
 .btn-view-details {
   background: transparent; 
   border: 1px solid #e2e8f0; 
@@ -147,7 +137,6 @@
   color: #334155;
 }
 
-/* Empty State Styling */
 .empty-state {
   padding: 40px; 
   text-align: center; 
@@ -158,7 +147,6 @@
 .empty-title { color: #64748b; font-weight: 600; font-size: 15px; margin: 0; }
 .empty-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
 
-/* --- Right Side: Calendar Widget --- */
 .calendar-widget {
   background: #ffffff;
   padding: 24px;
@@ -167,7 +155,6 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.01);
 }
 
-/* React-Calendar Clean Overrides */
 .react-calendar {
   width: 100%; 
   border: none !important; 
@@ -231,9 +218,8 @@
   border-top: 1px solid #f1f5f9;
 }
 
-/* 🌟 The new bold Prepare button */
 .btn-prepare {
-  background-color: #4a6583; /* Matches your dashboard's primary dark slate blue */
+  background-color: #4a6583;
   color: #ffffff;
   border: none;
   padding: 8px 16px;
@@ -248,8 +234,8 @@
 }
 
 .btn-prepare:hover {
-  background-color: #3b526b; /* Slightly darker on hover */
-  transform: translateY(-2px); /* Gentle lift effect */
+  background-color: #3b526b; 
+  transform: translateY(-2px); 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 

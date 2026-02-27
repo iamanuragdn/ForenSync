@@ -6,15 +6,16 @@
   color: #111827;
 }
 
-/* Breadcrumb */
 .breadcrumb {
   font-size: 0.9rem;
   color: #6b7280;
   margin-bottom: 24px;
 }
-.current-page { color: #2563eb; font-weight: 500; }
+.current-page { 
+  color: #2563eb; 
+  font-weight: 500; 
+}
 
-/* Hero Section */
 .hero-section {
   display: flex;
   justify-content: space-between;
@@ -58,7 +59,6 @@
   font-size: 0.95rem;
 }
 
-/* Hero Graphic (Blue Circuit Board) */
 .hero-graphic {
   width: 350px;
   height: 200px;
@@ -87,7 +87,6 @@
 .shield-icon { font-size: 2.5rem; margin-bottom: 10px; }
 .graphic-overlay h3 { margin: 0; font-size: 1.1rem; }
 
-/* Section Title */
 .section-title {
   display: flex;
   align-items: center;
@@ -104,7 +103,6 @@
 
 .section-title h2 { margin: 0; font-size: 1.4rem; color: #1f2937; }
 
-/* The Grid */
 .semester-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -146,7 +144,6 @@
 .semester-card h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: #111827; }
 .semester-card p { margin: 0; font-size: 0.85rem; color: #6b7280; font-weight: 500; }
 
-/* Support Banner */
 .support-banner {
   background: #f8fafc;
   border: 1px solid #e5e7eb;

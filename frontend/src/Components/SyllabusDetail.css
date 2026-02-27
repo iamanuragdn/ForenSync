@@ -1,4 +1,3 @@
-/* Container & Breadcrumbs */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -27,7 +26,6 @@
 .error { color: #b91c1c; background: #fee2e2; }
 .empty { color: #64748b; background: transparent; padding: 3rem; }
 
-/* --- Main Card Container --- */
 .syllabus-detail-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -36,7 +34,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
-/* Header Row */
 .detail-header-row {
   display: flex;
   justify-content: space-between;
@@ -72,7 +69,6 @@
   margin: 0;
 }
 
-/* Back Button */
 .back-btn {
   padding: 0.6rem 1rem;
   background-color: transparent;
@@ -90,7 +86,6 @@
   border-color: #4a6583;
 }
 
-/* --- Table Styling --- */
 .units-table {
   width: 100%;
   border-collapse: collapse;
@@ -111,7 +106,6 @@
   vertical-align: top;
 }
 
-/* Table Columns */
 .unit-col { width: 10%; text-align: center; }
 .unit-col-data { text-align: center; color: #2d3748; font-size: 1rem; }
 
@@ -120,14 +114,13 @@
 
 .content-col { width: 80%; }
 
-/* Splitting Title and Topics inside the Content Cell */
 .content-wrapper {
   display: flex;
   gap: 2rem;
 }
 
 .content-title {
-  flex: 0 0 220px; /* Locks the title width so all paragraphs align perfectly */
+  flex: 0 0 220px; 
   font-weight: 600;
   color: #2d3748;
   font-size: 0.95rem;
@@ -139,7 +132,6 @@
   font-size: 0.95rem;
 }
 
-/* Responsive adjustment for smaller screens */
 @media (max-width: 900px) {
   .content-wrapper {
     flex-direction: column;

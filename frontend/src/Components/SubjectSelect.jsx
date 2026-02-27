@@ -47,7 +47,6 @@ function SubjectSelect() {
     return 'Program';
   };
 
-  // --- NEW: Calculate the stats automatically ---
   const totalSubjects = subjects.length;
   const totalCredits = subjects.reduce((sum, sub) => sum + (Number(sub.credits) || 0), 0);
   const totalLabs = subjects.filter(sub => sub.type === 'Lab').length;
@@ -55,8 +54,6 @@ function SubjectSelect() {
 
   return (
     <div className="page-container">
-      
-      {/* Breadcrumb */}
       <div className="breadcrumb">
         <span onClick={() => navigate('/dashboard')} className="crumb-link">🏠 Home</span> 
         <span className="separator">/</span>
@@ -69,13 +66,13 @@ function SubjectSelect() {
         <span className="current-page">{formatSemester(semesterId)}</span>
       </div>
 
-      {/* Page Header */}
+
       <header className="page-header">
         <h1>{formatSemester(semesterId)} Subjects</h1>
         <p className="subtitle">Select a subject to view its complete syllabus and units.</p>
       </header>
 
-      {/* Content Area */}
+
       {isLoading ? (
         <div className="status-message loading">Loading subjects...</div>
       ) : error ? (
@@ -84,30 +81,30 @@ function SubjectSelect() {
         <div className="status-message empty">No subjects found for this semester yet.</div>
       ) : (
         <>
-          {/* --- NEW: The Stats Summary Bar --- */}
+
           <div className="semester-summary">
-            {/* 1. Total Credits moved to the front */}
+
             <div className="summary-item">
               <span className="summary-value">{totalCredits}</span>
               <span className="summary-label">Total Credits</span>
             </div>
             <div className="summary-divider"></div>
 
-            {/* 2. Total Subjects */}
+
             <div className="summary-item">
               <span className="summary-value">{totalSubjects}</span>
               <span className="summary-label">Total Subjects</span>
             </div>
             <div className="summary-divider"></div>
 
-            {/* 3. Theory Classes */}
+
             <div className="summary-item">
               <span className="summary-value">{totalTheory}</span>
               <span className="summary-label">Theory Classes</span>
             </div>
             <div className="summary-divider"></div>
 
-            {/* 4. Lab Sessions */}
+
             <div className="summary-item">
               <span className="summary-value">{totalLabs}</span>
               <span className="summary-label">Lab Sessions</span>

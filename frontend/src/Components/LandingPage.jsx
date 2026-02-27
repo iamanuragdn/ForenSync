@@ -10,7 +10,6 @@ function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // If already logged in, skip the landing page entirely!
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (savedUser) {
@@ -33,7 +32,7 @@ function LandingPage() {
       
       const userData = await response.json();
       localStorage.setItem("forensync_user", JSON.stringify(userData));
-      navigate("/dashboard"); // Take them to the app!
+      navigate("/dashboard"); 
       
     } catch (err) {
       setError(err.message || "Failed to connect to the server.");
@@ -45,7 +44,7 @@ function LandingPage() {
   return (
     <div className="landing-container">
       
-      {/* LEFT SIDE: Intro */}
+      {/* Intro */}
       <div className="landing-intro" style={{ backgroundImage: `url(${campusImage})` }}>
         <div className="intro-content">
             <img src={logoImage} alt="ForenSync Logo" className="brand-logo-img" />
@@ -57,7 +56,7 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* RIGHT SIDE: Login */}
+      {/* Login */}
       <div className="landing-auth">
         <div className="auth-card">
           <h2>Welcome Back</h2>

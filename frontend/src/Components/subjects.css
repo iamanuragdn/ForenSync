@@ -1,32 +1,25 @@
-/* ================================
-   GLOBAL DASHBOARD LAYOUT
-================================= */
 .home-dashboard {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 24px; /* Reduced from 30px */
-  padding: 20px 40px; /* Reduced top/bottom padding */
+  gap: 24px; 
+  padding: 20px 40px; 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #2d3748;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* ================================
-   LEFT COLUMN
-================================= */
 .dashboard-left {
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Reduced from 30px */
+  gap: 24px;
 }
 
-/* --- Welcome Banner --- */
 .welcome-banner {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 24px 32px; /* Compressed height considerably */
+  padding: 24px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -48,7 +41,7 @@
 }
 
 .welcome-content h1 { 
-  font-size: 1.8rem; /* Scaled down slightly */
+  font-size: 1.8rem; 
   margin: 12px 0 4px 0; 
   color: #2d3748; 
 }
@@ -56,7 +49,7 @@
 .welcome-content p { 
   color: #64748b; 
   line-height: 1.5; 
-  margin-bottom: 16px; /* Tighter gap */
+  margin-bottom: 16px; 
   font-size: 0.95rem;
 }
 
@@ -90,10 +83,9 @@
 
 .btn-white:hover { background: #f0f4f8; }
 
-/* --- Progress Circle --- */
 .progress-circle {
-  width: 110px;  /* 🌟 Increased from 80px */
-  height: 110px; /* 🌟 Increased from 80px */
+  width: 110px;  
+  height: 110px; 
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -102,7 +94,7 @@
 }
 
 .progress-circle .percentage {
-  font-size: 26px; /* 🌟 Increased from 20px to match the bigger circle */
+  font-size: 26px; 
   font-weight: 800;
   color: #1e293b;
 }
@@ -114,7 +106,6 @@
   letter-spacing: 0.5px;
 }
 
-/* --- Subjects Section --- */
 .section-header { display: flex; justify-content: space-between; align-items: center; }
 .header-title { display: flex; align-items: center; gap: 10px; }
 .header-title h2 { margin: 0; font-size: 1.3rem; color: #2d3748; font-weight: 600; }
@@ -122,11 +113,10 @@
 .subjects-grid { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
-  gap: 16px; /* Tighter grid */
+  gap: 16px; 
   width: 100%;
 }
 
-/* --- Subject Cards --- */
 .subject-card {
   background: #ffffff; 
   border-radius: 12px; 
@@ -138,7 +128,7 @@
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
-  min-height: 175px; /* Massively reduced from 220px */
+  min-height: 175px; 
 }
 
 .subject-card:hover { 
@@ -147,18 +137,17 @@
   border-color: #cbd5e1;
 }
 
-/* Forcefully hide all old pastel circles */
 .card-accent, .accent-purple, .accent-blue, .accent-green, 
 .accent-pink, .accent-teal, .accent-orange { display: none !important; }
 
 .subject-icon-box {
-  width: 36px; height: 36px; /* Smaller icon box */
+  width: 36px; height: 36px; 
   background: #f0f4f8; 
   color: #4a6583;
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center; 
   font-size: 1rem; 
-  margin: 1.25rem 1.25rem 0.75rem 1.25rem; /* Tighter margins */
+  margin: 1.25rem 1.25rem 0.75rem 1.25rem; 
 }
 
 .subject-card h3 { 
@@ -180,7 +169,7 @@
   display: flex; 
   justify-content: space-between; 
   align-items: center;
-  padding: 0.75rem 1.25rem; /* Tighter footer */
+  padding: 0.75rem 1.25rem; 
   background-color: #f8fafc;
   border-top: 1px solid #f1f5f9;
   margin-top: auto;
@@ -198,15 +187,13 @@
 .arrow-icon { color: #cbd5e1; font-weight: bold; transition: transform 0.2s ease, color 0.2s ease; }
 .subject-card:hover .arrow-icon { transform: translateX(4px); color: #4a6583; }
 
-/* ================================
-   RIGHT COLUMN (Widgets)
-================================= */
+
 .dashboard-right { display: flex; flex-direction: column; gap: 20px; }
 
 .widget { 
   background: #ffffff; 
   border-radius: 12px; 
-  padding: 20px; /* Reduced from 24px */
+  padding: 20px;
   border: 1px solid #e2e8f0; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); 
 }
@@ -246,25 +233,20 @@
 
 .widget-btn-outline:hover { background: #f8fafc; border-color: #4a6583; }
 
-/* --- Mini Stats Row --- */
 .mini-stats-row {
   display: flex;
   gap: 20px;
-  /* 🌟 Add this line to prevent the CGPA card from stretching */
   align-items: flex-start; 
   margin-top: 20px;
 }
 
-/* Ensure the cards have a consistent base width but can grow vertically */
-/* --- Mini Stats Row --- */
 .mini-stats-row {
   display: flex;
   gap: 20px;
-  align-items: flex-start; /* Prevents the CGPA card from stretching */
+  align-items: flex-start; 
   margin-top: 20px;
 }
 
-/* 🌟 MERGED AND FIXED: Uniform card styling with relative positioning */
 .mini-stat-card {
   flex: 1;
   background: #ffffff;
@@ -278,59 +260,52 @@
   text-align: center;
   transition: all 0.3s ease;
   min-height: 140px;
-  position: relative; /* 🌟 CRITICAL: Anchors the popover to this specific card */
+  position: relative;
 }
 
-/* 🌟 Adds the smooth lift and drop-shadow to the card itself */
 .mini-stat-card:hover {
   transform: translateY(-4px); 
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04); 
   border-color: #cbd5e1;
 }
 
-/* ================================
-   INLINE EXPANDING ATTENDANCE CARD
-================================= */
 .attendance-details {
   width: 100%;
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #f1f5f9; /* Adds a clean separator line */
+  border-top: 1px solid #f1f5f9; 
   animation: fadeInDown 0.2s ease-out forwards;
 }
 
 .attendance-details h4 {
   font-size: 0.75rem;
-  color: #94a3b8; /* Subtle gray */
+  color: #94a3b8; 
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 12px 0;
   font-weight: 700;
-  text-align: left; /* Aligns the header to the left */
+  text-align: left;
 }
 
 .att-row {
   display: flex;
-  justify-content: space-between; /* Pushes name to left, score to right */
+  justify-content: space-between; 
   align-items: center;
   margin-bottom: 10px;
 }
 
-/* Matches the grayish-blue text of your other cards */
 .att-row .subject-name {
   font-size: 0.85rem;
   color: #64748b; 
   font-weight: 500;
 }
 
-/* Highlights the numbers in bold dark slate */
 .att-row .subject-score {
   font-size: 0.9rem;
   color: #1e293b; 
   font-weight: 700;
 }
 
-/* Smooth fade-in effect when it expands */
 @keyframes fadeInDown {
   from {
     opacity: 0;

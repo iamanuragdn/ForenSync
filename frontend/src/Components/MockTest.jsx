@@ -2,24 +2,19 @@ import { useState, useEffect } from 'react';
 import './MockTest.css';
 
 function MockTest() {
-  // --- MENU STATE ---
   const [subjects, setSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [isLoadingSubjects, setIsLoadingSubjects] = useState(true);
-
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
-
-  // --- FLASHCARD STATE ---
-  const [activeQuestions, setActiveQuestions] = useState(null); // If null, show menu. If array, show flashcards!
+  const [activeQuestions, setActiveQuestions] = useState(null); 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [testLoading, setTestLoading] = useState(false);
   const [testError, setTestError] = useState(null);
-
   const [isDragging, setIsDragging] = useState(false);
 
-  // 1. Fetch subjects when page loads
+  // Fetch subjects when page loads
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -38,7 +33,7 @@ function MockTest() {
     fetchSubjects();
   }, []);
 
-  // 2. Start Test from the Bank
+  // Start Test from the Bank
   const handleStartBankTest = async () => {
     if (!selectedSubject) return;
     setTestLoading(true);
@@ -48,7 +43,7 @@ function MockTest() {
       const response = await fetch(`http://localhost:5001/api/get-test?subject=${encodeURIComponent(selectedSubject)}`);
       if (!response.ok) throw new Error("Failed to fetch questions.");
       const data = await response.json();
-      setActiveQuestions(data); // This switches the screen to the flashcards!
+      setActiveQuestions(data);
       setCurrentIndex(0);
     } catch (err) {
       setTestError(err.message);
@@ -57,9 +52,9 @@ function MockTest() {
     }
   };
 
-  // --- DRAG AND DROP HANDLERS ---
+  // DRAG AND DROP HANDLERS
   const handleDragOver = (e) => {
-    e.preventDefault(); // VERY IMPORTANT: Stops Safari from opening the PDF!
+    e.preventDefault(); 
     setIsDragging(true);
   };
 
@@ -69,13 +64,12 @@ function MockTest() {
   };
 
   const handleDrop = (e) => {
-    e.preventDefault(); // VERY IMPORTANT: Stops Safari from opening the PDF!
+    e.preventDefault();
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       
-      // Optional: Check if it's actually a PDF before accepting it
       if (droppedFile.type === "application/pdf") {
         setSelectedFile(droppedFile);
         setUploadStatus('');
@@ -85,7 +79,7 @@ function MockTest() {
     }
   };
 
-  // 3. Upload File & Start Instant Test
+  // Upload File & Start Instant Test
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
@@ -110,7 +104,7 @@ function MockTest() {
       
       if (response.ok) {
         const extractedData = await response.json();
-        setActiveQuestions(extractedData); // Instantly switches to flashcards!
+        setActiveQuestions(extractedData);
         setCurrentIndex(0);
         setSelectedFile(null); 
       } else {
@@ -123,8 +117,6 @@ function MockTest() {
     }
   };
 
-  // --- FLASHCARD RENDERER ---
-  // If we have questions (or are currently loading them), hide the menu and show the test UI
   if (testLoading || testError || activeQuestions) {
     if (testLoading) return <div className="test-full-screen"><div className="status-card">Generating your test...</div></div>;
     if (testError) return <div className="test-full-screen"><div className="status-card error">{testError} <button onClick={() => setTestError(null)}>Go Back</button></div></div>;
@@ -142,7 +134,6 @@ function MockTest() {
                 Question {currentIndex + 1} of {activeQuestions.length}
               </span>
             </div>
-            {/* Closes the flashcards and goes back to the menu */}
             <button className="finish-btn" onClick={() => setActiveQuestions(null)}>Finish Test</button>
           </div>
 
@@ -179,8 +170,6 @@ function MockTest() {
     );
   }
 
-  // --- MENU RENDERER ---
-  // If no test is active, show the standard white dashboard
   return (
     <div className="page-container">
       <header className="page-header">
@@ -224,7 +213,6 @@ function MockTest() {
             <div className="file-dropzone">
               <input type="file" id="file-upload" accept="application/pdf" onChange={handleFileChange} className="hidden-input"/>
               
-              {/* Attach the handlers to the label! */}
               <label 
                 htmlFor="file-upload" 
                 className={`dropzone-label ${isDragging ? 'is-dragging' : ''}`}

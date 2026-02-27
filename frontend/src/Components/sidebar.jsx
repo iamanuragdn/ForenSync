@@ -11,7 +11,6 @@ function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        {/* Home is now your primary hub for everything subjects-related */}
         <NavLink to="/dashboard" className="nav-item">
           <span className="nav-icon">🏠</span> 
           <span className="nav-text">Home</span>
@@ -36,8 +35,6 @@ function Sidebar() {
           <span className="nav-icon">📝</span>
           <span className="nav-text">PYQ</span>
         </NavLink>
-
-        {/* Admin Console pushed to the bottom */}
         
 
       </nav>

@@ -8,7 +8,7 @@ function Navbar() {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // 1. Fetch the logged-in user
+  // Fetch the logged-in user
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (savedUser) {
@@ -16,7 +16,7 @@ function Navbar() {
     }
   }, []);
 
-  // 2. Click outside to close dropdown
+  // Click outside to close dropdown
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -27,12 +27,11 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 3. Handle Logout
+  // Handle Logout
   const handleLogout = () => {
     localStorage.removeItem("forensync_user");
     setDropdownOpen(false);
     
-    // 👇 Change this line to point to the root Landing Page!
     navigate('/'); 
     
     window.location.reload(); 
@@ -40,24 +39,22 @@ function Navbar() {
 
   return (
     <div className="top-navbar">
-      
-      {/* Search Bar */}
+
       <div className="search-container">
         <input 
           type="text" 
-          placeholder="Search notes, subjects, exams..." 
+          placeholder="Search notes, pyq, subjects, exams..." 
           className="navbar-search"
         />
       </div>
 
-      {/* Right Side: Notifications & Profile */}
       <div className="nav-right">
-        {/* <div className="notifications">🔔</div> */}
+
         
-        {/* Profile Wrapper (Position Relative for Dropdown) */}
+
         <div className="profile-wrapper" ref={dropdownRef}>
           
-          {/* The Clickable Button */}
+  
           <div className="user-profile-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
             <div className="user-info">
               <span className="user-name">{user ? user.name : "Guest"}</span>
@@ -68,7 +65,6 @@ function Navbar() {
             </div>
           </div>
 
-          {/* The Google-Style Floating Dropdown */}
           {dropdownOpen && user && (
             <div className="profile-dropdown">
               <div className="dropdown-header">
@@ -82,17 +78,17 @@ function Navbar() {
               <div className="dropdown-body">
                   <div className="dropdown-item">
                     <span className="item-label">Enrollment No.</span>
-                    {/* Now uses the real enrollment number! */}
+                    {/* real enrollment number */}
                     <span className="item-value">{user.enrollmentNo}</span> 
                   </div>
                   <div className="dropdown-item">
                     <span className="item-label">Course</span>
-                    {/* Now dynamically pulls the course name! */}
+                    {/* dynamically pulls the course name */}
                     <span className="item-value">{user.courseName}</span>
                   </div>
                   <div className="dropdown-item">
                     <span className="item-label">Semester</span>
-                    {/* Now pulls the semester directly! */}
+                    {/* pulls the semester directly */}
                     <span className="item-value">{user.semesterId}</span>
                   </div>
               </div>
