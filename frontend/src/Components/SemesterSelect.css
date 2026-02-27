@@ -12,7 +12,7 @@
   margin-bottom: 24px;
 }
 .current-page { 
-  color: #2563eb; 
+  color: #4B6583; 
   font-weight: 500; 
 }
 
@@ -74,7 +74,7 @@
 .graphic-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(29, 78, 216, 0.8), rgba(30, 64, 175, 0.9));
+  background: linear-gradient(135deg, #4b5563aa, #4b5563bb);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -97,7 +97,7 @@
 .blue-line {
   width: 6px;
   height: 24px;
-  background-color: #2563eb;
+  background-color: #4B6583;
   border-radius: 4px;
 }
 
@@ -130,7 +130,7 @@
 .sem-number {
   width: 36px;
   height: 36px;
-  background: #2563eb;
+  background: #4B6583;
   color: white;
   display: flex;
   align-items: center;
