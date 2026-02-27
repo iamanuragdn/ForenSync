@@ -67,14 +67,31 @@ npm run dev
 
 The app will be running at http://localhost:5173.
 
-📸 Sneak Peek
-Study Materials	Admin Console
-(Pro-tip: Drop screenshots of your SubjectNotes.jsx list view and your new AdminConsole.jsx here!)
+## 📸 Sneak Peek
 
+### 🏠 Main Dashboard
+![Home Dashboard](frontend/screenshot/Home.png)
 
-👨‍💻 Built By
-Anurag Debnath,Anindya Bhar, Reejit Maji, Priyangsha Paul, Rounak Kundu.
+### 📚 Study Materials & Notes
+![Study Materials](frontend/screenshot/notes.png)
 
-Built with ❤️ and way too much caffeine for NFSU Smart Campus Hackathon.
+### 📚 Exam
+![Exam](frontend/screenshot/exam.png)
 
+### 🎯 Mock Test
+![Mock Test](frontend/screenshot/mock-test.png)
 
+### ⚙️ Admin Console
+![Admin Console](frontend/screenshot/admin-console.png)
+
+---
+
+## 👨‍💻 Built By
+
+* **Anurag Debnath**
+* **Anindya Bhar**
+* **Reejit Maji**
+* **Priyangsha Paul**
+* **Rounak Kundu**
+
+*Built with ❤️ and way too much caffeine for the **NFSU Smart Campus Hackathon**.*
