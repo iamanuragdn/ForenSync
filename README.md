@@ -47,6 +47,7 @@ cd ForenSync
 cd backend
 npm install
 (Note: You will need to create a .env file in the backend directory with the necessary Firebase Admin credentials and Google Drive API keys. See .env.example for the required variables.)
+```
 
 # Start the backend server (runs on port 5001)
 npm start
