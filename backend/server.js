@@ -25,7 +25,9 @@ const db = admin.firestore();
 
 // Initialize Express Server
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
+// app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "*" })); // Allows any frontend to connect temporarily
+
 app.use(express.json());
 
 // Serve static files for the downloaded PDFs
@@ -471,5 +473,7 @@ app.post("/api/instant-test", upload.single("paper"), async (req, res) => {
 });
 
 // Start the Server
-const PORT = 5001;
+// const PORT = 5001;
+// app.listen(PORT, () => console.log(`🚀 ForenSync Master Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5001; // 🌟 Let the cloud provider choose the port
 app.listen(PORT, () => console.log(`🚀 ForenSync Master Server running on port ${PORT}`));

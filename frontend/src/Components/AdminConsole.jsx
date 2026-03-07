@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // 🌟 Added for routing
 import './AdminConsole.css';
 
 function AdminConsole() {
+  const navigate = useNavigate();
+
+  // 🌟 Grab the user to check their clearance level
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("forensync_user");
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [folders, setFolders] = useState([]);
   const [pathHistory, setPathHistory] = useState([{ id: '1bmI8_Bkn1airL4qznDJLWGc96wj76smp', name: 'NFSU' }]);
   const [file, setFile] = useState(null);
@@ -14,11 +23,14 @@ function AdminConsole() {
   const currentFolderId = pathHistory[pathHistory.length - 1].id;
 
   useEffect(() => {
+    // Only fetch if the user is actually an admin!
+    if (!user || user.role !== 'Admin') return; 
+
     fetch(`http://localhost:5001/api/drive/folders?parentId=${currentFolderId}`)
       .then(res => res.json())
       .then(data => setFolders(data))
       .catch(err => console.error(err));
-  }, [currentFolderId]);
+  }, [currentFolderId, user]);
 
   const handleFolderClick = (folderId, folderName) => {
     setPathHistory([...pathHistory, { id: folderId, name: folderName }]);
@@ -63,6 +75,24 @@ function AdminConsole() {
       setStatus("❌ Server connection error.");
     }
   };
+
+  // 🌟 SECURITY GUARD: Lock out regular students!
+  if (!user || user.role !== 'Admin') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '2.5rem', color: '#b91c1c', marginBottom: '10px' }}>🛑 Access Denied</h2>
+        <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '400px', marginBottom: '25px', lineHeight: '1.5' }}>
+          You do not have the required clearance to access the ForenSync Admin Console. This area is strictly for faculty and verified administrators.
+        </p>
+        <button 
+          onClick={() => navigate('/dashboard')} 
+          style={{ padding: '12px 24px', background: '#4a6583', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}
+        >
+          ← Return to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-dashboard-container">

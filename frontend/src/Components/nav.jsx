@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase'; // 🌟 Import auth for secure logout
 import './nav.css';
 
 function Navbar() {
@@ -8,7 +9,6 @@ function Navbar() {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Fetch the logged-in user
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (savedUser) {
@@ -16,7 +16,6 @@ function Navbar() {
     }
   }, []);
 
-  // Click outside to close dropdown
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -27,38 +26,28 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle Logout
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await auth.signOut(); // 🌟 Securely logs them out of Firebase
     localStorage.removeItem("forensync_user");
     setDropdownOpen(false);
-    
-    navigate('/'); 
-    
+    navigate('/login'); 
     window.location.reload(); 
-    };
+  };
 
   return (
     <div className="top-navbar">
-
       <div className="search-container">
-        <input 
-          type="text" 
-          placeholder="Search notes, pyq, subjects, exams..." 
-          className="navbar-search"
-        />
+        <input type="text" placeholder="Search notes, pyq, subjects, exams..." className="navbar-search" />
       </div>
 
       <div className="nav-right">
-
-        
-
         <div className="profile-wrapper" ref={dropdownRef}>
           
-  
           <div className="user-profile-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
             <div className="user-info">
               <span className="user-name">{user ? user.name : "Guest"}</span>
-              <span className="user-id">{user ? user.username : "Login"}</span>
+              {/* 🌟 Swapped username for email */}
+              <span className="user-id">{user ? user.email : "Login"}</span> 
             </div>
             <div className="user-avatar">
               {user && user.name ? user.name.charAt(0).toUpperCase() : "?"}
@@ -72,24 +61,24 @@ function Navbar() {
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <h3>Hi, {user.name.split(' ')[0]}!</h3>
-                <p className="dropdown-email">@{user.username}</p>
+                {/* 🌟 Swapped username for email */}
+                <p className="dropdown-email">{user.email}</p> 
               </div>
               
               <div className="dropdown-body">
                   <div className="dropdown-item">
-                    <span className="item-label">Enrollment No.</span>
-                    {/* real enrollment number */}
-                    <span className="item-value">{user.enrollmentNo}</span> 
+                    <span className="item-label">Roll No.</span>
+                    {/* 🌟 Swapped enrollmentNo for rollNumber */}
+                    <span className="item-value">{user.rollNumber || "Admin"}</span> 
                   </div>
                   <div className="dropdown-item">
-                    <span className="item-label">Course</span>
-                    {/* dynamically pulls the course name */}
-                    <span className="item-value">{user.courseName}</span>
+                    <span className="item-label">Program</span>
+                    {/* 🌟 Swapped courseName for programId */}
+                    <span className="item-value">{user.programId || "Faculty"}</span>
                   </div>
                   <div className="dropdown-item">
                     <span className="item-label">Semester</span>
-                    {/* pulls the semester directly */}
-                    <span className="item-value">{user.semesterId}</span>
+                    <span className="item-value">{user.semesterId || "--"}</span>
                   </div>
               </div>
 

@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './PYQDashboard.css'; 
 
 function PYQDashboard() {
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("forensync_user");
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [semesters, setSemesters] = useState([]);
   
-  // instantly grab the exact semesterId from user
+  // 🌟 Safe fallback: default to sem-1 if Admin has no semester
   const [selectedSemester, setSelectedSemester] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    return saved ? JSON.parse(saved).semesterId : "sem-1";
+    if (user && user.semesterId) return user.semesterId;
+    return "sem-1"; 
   });
 
   const [programId, setProgramId] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    return saved ? JSON.parse(saved).programId : "btech-mtech-cybersecurity";
+    if (user && user.programId) return user.programId;
+    return "btech-mtech-cybersecurity";
   });
 
   const [selectedExam, setSelectedExam] = useState('CA2'); 
@@ -21,6 +28,8 @@ function PYQDashboard() {
 
   // Fetch available semesters
   useEffect(() => {
+    if (!user) return; // 🌟 Removed Admin block
+
     fetch(`http://localhost:5001/api/programs/${programId}/semesters`)
       .then(res => res.json())
       .then(data => {
@@ -28,11 +37,11 @@ function PYQDashboard() {
         else setSemesters([]); 
       })
       .catch(err => console.error(err));
-  }, [programId]);
+  }, [programId, user]);
 
   // Fetch syllabus subjects when semester changes
   useEffect(() => {
-    if (!selectedSemester) return;
+    if (!user || !selectedSemester) return; // 🌟 Removed Admin block
 
     fetch(`http://localhost:5001/api/syllabus/${programId}/${selectedSemester}`)
       .then(res => {
@@ -41,7 +50,7 @@ function PYQDashboard() {
       })
       .then(data => setSubjects(data.subjects || []))
       .catch(err => setSubjects([]));
-  }, [programId, selectedSemester]);
+  }, [programId, selectedSemester, user]);
 
   return (
     <div className="home-container">
@@ -50,11 +59,8 @@ function PYQDashboard() {
         <h2>Past Year Questions</h2>
         <p>Select your semester, exam type, and subject.</p>
       </div>
-
       
       <div className="pyq-filters-row">
-        
-        
         <select 
           className="theme-dropdown"
           value={selectedSemester} 
@@ -65,7 +71,6 @@ function PYQDashboard() {
           ))}
           {semesters.length === 0 && <option value="sem-1">Semester 1</option>}
         </select>
-
         
         <div className="exam-tabs">
           {['CA1', 'CA2', 'CA3', 'CA4'].map(exam => (
@@ -78,7 +83,6 @@ function PYQDashboard() {
             </button>
           ))}
         </div>
-        
       </div>
 
       <div className="subjects-grid">
@@ -99,7 +103,7 @@ function PYQDashboard() {
           ))
         ) : (
           <div className="empty-state">
-             <p>No subjects found for {selectedSemester.replace('-', ' ')} yet.</p>
+             <p>No subjects found for {selectedSemester ? selectedSemester.replace('-', ' ') : 'this semester'} yet.</p>
           </div>
         )}
       </div>

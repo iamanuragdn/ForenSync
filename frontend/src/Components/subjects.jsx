@@ -12,12 +12,16 @@ function Subjects() {
   const [nextExam, setNextExam] = useState(null); 
   const cardColors = ['purple', 'blue', 'green', 'pink', 'teal', 'orange'];
   const cardIcons = ['∑', '🔬', '💻', '💬', '⚡', '📐'];
+  
   const [viewingSemester, setViewingSemester] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
-    return saved ? JSON.parse(saved).semesterId : "sem-1";
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.semesterId || "sem-1";
+    }
+    return "sem-1";
   });
 
-  // Fetch Subjects
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (!savedUser) {
@@ -47,13 +51,13 @@ function Subjects() {
       });
   }, [navigate, viewingSemester]); 
 
-  // Fetch Exams
   useEffect(() => {
-    if (!user) return;
+    if (!user) return; 
     
     const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
+    const fetchSemester = user.semesterId || "sem-1"; 
 
-    fetch(`http://localhost:5001/api/exams/${activeProgramId}/${user.semesterId}`)
+    fetch(`http://localhost:5001/api/exams/${activeProgramId}/${fetchSemester}`)
       .then(res => res.json())
       .then(data => {
         const today = new Date();
@@ -69,10 +73,8 @@ function Subjects() {
           const closestExam = futureExams[0];
           const eDate = new Date(closestExam.examDate);
           eDate.setHours(0,0,0,0);
-
           const diffTime = eDate - today;
           const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          
           setNextExam({ ...closestExam, daysLeft });
         } else {
           setNextExam(null); 
@@ -82,7 +84,7 @@ function Subjects() {
   }, [user]); 
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) return; 
     const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
 
     fetch(`http://localhost:5001/api/semester-info/${activeProgramId}/${viewingSemester}`)
@@ -97,30 +99,24 @@ function Subjects() {
       .catch(err => console.error("Error fetching dates:", err));
   }, [user, viewingSemester]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("forensync_user");
-    navigate("/login");
-  };
-
   const getSemesterProgress = () => {
     if (!semesterDates) return 0; 
-
     const startDate = new Date(semesterDates.start);
     const endDate = new Date(semesterDates.end);
     const today = new Date();
-
     if (today < startDate) return 0;   
     if (today > endDate) return 100;   
-
     const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
     const passedDays = (today - startDate) / (1000 * 60 * 60 * 24);
-    
     return Math.round((passedDays / totalDays) * 100);
   };
   
   const progressPercentage = getSemesterProgress();
 
   if (loading || !user) return <div className="home-dashboard">Loading your dashboard...</div>;
+
+  // 🌟 Logic to check if they are pure faculty (hides student widgets)
+  const isPureFaculty = user.role === 'Admin' && (!user.adminType || user.adminType === 'Teacher' || user.adminType === 'Administrator');
 
   return (
     <div className="home-dashboard">
@@ -130,26 +126,27 @@ function Subjects() {
           <div className="welcome-content">
             <span className="welcome-badge">✨ Welcome back</span>
             <h1>Hello, {user.name.split(' ')[0]}</h1>
-            <p>You're making great progress in {user.semesterId.toUpperCase()}. Let's keep the focus sharp.</p>
+            <p>
+              {isPureFaculty 
+                ? "You are viewing the dashboard as Faculty. Select a semester below to browse materials." 
+                : `You're making great progress in ${user.semesterId?.toUpperCase()}. Let's keep the focus sharp.`}
+            </p>
           </div>
           
-          <div className="progress-circle-container">
-            <div 
-              className="progress-circle"
-              style={{
-          
-                background: `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#4B6583 ${progressPercentage}%, #f1f5f9 0)`
-              }}
-            >
-              <span className="percentage">
-                {progressPercentage}%
-              </span>
-              <span className="label">
-                SEMESTER
-              </span>
+          {/* 🌟 Hide the progress circle if they are pure faculty */}
+          {!isPureFaculty && (
+            <div className="progress-circle-container">
+              <div 
+                className="progress-circle"
+                style={{
+                  background: `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#4B6583 ${progressPercentage}%, #f1f5f9 0)`
+                }}
+              >
+                <span className="percentage">{progressPercentage}%</span>
+                <span className="label">SEMESTER</span>
+              </div>
             </div>
-          </div>
-
+          )}
         </div>
 
         <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '30px' }}>
@@ -198,7 +195,6 @@ function Subjects() {
         </div>
       </div>
 
-
       <div className="dashboard-right">
         
         <div className="widget next-exam-widget">
@@ -232,44 +228,42 @@ function Subjects() {
           </button>
         </div>
 
-        <div className="mini-stats-row">
+        {/* 🌟 Hide the attendance and CGPA stats if pure faculty */}
+        {!isPureFaculty && (
+          <div className="mini-stats-row">
+            <div 
+              className="mini-stat-card" 
+              style={{ position: 'relative', cursor: 'pointer' }}
+              onMouseEnter={() => setShowAttendance(true)}
+              onMouseLeave={() => setShowAttendance(false)}
+            >
+              <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}>📊</div>
+              
+              <h2>{user?.attendance?.total || "--"}%</h2>
+              <p>Attendance</p>
 
-          <div 
-            className="mini-stat-card" 
-            style={{ position: 'relative', cursor: 'pointer' }}
-            onMouseEnter={() => setShowAttendance(true)}
-            onMouseLeave={() => setShowAttendance(false)}
-          >
-            <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}>📊</div>
-            
-            <h2>{user?.attendance?.total || "--"}%</h2>
-            <p>Attendance</p>
+              {showAttendance && user?.attendance && (
+                <div className="attendance-details">
+                  <h4>Attendance Breakdown</h4>
+                  <div className="att-row">
+                    <span className="subject-name">Mathematics</span> 
+                    <span className="subject-score">{user.attendance.math}%</span>
+                  </div>
+                  <div className="att-row">
+                    <span className="subject-name">Prof. Ethics</span> 
+                    <span className="subject-score">{user.attendance.ethics}%</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
-            {showAttendance && user?.attendance && (
-              <div className="attendance-details">
-                <h4>Attendance Breakdown</h4>
-                <div className="att-row">
-                  <span className="subject-name">Mathematics</span> 
-                  <span className="subject-score">{user.attendance.math}%</span>
-                </div>
-                <div className="att-row">
-                  <span className="subject-name">Prof. Ethics</span> 
-                  <span className="subject-score">{user.attendance.ethics}%</span>
-                </div>
-                <div className="att-row">
-                  <span className="subject-name">Physics</span> 
-                  <span className="subject-score">{user.attendance.physics}%</span>
-                </div>
-              </div>
-            )}
+            <div className="mini-stat-card">
+              <div className="stat-icon blue">📈</div>
+              <h2>{user?.cgpa || "--"}</h2>
+              <p>CGPA</p>
+            </div>
           </div>
-
-          <div className="mini-stat-card">
-            <div className="stat-icon blue">📈</div>
-            <h2>{user?.cgpa || "--"}</h2>
-            <p>CGPA</p>
-          </div>
-        </div>
+        )}
 
       </div>
     </div>
