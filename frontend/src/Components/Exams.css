@@ -29,11 +29,38 @@
   color: #1e293b; 
 }
 
+/* 🌟 1. Replace Grid with Flexbox */
 .exams-content-layout {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  display: flex; /* Changed from grid to flex */
+  flex-direction: row !important; /* Forces them to stay side-by-side */
+  flex-wrap: nowrap !important; /* Strictly forbids the calendar from dropping down */
   gap: 30px;
-  align-items: start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* 🌟 2. Allow the List to stretch, but safely */
+.exams-list-section {
+  flex: 1; /* Takes up all the remaining space on the left */
+  min-width: 0; /* MAGIC RULE: Prevents the empty state box from blowing up the layout */
+}
+
+/* 🌟 3. Lock the Calendar to a strict width */
+.exams-calendar-section {
+  flex: 0 0 350px; /* Forces the calendar to be EXACTLY 350px wide, no growing, no shrinking */
+  width: 350px;
+  position: relative;
+}
+
+/* Ensure the empty state respects the new flex boundaries */
+.empty-state {
+  padding: 40px; 
+  text-align: center; 
+  background: #ffffff; 
+  border-radius: 16px; 
+  border: 1px dashed #cbd5e1;
+  width: 100%; /* Keeps it neatly inside its flex container */
+  box-sizing: border-box;
 }
 
 .section-title {
@@ -134,13 +161,6 @@
   color: #334155;
 }
 
-.empty-state {
-  padding: 40px; 
-  text-align: center; 
-  background: #ffffff; 
-  border-radius: 16px; 
-  border: 1px dashed #cbd5e1;
-}
 .empty-title { color: #64748b; font-weight: 600; font-size: 15px; margin: 0; }
 .empty-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
 
@@ -238,3 +258,19 @@
 
 .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #64748b; }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* 🌟 EXAMS MOBILE STACK 🌟 */
+@media (max-width: 768px) {
+  .exams-content-layout {
+    flex-direction: column !important; /* Forces the calendar under the list */
+  }
+  .exams-calendar-section {
+    width: 100% !important; /* Allows the calendar to stretch */
+    flex: none;
+  }
+  .exam-card {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}

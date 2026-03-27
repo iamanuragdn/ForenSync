@@ -171,6 +171,177 @@ app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
     }
 });
 
+// 🌟 REAL GLOBAL SEARCH ENDPOINT 🌟
+app.get('/api/search', async (req, res) => {
+  try {
+    const searchQuery = req.query.q;
+    if (!searchQuery) return res.json([]);
+
+    const q = searchQuery.toLowerCase();
+    let searchResults = [];
+
+    // ==========================================
+    // 🔍 1. SEARCH LOCAL STATIC SYLLABUS DATA
+    // ==========================================
+    if (syllabusData) {
+      for (const [progId, progData] of Object.entries(syllabusData)) {
+        // Search Program Titles
+        if (progData.name && progData.name.toLowerCase().includes(q)) {
+          searchResults.push({
+            title: progData.name,
+            description: "Full Program Syllabus",
+            type: "Program",
+            link: `/syllabus/${progId}`
+          });
+        }
+
+        // 🌟 NEW: Deep search into the semesters and subjects!
+        if (progData.semesters) {
+          for (const [semId, subjectsObj] of Object.entries(progData.semesters)) {
+            for (const [subjId, subjData] of Object.entries(subjectsObj)) {
+              
+              // Safely extract the subject name depending on how your data is structured
+              const subjectName = typeof subjData === 'string' ? subjData : (subjData.name || subjId);
+
+              if (subjectName.toLowerCase().includes(q)) {
+                // Prevent duplicate entries
+                const exists = searchResults.find(res => res.title === subjectName);
+                if (!exists) {
+                  searchResults.push({
+                    title: subjectName,
+                    description: `Semester ${semId.replace('sem-', '')} Subject`,
+                    type: "Subject",
+                    link: `/syllabus/${progId}/${semId}/${subjId}`
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // ==========================================
+    // 🔍 2. SEARCH FIREBASE: NOTES & PYQs (From Drive Sync)
+    // ==========================================
+    // CollectionGroup searches ALL collections named "Notes" anywhere in the database
+    const notesSnapshot = await db.collectionGroup('Notes').get();
+    notesSnapshot.forEach(doc => {
+      const data = doc.data();
+      const fileName = data.name || "";
+      
+      if (fileName.toLowerCase().includes(q)) {
+        searchResults.push({
+          title: fileName.replace('.pdf', ''), // Cleans up the title
+          description: `PDF Note Document`,
+          type: "Notes",
+          link: data.webViewLink || "#" // Opens directly in Google Drive viewer!
+        });
+      }
+    });
+
+    const pyqSnapshot = await db.collectionGroup('PYQ').get();
+    pyqSnapshot.forEach(doc => {
+      const data = doc.data();
+      const fileName = data.name || "";
+      
+      if (fileName.toLowerCase().includes(q)) {
+        searchResults.push({
+          title: fileName.replace('.pdf', ''),
+          description: `Past Year Question Paper`,
+          type: "PYQ",
+          link: data.webViewLink || "#" 
+        });
+      }
+    });
+
+    // ==========================================
+    // 🔍 3. SEARCH FIREBASE: QUESTION BANK (Mock Tests)
+    // ==========================================
+    const qBankSnapshot = await db.collection('question_bank').get();
+    qBankSnapshot.forEach(doc => {
+      const data = doc.data();
+      const subject = data.subject || "";
+      const text = data.question_text || "";
+
+      // If they search a subject name, show that there is a mock test for it!
+      if (subject.toLowerCase().includes(q) || text.toLowerCase().includes(q)) {
+        // Prevent duplicate mock test entries for the same subject
+        const exists = searchResults.find(res => res.title === `${subject} Mock Test`);
+        if (!exists) {
+          searchResults.push({
+            title: `${subject} Mock Test`,
+            description: `Generated from database of extracted questions.`,
+            type: "Practice",
+            link: `/practice` // Link to your Mock Test dashboard
+          });
+        }
+      }
+    });
+
+    // ==========================================
+    // 🔍 4. SEARCH FIREBASE: SUBJECTS (Syllabus)
+    // ==========================================
+    const subjectsSnapshot = await db.collectionGroup('subjects').get();
+    subjectsSnapshot.forEach(doc => {
+      const data = doc.data();
+      // Sometimes the name is in the document data, sometimes it's the document ID itself
+      const subjectName = data.name || doc.id; 
+
+      if (subjectName.toLowerCase().includes(q)) {
+        // 🌟 MAGIC TRICK: Extract the exact URL path from the Firebase Document Reference!
+        // Firebase paths look like: programs/btech-mtech-cybersecurity/semesters/sem-1/subjects/network-security
+        const pathParts = doc.ref.path.split('/');
+        
+        // Make sure it's a deeply nested subject before trying to route to it
+        if (pathParts.length >= 6) {
+          const progId = pathParts[1];
+          const semId = pathParts[3];
+          const subjId = pathParts[5];
+
+          // Prevent duplicates
+          const exists = searchResults.find(res => res.title === subjectName);
+          if (!exists) {
+            searchResults.push({
+              title: subjectName,
+              description: "View complete syllabus, modules, and resources.",
+              type: "Subject",
+              // Routes exactly to your detailed SyllabusDetail.jsx page!
+              link: `/syllabus/${progId}/${semId}/${subjId}` 
+            });
+          }
+        }
+      }
+    });
+
+    // ==========================================
+    // 🔍 5. SEARCH FIREBASE: UPCOMING EXAMS
+    // ==========================================
+    const examsSnapshot = await db.collectionGroup('exams').get();
+    examsSnapshot.forEach(doc => {
+      const data = doc.data();
+      // Adjust these variable names depending on what you called them in your database!
+      const title = data.title || data.courseName || data.subject || "Scheduled Exam";
+      const date = data.date || data.examDate || "";
+      
+      if (title.toLowerCase().includes(q)) {
+        searchResults.push({
+          title: `Exam: ${title}`,
+          description: date ? `Scheduled for: ${date}` : "Check Exams dashboard for timing.",
+          type: "Exam",
+          link: `/exams` // Routes to your Exams calendar page
+        });
+      }
+    });
+
+    // Send the top 15 results back to React so we don't overwhelm the UI
+    res.json(searchResults.slice(0, 15));
+
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ error: "Failed to perform search" });
+  }
+});
 
 // SYLLABUS ROUTES
 app.get("/api/programs/:programId/semesters", (req, res) => {

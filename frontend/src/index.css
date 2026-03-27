@@ -1,4 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* 🌟 GLOBAL BOX MODEL RESET 🌟 */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+button, input, select, textarea {
+  box-sizing: border-box !important;
+  margin: 0; 
+}
+
 :root {
   font-family: "Montserrat", sans-serif;
   line-height: 1.5;
@@ -14,4 +25,66 @@
   -moz-osx-font-smoothing: grayscale;
 
   min-height: 100vh;
+}
+
+/* 🌟 THE VITE NUKE: Kills default centering so your dashboard starts at the left edge! */
+body {
+  margin: 0;
+  padding: 0;
+  display: block !important; /* Overrides Vite's default 'display: flex' on the body */
+  min-height: 100vh;
+  place-items: unset !important; /* Stops it from centering the app */
+}
+
+#root {
+  max-width: 100% !important; /* Overrides Vite's default 1280px limit */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left !important;
+}
+
+/* 🌟 Locks the dashboard to the exact size of the window */
+.main-layout {
+  display: flex;
+  width: 100%; /* Changed from 100vw to 100% */
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Ensure the sidebar doesn't shrink */
+.app-sidebar {
+  width: 250px;
+  flex-shrink: 0; /* Prevents the sidebar from getting squished! */
+}
+
+/* 🌟 MOBILE SIDEBAR LOGIC 🌟 */
+/* 🌟 MOBILE SIDEBAR FIX 🌟 */
+@media (max-width: 768px) {
+  /* 1. Turns the sidebar into a floating drawer and hides it off-screen */
+  .app-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 9999;
+    width: 260px; /* Locks the width */
+    background: #ffffff;
+    transform: translateX(-100%); /* 🌟 Pushes it completely off the screen! */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+
+  /* 2. When the hamburger is clicked, it slides back in! */
+  body.mobile-sidebar-open .app-sidebar {
+    transform: translateX(0); 
+    box-shadow: 10px 0 25px rgba(0,0,0,0.15); /* Adds a shadow so it floats above the app */
+  }
+
+  /* 3. Forces the dashboard content to take up the full screen width */
+  .content-area {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+  }
 }

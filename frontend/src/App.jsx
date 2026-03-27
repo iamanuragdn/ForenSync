@@ -19,7 +19,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react'; // 🌟 Add these
 import { doc, onSnapshot } from 'firebase/firestore'; // 🌟 Add these
 import { db } from './firebase'; // 🌟 Add this so we can talk to the database
-
+import Search from './Components/Search';
 
 // 🌟 THE LIVE SECURITY GUARD
 function ProtectedLayout({ children }) {
@@ -119,6 +119,7 @@ function App() {
               <Route path="/pyq/:programId/:semesterId/:subjectId" element={<PYQNotes />} />
               <Route path="/exams" element={<Exams />} />
               <Route path="/admin" element={<AdminConsole />} />
+              <Route path="/search" element={<Search />} />
             </Routes>
           </ProtectedLayout>
         } />

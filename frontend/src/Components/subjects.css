@@ -352,3 +352,87 @@
 
 .mini-stat-card h2 { margin: 0; font-size: 1.5rem; color: #2d3748; font-weight: 700; }
 .mini-stat-card p { margin: 4px 0 0 0; font-size: 0.8rem; color: #64748b; font-weight: 500;}
+
+/* 🌟 DASHBOARD MOBILE UI OVERHAUL 🌟 */
+@media (max-width: 768px) {
+  .home-dashboard {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 16px; 
+  }
+  
+  /* 🌟 1. Welcome Banner: Compact Side-by-Side 🌟 */
+  .welcome-banner {
+    flex-direction: row !important; /* Forces text and circle to stay side-by-side */
+    padding: 20px 16px;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left !important;
+    gap: 12px;
+  }
+  
+  .welcome-content {
+    max-width: 65%; /* Leaves room for the circle */
+  }
+  
+  .welcome-content h1 {
+    font-size: 1.35rem; /* Shrinks the massive greeting */
+    margin: 6px 0 4px 0;
+  }
+  
+  .welcome-content p {
+    font-size: 0.85rem; /* Smaller subtext */
+    margin-bottom: 0; 
+  }
+
+  /* Shrink the Progress Circle */
+  .progress-circle {
+    width: 75px;  /* Shrunk down from 110px! */
+    height: 75px;
+    flex-shrink: 0;
+  }
+  
+  .progress-circle .percentage { font-size: 18px; }
+  .progress-circle .label { font-size: 9px; }
+
+  /* 🌟 2. Subject Cards: Slimmer Profile 🌟 */
+  .subjects-grid {
+    grid-template-columns: 1fr;
+    gap: 12px; /* Tighter gap between stacked cards */
+  }
+  
+  .subject-card {
+    min-height: auto; /* Kills the rigid desktop height constraint */
+  }
+  
+  .subject-icon-box {
+    width: 32px; 
+    height: 32px;
+    font-size: 0.9rem;
+    margin: 1rem 1rem 0.5rem 1rem; /* Tighter inner margins */
+  }
+  
+  .subject-card h3 {
+    font-size: 0.95rem; /* Drops the title size */
+    margin: 0 1rem 0.25rem 1rem;
+  }
+  
+  .subject-card p {
+    font-size: 0.8rem; /* Drops the description size */
+    margin: 0 1rem 0.75rem 1rem;
+  }
+  
+  .card-footer {
+    padding: 0.6rem 1rem; /* Slimmer footer box */
+  }
+
+  /* 🌟 3. Stack the Widgets 🌟 */
+  .dashboard-right {
+    gap: 16px;
+  }
+  
+  .mini-stats-row {
+    flex-direction: column; /* Stacks the stat boxes safely */
+    gap: 12px;
+  }
+}

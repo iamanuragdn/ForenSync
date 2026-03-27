@@ -49,7 +49,7 @@ function SemesterSelect() {
       </div>
 
       
-      <div className="hero-section">
+      <div className="semester-hero-section">
         <div className="hero-content">
           <h1>{formatTitle(programId)}</h1>
           <p>Select a semester below to access the complete syllabus, subject details.</p>
@@ -57,13 +57,6 @@ function SemesterSelect() {
           <div className="stats-row">
             <span>{semesters.length} Semesters</span>
             <span>42 Subjects</span> 
-          </div>
-        </div>
-        
-        <div className="hero-graphic">
-          <div className="graphic-overlay">
-            <span className="shield-icon">🛡️</span>
-            <h3>Department of Computer Science</h3>
           </div>
         </div>
       </div>

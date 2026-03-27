@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider, db } from '../firebase'; 
 import { doc, getDoc } from 'firebase/firestore'; 
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from 'firebase/auth';
 import './Login.css';
 
 import campusImage from '../assets/nfsu-campus.jpeg';
@@ -65,29 +65,87 @@ function Login() {
     setLoading(false);
   };
 
+  // 🌟 NEW: Password Reset Function
+  const handleForgotPassword = async () => {
+    setError('');
+    // Ensure they actually typed an email before clicking the button
+    if (!email) {
+      setError("Please type your email into the box first, then click 'Forgot Password'.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      // Give them a success message in the exact same style as your other errors/alerts!
+      setError("Success! 📩 We've sent a password reset link to your email.");
+    } catch (err) {
+      console.error(err);
+      if (err.code === 'auth/invalid-email') {
+        setError("Please enter a valid email address.");
+      } else {
+        // Firebase recently changed security rules to not reveal if an email exists or not, 
+        // so a generic error is safest here.
+        setError("If an account exists with this email, a reset link has been sent.");
+      }
+    }
+    setLoading(false);
+  };
+
   const handleEmailAuth = async (e) => {
     e.preventDefault();
     setError('');
 
-    // 🌟 1. Front-End Validation: Check password length before bothering Firebase
+    // 🌟 1. Front-End Validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
-      return; // Stops the function right here!
+      return; 
     }
 
     setLoading(true);
     try {
       let userCredential;
+      
       if (isLoginMode) {
+        // ==========================================
+        // 🔐 SIGN IN MODE
+        // ==========================================
         userCredential = await signInWithEmailAndPassword(auth, email, password);
+        
+        // Check if they verified their email before letting them in!
+        if (!userCredential.user.emailVerified) {
+          await signOut(auth); // Kick them out
+          setError("Please verify your email address before logging in. Check your inbox for the link!");
+          setLoading(false);
+          return; // Stop the function completely
+        }
+
       } else {
+        // ==========================================
+        // 📝 SIGN UP MODE
+        // ==========================================
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Send the Verification Email automatically
+        await sendEmailVerification(userCredential.user);
+        
+        // Sign them out immediately
+        await signOut(auth);
+        
+        // Switch UI to Login Mode and show success message
+        setIsLoginMode(true);
+        setError("Account created! 📩 We've sent a verification link to your email. Please click it before logging in.");
+        setLoading(false);
+        return; // 🌟 THE FIX: This stops checkUserAndRedirect from running and crashing!
       }
+
+      // If they are logging in AND verified, send them to the dashboard/onboarding!
       await checkUserAndRedirect(userCredential.user);
+
     } catch (err) {
       console.error(err);
       
-      // 🌟 2. Friendly Error Translations based on Firebase Error Codes
+      // Friendly Error Translations
       if (err.code === 'auth/invalid-credential') {
         setError("Invalid email or password. If you don't have an account, please click 'Sign up here' below!");
       } else if (err.code === 'auth/email-already-in-use') {
@@ -97,7 +155,6 @@ function Login() {
       } else if (err.code === 'auth/network-request-failed') {
         setError("Network error. Please check your internet connection.");
       } else {
-        // Fallback for any other weird errors
         setError("Oops! Something went wrong. Please try again.");
       }
     }
@@ -166,6 +223,13 @@ function Login() {
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
               />
+
+              {isLoginMode && (
+                <p className="forgot-password" onClick={handleForgotPassword}>
+                  Forgot Password?
+                </p>
+              )}
+              
               <button type="submit" className="btn-primary" disabled={loading}>
                 {loading ? "⏳ Processing..." : (isLoginMode ? "Sign In" : "Sign Up")}
               </button>
