@@ -16,7 +16,7 @@ function SyllabusDetail() {
       setError(null);
 
       try {
-        const response = await fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}/${subjectId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${semesterId}/${subjectId}`);
         
         if (!response.ok) {
           throw new Error("Failed to fetch subject details from the server.");

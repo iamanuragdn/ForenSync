@@ -11,7 +11,7 @@ function Syllabus() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${semesterId}`)
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {

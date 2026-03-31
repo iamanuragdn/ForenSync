@@ -18,7 +18,7 @@ function MockTest() {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/get-subjects');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/get-subjects`);
         if (response.ok) {
           const data = await response.json();
           setSubjects(data);
@@ -39,7 +39,7 @@ function MockTest() {
     setTestError(null);
     
     try {
-      const response = await fetch(`http://localhost:5001/api/get-test?subject=${encodeURIComponent(selectedSubject)}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/get-test?subject=${encodeURIComponent(selectedSubject)}`);
       if (!response.ok) throw new Error("Failed to fetch questions.");
       const data = await response.json();
       setActiveQuestions(data);
@@ -94,7 +94,7 @@ function MockTest() {
     formData.append('paper', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:5001/api/instant-test', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/instant-test`, {
         method: 'POST',
         body: formData,
       });

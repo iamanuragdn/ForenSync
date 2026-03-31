@@ -46,7 +46,7 @@ function Navbar() {
 
     const delayDebounceFn = setTimeout(async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/search?q=${encodeURIComponent(searchQuery.trim())}`);
         const data = await res.json();
         setLiveSuggestions(data.slice(0, 4)); 
       } catch (error) {

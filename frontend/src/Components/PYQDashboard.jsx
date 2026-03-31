@@ -30,7 +30,7 @@ function PYQDashboard() {
     if (!user) return; 
 
 
-    fetch(`http://localhost:5001/api/programs/${programId}/semesters`)
+    fetch(`${import.meta.env.VITE_API_URL}/programs/${programId}/semesters`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setSemesters(data);
@@ -44,7 +44,7 @@ function PYQDashboard() {
     if (!user || !selectedSemester) return; 
 
 
-    fetch(`http://localhost:5001/api/syllabus/${programId}/${selectedSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${selectedSemester}`)
       .then(res => {
         if (!res.ok) throw new Error("Semester not found");
         return res.json();

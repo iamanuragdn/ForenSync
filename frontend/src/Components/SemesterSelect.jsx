@@ -16,7 +16,7 @@ function SemesterSelect() {
       setError(null);
 
       try {
-        const response = await fetch(`http://localhost:5001/api/programs/${programId}/semesters`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/programs/${programId}/semesters`);
         
         if (!response.ok) {
           throw new Error("Failed to fetch semester data from the server.");

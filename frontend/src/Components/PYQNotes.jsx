@@ -14,7 +14,7 @@ function PYQNotes() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:5001/api/notes/${programId}/${semesterId}/${subjectId}?type=PYQ`)
+    fetch(`${import.meta.env.VITE_API_URL}/notes/${programId}/${semesterId}/${subjectId}?type=PYQ`)
       .then(res => res.json())
       .then(data => {
         const sortedFiles = (data.files || []).sort((a, b) => 
@@ -36,7 +36,7 @@ function PYQNotes() {
 
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${semesterId}`)
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {
@@ -53,7 +53,7 @@ function PYQNotes() {
   const handleSync = async () => {
     setIsSyncing(true); 
     try {
-      const response = await fetch("http://localhost:5001/api/admin/sync", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/sync`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

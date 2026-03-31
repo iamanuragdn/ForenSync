@@ -26,7 +26,7 @@ function AdminConsole() {
     // Only fetch if the user is actually an admin!
     if (!user || user.role !== 'Admin') return; 
 
-    fetch(`http://localhost:5001/api/drive/folders?parentId=${currentFolderId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/drive/folders?parentId=${currentFolderId}`)
       .then(res => res.json())
       .then(data => setFolders(data))
       .catch(err => console.error(err));
@@ -58,7 +58,7 @@ function AdminConsole() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5001/api/admin/upload', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload`, {
         method: 'POST',
         body: formData,
       });

@@ -22,7 +22,7 @@ function SubjectNotes() {
         btn.innerText = "⏳ Syncing...";
         btn.disabled = true;
 
-        const response = await fetch("http://localhost:5001/api/admin/sync", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/sync`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -57,7 +57,7 @@ function SubjectNotes() {
   useEffect(() => {
     setLoading(true); 
 
-    fetch(`http://localhost:5001/api/notes/${programId}/${semesterId}/${subjectId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/notes/${programId}/${semesterId}/${subjectId}`)
       .then(res => res.json())
       .then(data => {
         if (data.error) {
@@ -84,7 +84,7 @@ function SubjectNotes() {
   }, [programId, semesterId, subjectId, refreshTrigger]);
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${semesterId}`)
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {

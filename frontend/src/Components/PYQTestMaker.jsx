@@ -25,7 +25,7 @@ function PYQTestMaker() {
 
     try {
       // Calls instant-test route!
-      const response = await fetch("http://localhost:5001/api/instant-test", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/instant-test`, {
         method: "POST",
         body: formData,
       });

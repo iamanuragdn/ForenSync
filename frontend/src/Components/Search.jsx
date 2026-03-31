@@ -20,7 +20,7 @@ useEffect(() => {
     const fetchSearchResults = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:5001/api/search?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/search?q=${encodeURIComponent(query)}`);
         if (!response.ok) throw new Error('Search failed');
         
         const data = await response.json();

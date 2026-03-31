@@ -89,7 +89,7 @@ function Exams() {
   });
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/exams/${userContext.programId}/${userContext.semesterId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/exams/${userContext.programId}/${userContext.semesterId}`)
       .then(res => res.json())
       .then(data => {
         const processedExams = data.map(exam => {

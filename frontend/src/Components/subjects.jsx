@@ -34,7 +34,7 @@ function Subjects() {
 
     const activeProgramId = parsedUser.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : parsedUser.programId;
 
-    fetch(`http://localhost:5001/api/syllabus/${activeProgramId}/${viewingSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${activeProgramId}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {
@@ -57,7 +57,7 @@ function Subjects() {
     const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
     const fetchSemester = user.semesterId || "sem-1"; 
 
-    fetch(`http://localhost:5001/api/exams/${activeProgramId}/${fetchSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/exams/${activeProgramId}/${fetchSemester}`)
       .then(res => res.json())
       .then(data => {
         const today = new Date();
@@ -87,7 +87,7 @@ function Subjects() {
     if (!user) return; 
     const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
 
-    fetch(`http://localhost:5001/api/semester-info/${activeProgramId}/${viewingSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/semester-info/${activeProgramId}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
         if (data.startDate && data.endDate) {
