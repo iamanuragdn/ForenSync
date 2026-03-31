@@ -11,18 +11,15 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 async function uploadToFirestore() {
-  console.log("🚀 Starting upload to Firestore...");
 
   try {
     for (const [programId, programData] of Object.entries(syllabusData)) {
-      console.log(`\n📂 Processing Program: ${programId}`);
       
       const programRef = db.collection("programs").doc(programId);
       await programRef.set({ name: programData.programName }, { merge: true });
 
       if (programData.semesters) {
         for (const [semesterId, subjectsObj] of Object.entries(programData.semesters)) {
-          console.log(`  ↳ 📁 Processing Semester: ${semesterId}`);
           
           const semesterRef = programRef.collection("semesters").doc(semesterId);
           const batch = db.batch(); 
@@ -57,11 +54,9 @@ async function uploadToFirestore() {
           }, { merge: true });
 
           await batch.commit();
-          console.log(`    ✅ Uploaded ${totalSubjects} subjects for ${semesterId}`);
         }
       }
     }
-    console.log("\n🎉 ALL DATA UPLOADED SUCCESSFULLY!");
     process.exit(0);
 
   } catch (error) {

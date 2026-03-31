@@ -8,15 +8,12 @@ const path = require("path");
 const { google } = require('googleapis'); 
 
 const syllabusData = require("./syllabusData");
-const examData = require("./examData"); // 🌟 NEW: Import your exam dates!
+const examData = require("./examData");
 
-
-// Import extractor
 const { extractQuestions } = require("./extractor"); 
 
 const stream = require("stream");
 
-// Initialize Firebase Database Connection
 const serviceAccount = require("./serviceAccountKey.json");
 if (!admin.apps.length) {
     admin.initializeApp({
@@ -25,14 +22,11 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
-// Initialize Express Server
 const app = express();
-// app.use(cors({ origin: "http://localhost:5173" }));
-app.use(cors({ origin: "*" })); // Allows any frontend to connect temporarily
+app.use(cors({ origin: "*" }));
 
 app.use(express.json());
 
-// Serve static files for the downloaded PDFs
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -88,7 +82,6 @@ async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
 
 app.post("/api/sync-drive", async (req, res) => {
     try {
-        console.log("🚀 Starting deep sync from Google Drive...");
 
         // Authenticate Google Drive
         const auth = new google.auth.GoogleAuth({
@@ -99,7 +92,6 @@ app.post("/api/sync-drive", async (req, res) => {
         
         const ROOT_NFSU_FOLDER_ID = '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
 
-        // Crawl Programs (btech-mtech-cybersecurity)
         const programs = await getDriveChildren(ROOT_NFSU_FOLDER_ID, drive, true);
         
         for (const prog of programs) {
@@ -138,7 +130,6 @@ app.post("/api/sync-drive", async (req, res) => {
                 }
             }
         }
-        console.log("✅ Sync complete!");
         res.json({ message: "Drive Sync successful! Database updated." });
     } catch (error) {
         console.error("Sync failed.", error);
@@ -147,13 +138,11 @@ app.post("/api/sync-drive", async (req, res) => {
 });
 
 
-// Firebase Fetch
 app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
     try {
         const { programId, semesterId, subjectId } = req.params;
         const type = req.query.type || 'Notes'; 
 
-        // grab the cached files from Firebase Database
         const snapshot = await db.collection("programs").doc(programId)
                                  .collection("semesters").doc(semesterId)
                                  .collection("subjects").doc(subjectId)
@@ -173,7 +162,7 @@ app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
     }
 });
 
-// 🌟 REAL GLOBAL SEARCH ENDPOINT 🌟
+// GLOBAL SEARCH ENDPOINT
 app.get('/api/search', async (req, res) => {
   try {
     const searchQuery = req.query.q;
@@ -182,12 +171,9 @@ app.get('/api/search', async (req, res) => {
     const q = searchQuery.toLowerCase();
     let searchResults = [];
 
-    // ==========================================
-    // 🔍 1. SEARCH LOCAL STATIC SYLLABUS DATA
-    // ==========================================
+    // 1. SEARCH LOCAL STATIC SYLLABUS DATA
     if (syllabusData) {
       for (const [progId, progData] of Object.entries(syllabusData)) {
-        // Search Program Titles
         if (progData.name && progData.name.toLowerCase().includes(q)) {
           searchResults.push({
             title: progData.name,
@@ -197,7 +183,6 @@ app.get('/api/search', async (req, res) => {
           });
         }
 
-        // 🌟 NEW: Deep search into the semesters and subjects!
         if (progData.semesters) {
           for (const [semId, subjectsObj] of Object.entries(progData.semesters)) {
             for (const [subjId, subjData] of Object.entries(subjectsObj)) {
@@ -206,7 +191,6 @@ app.get('/api/search', async (req, res) => {
               const subjectName = typeof subjData === 'string' ? subjData : (subjData.name || subjId);
 
               if (subjectName.toLowerCase().includes(q)) {
-                // Prevent duplicate entries
                 const exists = searchResults.find(res => res.title === subjectName);
                 if (!exists) {
                   searchResults.push({
@@ -223,9 +207,7 @@ app.get('/api/search', async (req, res) => {
       }
     }
 
-    // ==========================================
-    // 🔍 2. SEARCH FIREBASE: NOTES & PYQs (From Drive Sync)
-    // ==========================================
+    // 2. SEARCH FIREBASE: NOTES & PYQs
     // CollectionGroup searches ALL collections named "Notes" anywhere in the database
     const notesSnapshot = await db.collectionGroup('Notes').get();
     notesSnapshot.forEach(doc => {
@@ -234,10 +216,10 @@ app.get('/api/search', async (req, res) => {
       
       if (fileName.toLowerCase().includes(q)) {
         searchResults.push({
-          title: fileName.replace('.pdf', ''), // Cleans up the title
+          title: fileName.replace('.pdf', ''),
           description: `PDF Note Document`,
           type: "Notes",
-          link: data.webViewLink || "#" // Opens directly in Google Drive viewer!
+          link: data.webViewLink || "#"
         });
       }
     });
@@ -257,33 +239,27 @@ app.get('/api/search', async (req, res) => {
       }
     });
 
-    // ==========================================
-    // 🔍 3. SEARCH FIREBASE: QUESTION BANK (Mock Tests)
-    // ==========================================
+    // 3. SEARCH FIREBASE: QUESTION BANK (Mock Tests)
     const qBankSnapshot = await db.collection('question_bank').get();
     qBankSnapshot.forEach(doc => {
       const data = doc.data();
       const subject = data.subject || "";
       const text = data.question_text || "";
 
-      // If they search a subject name, show that there is a mock test for it!
       if (subject.toLowerCase().includes(q) || text.toLowerCase().includes(q)) {
-        // Prevent duplicate mock test entries for the same subject
         const exists = searchResults.find(res => res.title === `${subject} Mock Test`);
         if (!exists) {
           searchResults.push({
             title: `${subject} Mock Test`,
             description: `Generated from database of extracted questions.`,
             type: "Practice",
-            link: `/practice` // Link to your Mock Test dashboard
+            link: `/practice`
           });
         }
       }
     });
 
-    // ==========================================
-    // 🔍 4. SEARCH FIREBASE: SUBJECTS (Syllabus)
-    // ==========================================
+    // 4. SEARCH FIREBASE: SUBJECTS (Syllabus)
     const subjectsSnapshot = await db.collectionGroup('subjects').get();
     subjectsSnapshot.forEach(doc => {
       const data = doc.data();
@@ -291,7 +267,7 @@ app.get('/api/search', async (req, res) => {
       const subjectName = data.name || doc.id; 
 
       if (subjectName.toLowerCase().includes(q)) {
-        // 🌟 MAGIC TRICK: Extract the exact URL path from the Firebase Document Reference!
+        // Extract the exact URL path from the Firebase Document Reference
         // Firebase paths look like: programs/btech-mtech-cybersecurity/semesters/sem-1/subjects/network-security
         const pathParts = doc.ref.path.split('/');
         
@@ -301,14 +277,12 @@ app.get('/api/search', async (req, res) => {
           const semId = pathParts[3];
           const subjId = pathParts[5];
 
-          // Prevent duplicates
           const exists = searchResults.find(res => res.title === subjectName);
           if (!exists) {
             searchResults.push({
               title: subjectName,
               description: "View complete syllabus, modules, and resources.",
               type: "Subject",
-              // Routes exactly to your detailed SyllabusDetail.jsx page!
               link: `/syllabus/${progId}/${semId}/${subjId}` 
             });
           }
@@ -316,13 +290,10 @@ app.get('/api/search', async (req, res) => {
       }
     });
 
-    // ==========================================
-    // 🔍 5. SEARCH FIREBASE: UPCOMING EXAMS
-    // ==========================================
+    // 5. SEARCH FIREBASE: UPCOMING EXAMS
     const examsSnapshot = await db.collectionGroup('exams').get();
     examsSnapshot.forEach(doc => {
       const data = doc.data();
-      // Adjust these variable names depending on what you called them in your database!
       const title = data.title || data.courseName || data.subject || "Scheduled Exam";
       const date = data.date || data.examDate || "";
       
@@ -331,12 +302,11 @@ app.get('/api/search', async (req, res) => {
           title: `Exam: ${title}`,
           description: date ? `Scheduled for: ${date}` : "Check Exams dashboard for timing.",
           type: "Exam",
-          link: `/exams` // Routes to your Exams calendar page
+          link: `/exams`
         });
       }
     });
 
-    // Send the top 15 results back to React so we don't overwhelm the UI
     res.json(searchResults.slice(0, 15));
 
   } catch (error) {
@@ -458,14 +428,12 @@ async function processFileInBackground(fileBuffer, mimeType) {
         });
 
         await batch.commit();
-        console.log("Background: Success! Pipeline complete. ✅");
     } catch (error) {
         console.error("🔥 Background Worker Failed:", error);
     }
 }
 
 
-// 🌟 UPGRADED: FETCH EXAMS FOR CALENDAR (From Local File)
 app.get('/api/exams/:programId/:semesterId', async (req, res) => {
   try {
     const { programId, semesterId } = req.params;
@@ -513,12 +481,10 @@ app.get('/api/drive/folders', async (req, res) => {
     }
 });
 
-// 🌟 NEW: SYNC DRIVE ROUTE (Cleans up missing/trashed files)
 app.post('/api/admin/sync', async (req, res) => {
     try {
         const { programId, semesterId, subjectId, type } = req.body;
 
-        console.log(`🔄 Starting sync for: ${subjectId} / ${type}`);
 
         // 1. Authenticate with Google Drive
         const oauth2Client = new google.auth.OAuth2(
@@ -553,14 +519,12 @@ app.post('/api/admin/sync', async (req, res) => {
                 if (driveFile.data.trashed) {
                     await collectionRef.doc(fileId).delete();
                     deletedCount++;
-                    console.log(`🗑️ Cleaned up trashed file: ${doc.data().name}`);
                 }
             } catch (error) {
                 // Error 404 means the file was permanently deleted from Drive
                 if (error.code === 404 || error.status === 404) {
                     await collectionRef.doc(fileId).delete();
                     deletedCount++;
-                    console.log(`🧨 Cleaned up missing file: ${doc.data().name}`);
                 } else {
                     console.error(`Warning: Couldn't check file ${fileId}`, error.message);
                 }
@@ -570,7 +534,6 @@ app.post('/api/admin/sync', async (req, res) => {
         // Wait for all the checks to finish
         await Promise.all(checkPromises);
 
-        console.log(`✅ Sync complete. Removed ${deletedCount} ghost files.`);
         res.status(200).json({ 
             message: `Sync complete! Removed ${deletedCount} missing files.`,
             deletedCount: deletedCount 
@@ -582,7 +545,6 @@ app.post('/api/admin/sync', async (req, res) => {
     }
 });
 
-// 🌟 NEW: ADMIN FIREBASE UPLOADER (Strictly OAuth 2.0 Version)
 app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     try {
         const { targetDriveFolderId, programId, semesterId, subjectId, type, fileName } = req.body;
@@ -590,9 +552,6 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
 
-        console.log("🚀 Starting OAuth Upload...");
-        console.log("Client ID loaded:", !!process.env.GDRIVE_CLIENT_ID);
-        console.log("Refresh Token loaded:", !!process.env.GDRIVE_REFRESH_TOKEN);
 
         // 1. Authenticate with OAuth2 (Bypassing the Service Account entirely)
         const oauth2Client = new google.auth.OAuth2(
@@ -612,7 +571,6 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         bufferStream.end(fileObject.buffer);
 
         // 3. Upload the file
-        console.log("Uploading to folder:", targetDriveFolderId);
         const driveResponse = await uploadDrive.files.create({
             requestBody: {
                 name: fileName || fileObject.originalname,
@@ -626,7 +584,6 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         });
 
         const fileId = driveResponse.data.id;
-        console.log("✅ Uploaded! File ID:", fileId);
 
         // 4. Make it readable by anyone
         await uploadDrive.permissions.create({
@@ -726,8 +683,6 @@ app.post("/api/instant-test", upload.single("paper"), async (req, res) => {
   }
 });
 
-// Start the Server
-// const PORT = 5001;
-// app.listen(PORT, () => console.log(`🚀 ForenSync Master Server running on port ${PORT}`));
-const PORT = process.env.PORT || 5001; // 🌟 Let the cloud provider choose the port
+const PORT = process.env.PORT || 5001; 
+
 app.listen(PORT, () => console.log(`🚀 ForenSync Master Server running on port ${PORT}`));

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 function PYQTestMaker() {
-  // Setup Phase
+
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // Active Test Phase
+
   const [testActive, setTestActive] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,7 +42,7 @@ function PYQTestMaker() {
     }
   };
 
-  // ACTIVE TEST CARD
+
   if (testActive && questions.length > 0) {
     const currentQ = questions[currentIndex];
 

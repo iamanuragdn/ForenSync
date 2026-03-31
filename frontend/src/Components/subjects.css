@@ -214,7 +214,7 @@
 
 .next-exam-widget { 
   border: 1px solid var(--border-color); 
-  height: auto !important; /* Overrides any strict heights preventing it from stretching */
+  height: auto !important; 
   min-height: fit-content; 
   display: flex;
   flex-direction: column;
@@ -223,18 +223,16 @@
 .countdown { text-align: center; margin-bottom: 20px; }
 .countdown h2 { font-size: 2.5rem; margin: 0; color: var(--text-primary); font-weight: 700; }
 .countdown h2 span { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
-/* 🌟 Spacing fix for the exam text so it doesn't crush the button */
 .countdown p { 
   margin: 8px 0 24px 0; 
   color: var(--text-secondary); 
   font-size: 0.9rem; 
   line-height: 1.5; 
-  padding: 0 10px; /* Keeps long subject names from hitting the edges */
+  padding: 0 10px; 
 }
 
-/* 🌟 2. Bulletproof Button Styling */
 .widget-btn-outline { 
-  box-sizing: border-box; /* 🌟 THE FIX: Forces padding to stay INSIDE the 100% width! */
+  box-sizing: border-box; 
   width: 100%; 
   background: var(--bg-card); 
   border: 1px solid var(--border-color); 
@@ -246,7 +244,7 @@
   cursor: pointer; 
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-  margin-top: auto; /* 🌟 Pushes the button perfectly to the bottom edge of the card */
+  margin-top: auto; 
 }
 
 .widget-btn-outline:hover { 
@@ -354,23 +352,19 @@
 .mini-stat-card h2 { margin: 0; font-size: 1.5rem; color: var(--text-primary); font-weight: 700; }
 .mini-stat-card p { margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;}
 
-/* 💻 TABLET UI OVERHAUL (For iPads and narrow windows: 769px to 1100px) */
 @media (max-width: 1100px) and (min-width: 769px) {
   
-  /* 1. Perfect Dashboard Balance now that the sidebar is hidden! */
   .home-dashboard {
-    grid-template-columns: 2.2fr 1fr !important; /* Balances the left and right sides perfectly */
-    padding: 24px; /* Reduced from 40px to maximize screen real estate */
+    grid-template-columns: 2.2fr 1fr !important;
+    padding: 24px;
     gap: 24px;
   }
 
-  /* 2. Keep 2 neat columns for subjects */
   .subjects-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 16px;
   }
 
-  /* Adjust fonts slightly for the two-column fit */
   .subject-card h3 {
     font-size: 1.05rem;
   }
@@ -378,20 +372,18 @@
     font-size: 0.85rem;
   }
 
-  /* 3. 🌟 Put Attendance and CGPA back side-by-side! 🌟 */
   .mini-stats-row {
-    flex-direction: row !important; /* Changed from column back to row! */
+    flex-direction: row !important;
     gap: 12px;
   }
 
   .mini-stat-card {
-    flex: 1 !important; /* Makes them share the width equally 50/50 */
+    flex: 1 !important;
     width: auto !important; 
     min-height: auto !important; 
-    padding: 16px 10px !important; /* Tighter inner padding so text doesn't hit the edges */
+    padding: 16px 10px !important;
   }
 
-  /* Shrink the text inside the boxes slightly so they don't break onto new lines */
   .mini-stat-card h2 {
     font-size: 1.25rem !important; 
   }
@@ -401,7 +393,6 @@
   }
 }
 
-/* 🌟 DASHBOARD MOBILE UI OVERHAUL 🌟 */
 @media (max-width: 768px) {
   .home-dashboard {
     grid-template-columns: 1fr;
@@ -409,17 +400,14 @@
     gap: 20px; 
   }
 
-  /* 🌟 Fixes the large vertical gaps between the banner, header, and cards */
   .dashboard-left {
-    gap: 12px !important; /* Shrunk from the desktop 24px */
+    gap: 12px !important;
   }
 
-  /* Optional: If you want the cards to tuck even closer to the dropdown */
   .subjects-grid {
     margin-top: -4px; 
   }
   
-  /* 1. Welcome Banner */
   .welcome-banner {
     flex-direction: row !important; 
     padding: 20px 16px;
@@ -443,8 +431,6 @@
     margin-bottom: 0; 
   }
 
-  /* Inside your @media (max-width: 768px) block */
-  
   .progress-circle {
     width: 75px;  
     height: 75px;
@@ -453,17 +439,16 @@
   
   .progress-circle .percentage { 
     font-size: 18px; 
-    margin-bottom: 2px; /* Pulls the number up slightly to give the text room */
+    margin-bottom: 2px;
   }
   
   .progress-circle .label { 
-    font-size: 7px; /* 🌟 Shrunk from 9px to 7px */
-    letter-spacing: 0.2px; /* Tightens the letters so it fits better */
+    font-size: 7px;
+    letter-spacing: 0.2px;
   }
 
-  /* 🌟 2. Section Header: Compact Dropdown 🌟 */
   .section-header {
-    flex-direction: row; /* Keep it horizontal */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
@@ -471,19 +456,18 @@
   }
 
   .header-title h2 {
-    font-size: 1.15rem; /* Slightly smaller to fit */
+    font-size: 1.15rem;
   }
   
   .section-header select {
-    width: auto; /* Shrink to fit text */
-    padding: 6px 10px; /* Tighter padding */
+    width: auto;
+    padding: 6px 10px;
     font-size: 0.85rem;
-    max-width: 140px; /* Prevent it from getting too wide */
+    max-width: 140px;
   }
 
-  /* 🌟 3. Subject Cards: 2-Column Layout 🌟 */
   .subjects-grid {
-    grid-template-columns: repeat(2, 1fr); /* Force 2 columns! */
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px; 
   }
   
@@ -501,10 +485,9 @@
   }
   
   .subject-card h3 {
-    font-size: 1rem; /* Smaller to fit 2 columns */
+    font-size: 1rem;
     margin: 0 0.75rem 0.25rem 0.75rem;
     line-height: 1.2;
-    /* Ensure long words break properly if needed */
     word-break: break-word; 
   }
   
@@ -523,28 +506,25 @@
     padding: 3px 6px;
   }
 
-  /* 🌟 4. Widgets Distinction & Alignment 🌟 */
   .dashboard-right {
     gap: 16px;
     margin-top: 10px;
   }
 
-  /* Make widgets stand out from subject cards */
   .widget, .next-exam-widget {
-    background: var(--bg-hover); /* Subtle grey background */
-    border: 1px solid var(--border-color); /* Slightly darker border */
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
   }
   
-  /* Place stats side-by-side */
   .mini-stats-row {
-    flex-direction: row; /* Force side-by-side */
+    flex-direction: row;
     justify-content: space-between;
     gap: 12px;
     margin-top: 0;
   }
 
   .mini-stat-card {
-    flex: 1; /* Both take 50% width */
+    flex: 1;
     min-height: auto;
     padding: 12px;
     background: var(--bg-hover);
@@ -565,14 +545,10 @@
   }
 }
 
-/* 🌟 INSTANT TOUCH FEEDBACK FOR MOBILE 🌟 */
-  
-  /* Speeds up the animation so the touch feels instant */
   .subject-card, .mini-stat-card, .widget-btn-outline {
     transition: all 0.15s ease !important; 
   }
 
-  /* Triggers the exact PC hover effect the moment a finger touches */
   .subject-card:active {
     transform: translateY(-4px) !important;
     box-shadow: 0 12px 20px rgba(0,0,0,0.04) !important;

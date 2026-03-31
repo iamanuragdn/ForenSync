@@ -1,9 +1,5 @@
-/* src/Components/Login.css */
-
-/* 🌟 1. UNIFIED FONTS: Clean Sans-Serif only (Inter & Plus Jakarta Sans) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
-/* Apply base font */
 .landing-wrapper {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -163,13 +159,13 @@
   margin: 0 0 25px 0;
 }
 
-/* 🌟 PREMIUM ERROR ALERT BOX */
+/* PREMIUM ERROR ALERT BOX */
 .auth-error {
-  background-color: #fef2f2; /* Soft, modern red background */
-  color: #dc2626; /* Deep red text for perfect readability */
-  border: 1px solid #fecaca; /* Subtle red border */
+  background-color: #fef2f2; 
+  color: #dc2626; 
+  border: 1px solid #fecaca; 
   padding: 12px 16px;
-  border-radius: 12px; /* Matches your input fields exactly */
+  border-radius: 12px; 
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
@@ -177,7 +173,6 @@
   margin-bottom: 20px;
   line-height: 1.5;
   
-  /* Adds a premium "shake" effect when the error appears */
   animation: errorShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
@@ -381,7 +376,7 @@
   border: 1px solid var(--border-color); 
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* 🌟 Aligns everything to the left */
+  align-items: flex-start; 
   text-align: left; 
   transition: all 0.3s ease; 
 }
@@ -403,14 +398,13 @@
   border-radius: 16px; 
   transition: all 0.3s ease;
 }
-/* Beautiful pastel gradients for each card */
 .icon-blue { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; }
 .icon-purple { background: linear-gradient(135deg, #faf5ff, #f3e8ff); border: 1px solid #e9d5ff; }
 .icon-orange { background: linear-gradient(135deg, #fff7ed, #ffedd5); border: 1px solid #fed7aa; }
 .icon-green { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #bbf7d0; }
 
 .feature-card:hover .feature-icon {
-  transform: scale(1.1) rotate(-5deg); /* Adds a playful tilt on hover */
+  transform: scale(1.1) rotate(-5deg); 
   box-shadow: 0 8px 16px rgba(0,0,0,0.05);
 }
 
@@ -432,7 +426,6 @@
   border-bottom: 1px solid var(--border-color); 
 }
 
-/* 🌟 CUSTOM CHECKLIST STYLING */
 .feature-list {
   list-style: none;
   padding: 0;
@@ -454,10 +447,9 @@
   line-height: 1.4;
 }
 
-/* 🌟 Creates a custom blue checkmark for every list item */
 .feature-list li::before {
   content: "✓";
-  color: var(--accent-blue); /* Brand blue */
+  color: var(--accent-blue); 
   font-weight: 900;
   font-size: 0.95rem;
 }
@@ -468,25 +460,22 @@
 .team-section { 
   position: relative;
   padding: 80px 20px 100px; 
-  background: var(--bg-card); /* Pure white background */
+  background: var(--bg-card); 
   text-align: center; 
 }
 
-/* 🌟 THE FLAWLESS WAVE FIX */
 .team-section::before {
   content: "";
   position: absolute;
-  /* Pulls it up just enough to prevent a tiny gap */
   top: -14px; 
   left: 0;
   width: 100%;
-  height: 15px; /* 🌟 Matches the height of the hero wave */
+  height: 15px; 
   background-color: var(--bg-card); 
   
   -webkit-mask-image: var(--campus-wave-mask);
   mask-image: var(--campus-wave-mask);
   
-  /* 🌟 THE FIX: Scaled down to 30px 15px exactly like the top section! */
   -webkit-mask-size: 30px 15px;
   mask-size: 30px 15px;
   
@@ -515,35 +504,32 @@
 
 .team-grid { 
   display: grid; 
-  grid-template-columns: repeat(5, 1fr); /* 🌟 Explicitly set to 5 columns */
-  gap: 32px; /* 🌟 Much wider gap so they stop touching each other */
-  max-width: 1450px; /* 🌟 Widened the container to give 5 cards breathing room */
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 32px; 
+  max-width: 1450px; 
   margin: 0 auto; 
   padding: 0 20px;
 }
 
-/* 🌟 Premium Hover Effects for the Developer Cards */
 .dev-card {
   position: relative;
   border-radius: 24px;
-  overflow: hidden; /* Keeps the internal backgrounds nicely contained */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Clean, airy drop shadow */
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth, slightly bouncy lift */
-  /* Adds a tiny light border to separate dark cards from the white background */
+  overflow: hidden; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
   border: 1px solid var(--border-color); 
 }
 
 .dev-card:hover {
-  transform: translateY(-12px); /* Floats up noticeably on hover */
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15); /* Shadow expands when floating */
+  transform: translateY(-12px); 
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15); 
 }
 
-/* 🌟 Responsive Magic: Safely wraps the 5 cards on smaller screens */
 @media (max-width: 1300px) {
-  .team-grid { grid-template-columns: repeat(3, 1fr); max-width: 1000px;} /* 3 top, 2 bottom */
+  .team-grid { grid-template-columns: repeat(3, 1fr); max-width: 1000px;} 
 }
 @media (max-width: 900px) {
-  .team-grid { grid-template-columns: repeat(2, 1fr); } /* 2x2 with 1 on bottom */
+  .team-grid { grid-template-columns: repeat(2, 1fr); } 
 }
 @media (max-width: 768px) {
   .team-grid { 
@@ -557,10 +543,8 @@
    (Laptops, Tablets, & Mobile)
 =================================== */
 
-/* 1. SMALL LAPTOPS & SPLIT SCREENS (Triggers earlier at 1400px!) */
 @media (max-width: 1400px) {
   .hero-subtitle {
-    /* Pushes it safely below the bottom of the tall login card */
     top: calc(100% + 220px); 
     left: 50%;
     transform: translateX(-50%); 
@@ -570,7 +554,6 @@
   }
 
   .scroll-indicator {
-    /* Pushes it safely below the quote */
     top: calc(100% + 320px); 
     right: auto; 
     left: 50%;
@@ -578,13 +561,11 @@
     align-items: center;
   }
 
-  /* Expands the hero container so the "Why ForenSync" section doesn't overlap */
   .hero-section {
     margin-bottom: 450px; 
   }
 }
 
-/* 2. iPads & LARGE PHONES */
 @media (max-width: 768px) {
   .hero-subtitle {
     top: calc(100% + 240px); 
@@ -607,7 +588,6 @@
   }
 }
 
-/* 3. SMALL MOBILE PHONES */
 @media (max-width: 480px) {
   .hero-subtitle {
     top: calc(100% + 250px);
@@ -622,7 +602,6 @@
     margin-bottom: 500px;
   }
   
-  /* Shrinks the main logo slightly so it fits phone screens */
   .hero-title {
     font-size: 2.8rem; 
   }
@@ -638,10 +617,9 @@
 }
 
 
-/* 🌟 FORGOT PASSWORD STYLING */
 .forgot-password {
   text-align: right;
-  margin: -8px 5px 5px 0; /* Pulls it up slightly closer to the password box */
+  margin: -8px 5px 5px 0; 
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -650,7 +628,7 @@
 }
 
 .forgot-password:hover {
-  color: var(--accent-blue); /* Pops to your brand blue on hover */
+  color: var(--accent-blue); 
   text-decoration: underline;
 }
 

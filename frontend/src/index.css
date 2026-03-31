@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* 🌟 GLOBAL BOX MODEL RESET 🌟 */
-*, *::before, *::after {
+*::before, *::after {
   box-sizing: border-box;
 }
 
@@ -15,7 +14,6 @@ button, input, select, textarea {
   line-height: 1.5;
   font-weight: 400;
 
-  /* Theme variables */
   --bg-app: #f4f7f6;
   --bg-card: #ffffff;
   --text-primary: #1e293b;
@@ -24,7 +22,6 @@ button, input, select, textarea {
   --bg-hover: #f8fafc;
   --accent-blue: #4a6583;
 
-  /* Default text and background fallback */
   color: var(--text-primary);
   background-color: var(--bg-app);
 
@@ -51,13 +48,12 @@ button, input, select, textarea {
   background-color: var(--bg-app);
 }
 
-/* 🌟 THE VITE NUKE: Kills default centering so your dashboard starts at the left edge! */
 body {
   margin: 0;
   padding: 0;
   display: block !important; /* Overrides Vite's default 'display: flex' on the body */
   min-height: 100vh;
-  place-items: unset !important; /* Stops it from centering the app */
+  place-items: unset !important;
   transition: background-color 0.3s ease, color 0.3s ease;
   background-color: var(--bg-app);
   color: var(--text-primary);
@@ -71,46 +67,39 @@ body {
   text-align: left !important;
 }
 
-/* 🌟 Locks the dashboard to the exact size of the window */
 .main-layout {
   display: flex;
-  width: 100%; /* Changed from 100vw to 100% */
+  width: 100%;
   height: 100vh;
   overflow: hidden;
   background-color: var(--bg-app);
   color: var(--text-primary);
 }
 
-/* Ensure the sidebar doesn't shrink */
 .app-sidebar {
   width: 250px;
-  flex-shrink: 0; /* Prevents the sidebar from getting squished! */
+  flex-shrink: 0;
 }
 
-/* 🌟 MOBILE SIDEBAR LOGIC 🌟 */
-/* 🌟 MOBILE SIDEBAR FIX 🌟 */
 @media (max-width: 768px) {
-  /* 1. Turns the sidebar into a floating drawer and hides it off-screen */
   .app-sidebar {
     position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
     z-index: 9999;
-    width: 260px; /* Locks the width */
+    width: 260px;
     background-color: var(--bg-card);
-    transform: translateX(-100%); /* 🌟 Pushes it completely off the screen! */
+    transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: none;
   }
 
-  /* 2. When the hamburger is clicked, it slides back in! */
   body.mobile-sidebar-open .app-sidebar {
     transform: translateX(0); 
-    box-shadow: 10px 0 25px rgba(0,0,0,0.15); /* Adds a shadow so it floats above the app */
+    box-shadow: 10px 0 25px rgba(0,0,0,0.15);
   }
 
-  /* 3. Forces the dashboard content to take up the full screen width */
   .content-area {
     width: 100% !important;
     max-width: 100% !important;
@@ -120,28 +109,24 @@ body {
   }
 }
 
-/* 💻 IPAD / TABLET SIDEBAR DRAWER (Perfectly Matched to App.jsx) */
 @media (max-width: 1024px) {
   
-  /* 1. Target your EXACT sidebar class (.app-sidebar) */
   .app-sidebar {
     position: fixed !important;
     top: 0 !important;
-    left: -350px !important; /* Hides it off-screen */
+    left: -350px !important;
     height: 100vh !important;
     z-index: 9999 !important; 
     transition: left 0.3s ease-in-out !important;
     background-color: var(--bg-card) !important;
   }
 
-  /* 2. Slide it in when the hamburger adds the class to the body */
   body.tablet-sidebar-open .app-sidebar {
     left: 0 !important;
-    box-shadow: none !important; /* Killed the heavy shadow */
-    border-right: 1px solid var(--border-color) !important; /* Added a sleek, subtle line instead */
+    box-shadow: none !important;
+    border-right: 1px solid var(--border-color) !important;
   }
 
-  /* 3. Target your EXACT content wrapper (.content-area) */
   .content-area {
     width: 100% !important;
     max-width: 100% !important;
@@ -151,35 +136,33 @@ body {
     color: var(--text-primary);
   }
 
-  /* 4. Show the dark overlay when open */
   .mobile-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.25); /* Sleek dark tint */
-    backdrop-filter: blur(4px); /* This creates the Apple-style glass blur! */
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px); /* For Safari support */
-    z-index: 9998; /* Sits perfectly underneath the sidebar */
+    z-index: 9998;
     opacity: 0;
     pointer-events: none;
     transition: all 0.3s ease;
   }
   body.tablet-sidebar-open .mobile-overlay {
     opacity: 1;
-    pointer-events: auto; /* This allows it to actually be clicked! */
+    pointer-events: auto;
   }
 
   .hamburger-btn {
     display: flex !important;
     background: transparent !important;
     border: none !important;
-    box-shadow: none !important; /* Removes any weird button shadows */
-    color: var(--text-secondary) !important; /* Matches your text color */
+    box-shadow: none !important;
+    color: var(--text-secondary) !important;
     cursor: pointer;
     padding: 4px;
   }
 }
 
-/* 🖥️ DESKTOP ONLY (Hides hamburger menu on big screens) */
 @media (min-width: 1025px) {
   .hamburger-btn {
     display: none !important;

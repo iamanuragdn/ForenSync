@@ -1,4 +1,4 @@
-/* 🌟 BASE PAGE LAYOUT */
+/* BASE PAGE LAYOUT */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -34,7 +34,7 @@
 .error { color: #b91c1c; background: #fee2e2; }
 .empty { color: var(--text-secondary); background: transparent; padding: 3rem; }
 
-/* 🌟 DESKTOP HEADER STYLES (Fixed!) */
+/* DESKTOP HEADER STYLES */
 .detail-header-row {
   display: flex;
   justify-content: space-between;
@@ -89,7 +89,7 @@
 .meta-details strong { color: var(--text-primary); }
 .meta-divider { color: var(--border-color); }
 
-/* 🌟 THE CIRCLE BACK BUTTON */
+/* CIRCLE BACK BUTTON */
 .back-btn {
   width: 42px;
   height: 42px;
@@ -114,7 +114,7 @@
   transform: scale(1.05); /* Slight pop effect on hover */
 }
 
-/* 🌟 TABLE STYLES */
+/* TABLE STYLES */
 .units-table {
   width: 100%;
   border-collapse: collapse;
@@ -175,7 +175,7 @@
   }
 }
 
-/* 🌟 MOBILE & TABLET RESPONSIVENESS (PHONES) 🌟 */
+/* MOBILE & TABLET RESPONSIVENESS */
 @media (max-width: 768px) {
   .page-container {
     padding: 16px;
@@ -212,7 +212,6 @@
     padding-right: 45px; /* Ensures text never overlaps the circle button */
   }
 
-  /* 🌟 FIX: Force metadata strictly to the left edge */
   .subject-meta {
     flex-direction: column;
     align-items: flex-start !important;
@@ -230,7 +229,6 @@
     width: 100%;
   }
 
-  /* 2. 🌟 FIX: OPTIMIZE TABLE SPACE & PREVENT HEADER OVERLAP */
   .units-table {
     table-layout: fixed; 
   }

@@ -60,12 +60,10 @@ async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
 
 // THE MAIN DEEP CRAWLER
 async function syncDriveToFirebase() {
-    console.log("🚀 Starting Deep Google Drive Sync...");
 
     try {
         const programs = await getDriveChildren(ROOT_NFSU_FOLDER_ID, drive, true);
         if (programs.length === 0) {
-            console.log("❌ No programs found. Check your NFSU Root Folder ID!");
             return;
         }
 
@@ -73,17 +71,14 @@ async function syncDriveToFirebase() {
 
         //Crawl Programs
         for (const prog of programs) {
-            console.log(`\n📂 Entering Program: ${prog.name}`);
             const semesters = await getDriveChildren(prog.id, drive, true);
             
             //Crawl Semesters
             for (const sem of semesters) {
-                console.log(`  ↳ Semester: ${sem.name}`);
                 const types = await getDriveChildren(sem.id, drive, true);
                 
                 //Crawl Types (Notes/PYQ)
                 for (const type of types) {
-                    console.log(`    ↳ Type: ${type.name}`);
                     const subjects = await getDriveChildren(type.id, drive, true);
                     
                     //Crawl Subjects (CTBT-BSC-101)
@@ -113,15 +108,12 @@ async function syncDriveToFirebase() {
                                 
                                 totalFilesSaved++;
                             }
-                            console.log(`      ✅ Saved ${files.length} files for ${subj.name}`);
                         } else {
-                            console.log(`      ⚠️ No files found inside ${subj.name}`);
                         }
                     }
                 }
             }
         }
-        console.log(`\n🎉 Deep Sync Complete! A total of ${totalFilesSaved} files were synced to Firebase.`);
         process.exit(0);
 
     } catch (error) {

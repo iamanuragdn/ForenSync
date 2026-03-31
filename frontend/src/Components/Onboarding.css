@@ -2,7 +2,6 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   width: 100vw;
-  /* Matches the background of the main dashboard perfectly */
   background-color: var(--bg-app); 
   display: flex;
   align-items: center;
@@ -13,7 +12,6 @@
 .onboarding-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  /* Soft shadow matching your subject cards */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); 
   border-radius: 16px;
   width: 100%;
@@ -80,7 +78,7 @@
 }
 
 .onboarding-input:focus, .onboarding-select:focus {
-  border-color: var(--accent-blue); /* Matches your dashboard buttons */
+  border-color: var(--accent-blue); 
   box-shadow: 0 0 0 3px rgba(74, 101, 131, 0.1);
 }
 
@@ -104,7 +102,6 @@
 }
 
 .btn-onboarding-submit {
-  /* Matches your dashboard accent color perfectly */
   background: var(--accent-blue); 
   color: white;
   border: none;
@@ -163,7 +160,6 @@
     font-size: 0.85rem;
   }
 
-  /* Stack side-by-side fields on mobile */
   .student-fields-row {
     flex-direction: column;
     gap: 18px;

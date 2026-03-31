@@ -11,7 +11,6 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 async function seedExams() {
-  console.log("🚀 Starting Exam Data Sync...");
 
   try {
     
@@ -20,7 +19,6 @@ async function seedExams() {
       
       for (const semesterId in semesters) {
         const exams = semesters[semesterId];
-        console.log(`📂 Syncing ${exams.length} exams for ${programId} -> ${semesterId}`);
         
         for (const exam of exams) {
           // Path: programs/btech-mtech-cybersecurity/semesters/sem-2/exams/CTBT-PCC-201
@@ -29,12 +27,10 @@ async function seedExams() {
                            .collection("exams").doc(exam.code);
           
           await docRef.set(exam, { merge: true });
-          console.log(`  ✅ Saved: ${exam.name} (${exam.examDate})`);
         }
       }
     }
     
-    console.log("\n🎉 All exam data successfully pushed to Firebase!");
     process.exit(0);
 
   } catch (error) {

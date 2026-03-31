@@ -14,7 +14,7 @@ function MockTest() {
   const [testError, setTestError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Fetch subjects when page loads
+
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -33,7 +33,6 @@ function MockTest() {
     fetchSubjects();
   }, []);
 
-  // Start Test from the Bank
   const handleStartBankTest = async () => {
     if (!selectedSubject) return;
     setTestLoading(true);
@@ -52,7 +51,6 @@ function MockTest() {
     }
   };
 
-  // DRAG AND DROP HANDLERS
   const handleDragOver = (e) => {
     e.preventDefault(); 
     setIsDragging(true);
@@ -79,7 +77,6 @@ function MockTest() {
     }
   };
 
-  // Upload File & Start Instant Test
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
@@ -178,7 +175,6 @@ function MockTest() {
       </header>
 
       <div className="practice-grid">
-        {/* Card 1: Bank Test */}
         <div className="practice-card">
           <div className="card-icon-wrapper"><span className="card-icon">🎯</span></div>
           <h2>Subject Mock Test</h2>
@@ -202,7 +198,6 @@ function MockTest() {
           </div>
         </div>
 
-        {/* Card 2: Upload Test */}
         <div className="practice-card">
           <div className="card-icon-wrapper"><span className="card-icon">📄</span></div>
           <h2>Instant Custom Test</h2>

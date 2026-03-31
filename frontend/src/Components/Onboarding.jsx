@@ -5,7 +5,6 @@ import { doc, setDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'; 
 import './Onboarding.css'; 
 
-// Using your dashboard logo!
 import logoImage from '../assets/logo_muted_blue.png'; 
 
 function Onboarding() {
@@ -68,7 +67,6 @@ function Onboarding() {
   return (
     <div className="onboarding-wrapper">
       
-      {/* 🌟 Theme Toggle */}
       <button 
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease' }}

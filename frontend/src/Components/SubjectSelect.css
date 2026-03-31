@@ -205,13 +205,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 🌟 TABLET VIEW (iPads) 🌟 */
+/* TABLET VIEW */
 @media (max-width: 1024px) {
   .page-container {
     padding: 24px 32px;
   }
   
-  /* Enable scrolling if the screen gets just a bit too narrow */
   .table-container {
     overflow-x: auto;
   }
@@ -221,7 +220,7 @@
   }
 }
 
-/* 🌟 MOBILE VIEW (Phones) 🌟 */
+/* MOBILE VIEW */
 @media (max-width: 768px) {
   .page-container {
     padding: 16px;
@@ -237,8 +236,8 @@
 
   /* 1. Shrink the Summary Box into a compact 2x2 grid */
   .semester-summary {
-    padding: 16px; /* Shrunk from 1.25rem 2rem */
-    gap: 16px; /* Tighter spacing */
+    padding: 16px;
+    gap: 16px;
     margin-bottom: 24px;
     align-items: flex-start;
   }
@@ -257,12 +256,12 @@
     font-size: 0.7rem; /* Scaled down the uppercase text */
   }
 
-  /* 2. 🌟 THE MAGIC: Horizontal Scrolling Table */
+  /* 2. Horizontal Scrolling Table */
   .table-container {
     border-radius: 8px; 
-    overflow-x: auto; /* Enables horizontal swiping */
-    -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
-    box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow to hint that it scrolls */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.1);
   }
 
   .subject-table {

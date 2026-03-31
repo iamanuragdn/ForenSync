@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth"; 
 
-// TODO: Replace this with your actual Firebase config object!
 // You get this from your Firebase Console > Project Settings > General > Your Apps
 const firebaseConfig = {
   apiKey: "AIzaSyBhZUfUCffFbWreZRVLE5lRsTBOcy3JSN4",

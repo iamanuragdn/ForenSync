@@ -115,7 +115,6 @@ function Subjects() {
 
   if (loading || !user) return <div className="home-dashboard">Loading your dashboard...</div>;
 
-  // 🌟 Logic to check if they are pure faculty (hides student widgets)
   const isPureFaculty = user.role === 'Admin' && (!user.adminType || user.adminType === 'Teacher' || user.adminType === 'Administrator');
 
   return (
@@ -133,7 +132,6 @@ function Subjects() {
             </p>
           </div>
           
-          {/* 🌟 Hide the progress circle if they are pure faculty */}
           {!isPureFaculty && (
             <div className="progress-circle-container">
               <div 
@@ -228,7 +226,6 @@ function Subjects() {
           </button>
         </div>
 
-        {/* 🌟 Hide the attendance and CGPA stats if pure faculty */}
         {!isPureFaculty && (
           <div className="mini-stats-row">
             <div 

@@ -80,25 +80,21 @@ function Navbar() {
   };
 
   const toggleMobileSidebar = () => {
-    // 🌟 CHANGED: Targets the sidebar directly to trigger the CSS animation
     const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
       sidebar.classList.toggle('open');
     }
   };
 
-  // 🌟 FIX: Only ONE return statement, wrapping everything in a Fragment <>
-  // 🌟 FIX: Cleaned up return statement (Overlay moved to App.jsx)
   return (
     <>
       <div className="top-navbar">
         
-        {/* Mobile Hamburger Button */}
         <button 
           className="hamburger-btn" 
           onClick={() => {
             document.body.classList.toggle('tablet-sidebar-open');
-            document.body.classList.toggle('mobile-sidebar-open'); // Toggles both just to be safe!
+            document.body.classList.toggle('mobile-sidebar-open');
           }}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -108,7 +104,6 @@ function Navbar() {
           </svg>
         </button>
 
-        {/* 🌟 UPGRADED: Search Container */}
         <div className="search-container" style={{ position: 'relative' }}>
           <form onSubmit={handleSearchSubmit} style={{ width: '100%', display: 'flex' }}>
             <input 

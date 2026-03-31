@@ -151,7 +151,7 @@
   line-height: 1.6;
 }
 
-/* 🌟 TABLET & MOBILE RESPONSIVENESS 🌟 */
+/* TABLET & MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
   .syllabus-page {
     padding: 16px;
@@ -159,23 +159,20 @@
   }
 
   .syllabus-header h1 {
-    font-size: 1.4rem; /* Shrinks the long subject title */
+    font-size: 1.4rem;
   }
 
-  /* Stacks the meta row and the back button vertically */
   .header-meta-row {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  /* Makes the back button stretch full width for easy tapping */
   .btn-back-semester {
     width: 100%;
     text-align: center;
     margin-top: 8px;
   }
 
-  /* Ensures long Unit names wrap properly instead of squishing */
   .unit-header {
     align-items: flex-start;
     padding: 16px;
@@ -183,7 +180,7 @@
 
   .unit-title-group {
     align-items: flex-start;
-    flex-direction: column; /* Stacks "Unit 1" on top of the title name */
+    flex-direction: column;
     gap: 4px;
   }
 
@@ -194,10 +191,9 @@
   .unit-name {
     font-size: 1rem;
     line-height: 1.4;
-    padding-right: 16px; /* Keeps text away from the dropdown arrow */
+    padding-right: 16px;
   }
   
-  /* Fix padding for the dropdown content so it aligns with the title */
   .unit-content {
     padding: 0 16px 16px 16px; 
   }

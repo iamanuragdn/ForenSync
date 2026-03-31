@@ -3,7 +3,6 @@ const cors = require("cors");
 
 const app = express();
 
-//frontend to access backend
 app.use(cors());          
 app.use(express.json()); 
 
@@ -13,5 +12,4 @@ app.get("/api/message", (req, res) => {
 
 const PORT = 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
 });

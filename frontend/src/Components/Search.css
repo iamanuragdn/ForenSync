@@ -1,4 +1,4 @@
-/* 🌟 MASTER CONTAINER 🌟 */
+/* MASTER CONTAINER */
 .search-page-container {
   padding: 40px;
   width: 100%;
@@ -14,7 +14,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 🌟 HEADER (Matching Subject.css typography) 🌟 */
+/* HEADER */
 .search-header {
   margin-bottom: 40px;
   padding-bottom: 24px;
@@ -39,14 +39,14 @@
   font-weight: 500;
 }
 
-/* 🌟 GRID 🌟 */
+/* GRID */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
   gap: 16px; /* Matched the exact gap from subjects-grid */
 }
 
-/* 🌟 RESULT CARDS (Cloned from .subject-card) 🌟 */
+/* RESULT CARDS */
 .result-card {
   background: var(--bg-card);
   border-radius: 12px; /* Matched from subject-card */
@@ -60,7 +60,7 @@
   transition: all 0.2s ease;
 }
 
-/* 🌟 THE HIGHER HOVER FIX 🌟 */
+/* THE HIGHER HOVER FIX */
 .result-card:hover {
   transform: translateY(-4px); /* Pushes it exactly as high as the subject cards */
   box-shadow: 0 12px 20px rgba(0,0,0,0.04); 
@@ -95,7 +95,7 @@
   flex-grow: 1;
 }
 
-/* 🌟 BADGES (Cloned from .subject-code-badge) 🌟 */
+/* BADGES */
 .result-badge {
   padding: 4px 10px;
   border-radius: 6px;
@@ -116,7 +116,7 @@
 .badge-notes { background: var(--bg-hover); color: var(--text-secondary); border-color: var(--border-color); }
 .badge-practice { background: #f0f9ff; color: #0284c7; border-color: #e0f2fe; }
 
-/* 🌟 LOADING & EMPTY STATES (Styled like the Dashboard widgets) 🌟 */
+/* LOADING & EMPTY STATES */
 .search-loading-state, .empty-search-state {
   display: flex;
   flex-direction: column;
@@ -130,7 +130,7 @@
   margin-top: 20px;
 }
 
-/* 🌟 SKELETON LOADER ANIMATIONS 🌟 */
+/* SKELETON LOADER ANIMATIONS */
 
 /* The sweeping light gradient effect */
 .skeleton-pulse {

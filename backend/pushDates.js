@@ -8,7 +8,6 @@ const db = admin.firestore();
 
 async function pushSemesterDates() {
   try {
-    console.log("Pushing semester dates to Firebase...");
 
     // Semester 1 Dates
     await db.collection("programs").doc("btech-mtech-cybersecurity")
@@ -26,7 +25,6 @@ async function pushSemesterDates() {
               endDate: "2026-04-16" 
             }, { merge: true });
 
-    console.log("✅ SUCCESS: Dates injected into database!");
     process.exit(0);
   } catch (error) {
     console.error("❌ Error:", error);

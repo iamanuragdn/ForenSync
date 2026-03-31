@@ -29,37 +29,37 @@
   color: var(--text-primary); 
 }
 
-/* 🌟 1. Replace Grid with Flexbox */
+/* 1. Replace Grid with Flexbox */
 .exams-content-layout {
-  display: flex; /* Changed from grid to flex */
-  flex-direction: row !important; /* Forces them to stay side-by-side */
-  flex-wrap: nowrap !important; /* Strictly forbids the calendar from dropping down */
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   gap: 30px;
   align-items: flex-start;
   width: 100%;
 }
 
-/* 🌟 2. Allow the List to stretch, but safely */
+/* 2. Allow the List to stretch, but safely */
 .exams-list-section {
-  flex: 1; /* Takes up all the remaining space on the left */
-  min-width: 0; /* MAGIC RULE: Prevents the empty state box from blowing up the layout */
+  flex: 1;
+  min-width: 0;
 }
 
-/* 🌟 3. Lock the Calendar to a strict width */
+/* 3. Lock the Calendar to a strict width */
 .exams-calendar-section {
-  flex: 0 0 350px; /* Forces the calendar to be EXACTLY 350px wide, no growing, no shrinking */
+  flex: 0 0 350px;
   width: 350px;
   position: relative;
 }
 
-/* Ensure the empty state respects the new flex boundaries */
+
 .empty-state {
   padding: 40px; 
   text-align: center; 
   background: var(--bg-card); 
   border-radius: 16px; 
   border: 1px dashed var(--border-color);
-  width: 100%; /* Keeps it neatly inside its flex container */
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -120,26 +120,26 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.03);
 }
 
-/* 🌟 EXAM TYPE BADGE 🌟 */
+/* EXAM TYPE BADGE */
 .exam-type-badge {
-  display: inline-flex; /* Changed from inline-block */
-  align-items: center;  /* Forces the text inside to center perfectly */
+  display: inline-flex;
+  align-items: center;
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  margin-bottom: 0; /* REMOVED the margin-bottom that was pushing it up! */
+  margin-bottom: 0;
   text-transform: uppercase;
-  height: 24px; /* Optional: Sets a strict height to match the exam code box */
+  height: 24px;
   box-sizing: border-box;
 }
 
 /* Colors for the Badges based on the type */
-.badge-ca1, .badge-ca3 { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; } /* Green for Class Tests */
-.badge-ca2 { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; } /* Yellow/Orange for Mid-Sems */
-.badge-end-semester { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; } /* Red for End Sems */
-.badge-default { background: var(--bg-hover); color: var(--text-secondary); border: 1px solid var(--border-color); } /* Gray default */
+.badge-ca1, .badge-ca3 { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-ca2 { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+.badge-end-semester { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-default { background: var(--bg-hover); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
 .days-box {
   width: 76px; 
@@ -282,17 +282,17 @@
 .dot { width: 10px; height: 10px; border-radius: 50%; }
 
 
-/* 🌟 PAST EXAM CARD STYLING 🌟 */
+/* PAST EXAM CARD STYLING */
 .exam-card-past {
   display: flex;
   align-items: center;
-  background: var(--bg-hover); /* Very soft grey background */
-  padding: 12px 20px; /* Much slimmer padding than upcoming exams */
+  background: var(--bg-hover);
+  padding: 12px 20px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
   gap: 16px;
   transition: all 0.2s ease;
-  margin-bottom: 8px; /* Tighter spacing */
+  margin-bottom: 8px;
 }
 
 .exam-card-past:hover {
@@ -326,7 +326,7 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--text-secondary);
-  text-decoration: line-through; /* Strikes through the name */
+  text-decoration: line-through;
   text-decoration-color: var(--text-secondary);
 }
 
@@ -336,7 +336,7 @@
   margin: 0;
 }
 
-/* 🌟 Smart Reflection Button Styles */
+/* Smart Reflection Button Styles */
 .btn-review-past {
   background: transparent;
   border: 1px solid var(--border-color);
@@ -369,7 +369,7 @@
   color: #15803d;
 }
 
-/* 🌟 ENTERPRISE POST-EXAM REFLECTION MODAL 🌟 */
+/* ENTERPRISE POST-EXAM REFLECTION MODAL */
 .reflection-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -387,7 +387,7 @@
   background: var(--bg-card);
   width: 100%;
   max-width: 520px;
-  border-radius: 16px; /* 🌟 Perfectly matches your exam cards */
+  border-radius: 16px;
   border: 1px solid var(--border-color);
   box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
   overflow: hidden;
@@ -426,7 +426,7 @@
   font-weight: 700;
 }
 
-/* 🌟 Apple-style close button */
+/* Apple-style close button */
 .btn-close {
   background: var(--bg-hover);
   border: 1px solid var(--border-color);
@@ -467,7 +467,7 @@
   gap: 12px;
 }
 
-/* 🌟 Inputs match your search bar styling */
+/* Inputs match your search bar styling */
 .marks-input-wrapper input {
   width: 120px;
   padding: 12px 16px;
@@ -483,7 +483,7 @@
 }
 
 .marks-input-wrapper input:focus, .input-group textarea:focus {
-  border-color: var(--accent-blue); /* 🌟 Snaps to your brand blue */
+  border-color: var(--accent-blue);
   background-color: var(--bg-card);
   box-shadow: 0 0 0 3px rgba(74, 101, 131, 0.1);
 }
@@ -510,7 +510,7 @@
   transition: all 0.2s;
 }
 
-/* 🌟 Much cleaner locked widget */
+/* Much cleaner locked widget */
 .actual-results-locked {
   background: var(--bg-hover);
   border: 1px solid var(--border-color);
@@ -540,7 +540,7 @@
   background: var(--bg-hover);
   border-top: 1px solid var(--border-color);
   display: flex;
-  justify-content: flex-end; /* Pushes buttons to the right */
+  justify-content: flex-end;
   gap: 12px;
 }
 
@@ -558,7 +558,7 @@
 .btn-cancel:hover { background: var(--bg-card); color: var(--text-primary); }
 
 .btn-save-reflection {
-  background: var(--accent-blue); /* 🌟 Matches your prepare button */
+  background: var(--accent-blue);
   color: white;
   border: none;
   padding: 10px 24px;
@@ -575,15 +575,15 @@
   box-shadow: 0 4px 6px rgba(74, 101, 131, 0.3);
 }
 
-/* 🌟 TABLET VIEW (iPads & Narrow Screens) 🌟 */
+/* TABLET VIEW (iPads & Narrow Screens) */
 @media (max-width: 1024px) {
   .exams-content-layout {
-    flex-direction: column !important; /* Stack the list and calendar */
+    flex-direction: column !important;
     gap: 24px;
   }
   
   .exams-calendar-section {
-    width: 100% !important; /* Let the calendar stretch fully */
+    width: 100% !important;
     flex: none;
   }
 
@@ -592,9 +592,8 @@
   }
 }
 
-/* 🌟 MOBILE VIEW (Phones) 🌟 */
+/* MOBILE VIEW (Phones) */
 @media (max-width: 768px) {
-  /* 1. Fix the "Too Wide" issue by reducing the massive desktop padding */
   .exams-page-container {
     padding: 16px; 
   }
@@ -604,25 +603,24 @@
   }
 
   .header-title-box h2 {
-    font-size: 1.15rem; /* Shrink header slightly to fit */
+    font-size: 1.15rem;
   }
 
-  /* 2. Format the Upcoming Exams neatly */
   .exam-card {
     flex-direction: column;
     text-align: center;
     align-items: center;
-    padding: 16px; /* 🌟 Shrunk padding from 20px to 16px */
-    gap: 12px; /* 🌟 Tighter gap between the box and the text */
+    padding: 16px;
+    gap: 12px;
   }
 
   .exam-card .days-box {
-    height: 70px; /* Shrunk from 84px */
-    width: 70px;  /* Shrunk from 76px */
+    height: 70px;
+    width: 70px;
   }
 
   .exam-card .days-box h2 {
-    font-size: 22px; /* Slightly smaller number */
+    font-size: 22px;
   }
 
   .exam-details {
@@ -632,16 +630,15 @@
     align-items: center;
   }
 
-  /* 3. FIX THE OVERLAP in "Recently Completed" Exams */
   .exam-card-past {
-    flex-direction: column; /* Stacks the icon, details, and button vertically */
+    flex-direction: column;
     align-items: flex-start;
     padding: 16px;
     gap: 12px;
   }
 
   .past-details {
-    flex-direction: column; /* Stacks the title, date, and badge safely */
+    flex-direction: column;
     align-items: flex-start;
     gap: 8px;
     width: 100%;
@@ -659,20 +656,19 @@
   
   .exam-details .exam-meta {
     font-size: 0.8rem;
-    margin-bottom: 12px; /* Pushes the buttons down slightly */
+    margin-bottom: 12px;
   }
 
   .btn-review-past {
-    width: 100%; /* Makes the button full-width for easy tapping */
+    width: 100%;
     text-align: center;
     margin-top: 4px;
     padding: 10px;
   }
 
-  /* 4. Align the buttons in the Upcoming Exams to fit perfectly */
   .exam-details > div[style*="display: flex"] {
     justify-content: center;
-    flex-wrap: wrap; /* Prevents Syllabus/Prepare buttons from overlapping */
+    flex-wrap: wrap;
     gap: 8px !important;
   }
 }

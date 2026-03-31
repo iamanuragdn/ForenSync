@@ -1,4 +1,4 @@
-c/* MENU UI (White Cards) */
+/* MENU UI */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -86,7 +86,7 @@ c/* MENU UI (White Cards) */
 .status-toast { padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem; text-align: center; }
 .status-toast.error { background-color: #fee2e2; color: #b91c1c; }
 
-/* FLASHCARD UI (Dark Overlay) */
+/* FLASHCARD UI */
 .test-full-screen {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background-color: #1a202c; display: flex; align-items: center; justify-content: center;
@@ -150,21 +150,19 @@ c/* MENU UI (White Cards) */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
 
-/* 🌟 TABLET VIEW 🌟 */
+/* TABLET VIEW */
 @media (max-width: 1024px) {
   .page-container {
     padding: 2rem 24px;
   }
   
   .practice-grid {
-    /* Drops the minimum width so they fit on an iPad */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
   }
 }
 
-/* 🌟 MOBILE VIEW (PHONES) 🌟 */
+/* MOBILE VIEW */
 @media (max-width: 768px) {
-  /* 1. Fix the main page layout */
   .page-container {
     padding: 16px;
   }
@@ -178,12 +176,12 @@ c/* MENU UI (White Cards) */
   }
 
   .practice-grid {
-    grid-template-columns: 1fr !important; /* Forces 1 card per row */
+    grid-template-columns: 1fr !important;
     gap: 1rem;
   }
 
   .practice-card {
-    padding: 20px 16px; /* Slims down the massive desktop padding */
+    padding: 20px 16px;
   }
 
   .card-icon-wrapper {
@@ -196,17 +194,15 @@ c/* MENU UI (White Cards) */
     font-size: 1.25rem;
   }
 
-  /* 2. Fix the Popup / Exam View */
   .test-full-screen {
-    padding: 12px; /* Brings the modal closer to the screen edges */
+    padding: 12px;
   }
 
   .test-card {
-    min-height: 85vh; /* Takes up most of the phone screen */
+    min-height: 85vh;
     max-height: 95vh;
   }
 
-  /* Stack the header cleanly */
   .test-header {
     flex-direction: column;
     align-items: flex-start;
@@ -226,36 +222,34 @@ c/* MENU UI (White Cards) */
   }
 
   .finish-btn {
-    width: 100%; /* Makes it a full-width thumb target */
+    width: 100%;
     padding: 12px;
     text-align: center;
   }
 
-  /* Allow long questions to scroll */
   .test-body {
     padding: 20px 16px;
-    overflow-y: auto; /* 🌟 MAGIC: Adds a scrollbar inside the card if text is too long */
+    overflow-y: auto;
   }
 
   .test-tags {
-    flex-wrap: wrap; /* Prevents tags from overflowing */
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 1.2rem;
   }
 
   .question-content h3 {
-    font-size: 1.2rem; /* Shrinks the massive question text */
+    font-size: 1.2rem;
     line-height: 1.5;
   }
 
-  /* Split the Next/Prev buttons 50/50 */
   .test-footer {
     padding: 16px;
     gap: 12px;
   }
 
   .nav-btn {
-    flex: 1; /* Makes them share the row equally */
+    flex: 1;
     padding: 12px 0;
     font-size: 0.9rem;
     display: flex;

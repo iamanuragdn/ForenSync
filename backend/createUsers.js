@@ -60,7 +60,6 @@ const teamMembers = [
 ];
 
 async function uploadUsers() {
-  console.log("🚀 Creating users in Firestore...");
   const batch = db.batch();
   
 teamMembers.forEach((user) => {
@@ -69,7 +68,6 @@ teamMembers.forEach((user) => {
   });
 
   await batch.commit();
-  console.log("✅ All user profiles updated successfully!");
 }
 
 uploadUsers();

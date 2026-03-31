@@ -22,7 +22,6 @@ function SubjectNotes() {
         btn.innerText = "⏳ Syncing...";
         btn.disabled = true;
 
-        // 🌟 CHANGED: Point to the new admin sync route and send the exact location!
         const response = await fetch("http://localhost:5001/api/admin/sync", {
             method: "POST",
             headers: {
@@ -40,7 +39,6 @@ function SubjectNotes() {
 
         if (response.ok) {
             alert(`🚀 ${data.message}`);
-            // 🌟 CHANGED: Use your refresh trigger instead of a hard page reload!
             setRefreshTrigger(prev => prev + 1); 
         } else {
             alert(`❌ Sync failed: ${data.error}`);

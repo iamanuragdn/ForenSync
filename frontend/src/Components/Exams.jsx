@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Exams.css';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../firebase'; // Ensure this path points correctly to your firebase setup file
+import { db } from '../firebase';
 import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 function Exams() {
@@ -11,15 +11,11 @@ function Exams() {
   const [date, setDate] = useState(new Date()); 
   const [viewedMonth, setViewedMonth] = useState(new Date());
   
-  // 🌟 State to hold all the exams
   const [allExams, setAllExams] = useState([]);
   const [loading, setLoading] = useState(true);
-  // 🌟 NEW: State to track which exams already have reflections
   const [completedReflections, setCompletedReflections] = useState(new Set());
 
-  // 🌟 NEW: Saves the reflection to Firestore!
   const saveReflectionToFirebase = async () => {
-    // Basic validation to make sure they typed something
     if (!reflection.expectedMarks) {
       alert("Please enter your expected marks!");
       return;
@@ -31,7 +27,6 @@ function Exams() {
       const userEmail = userContext.email || "guest_user";
       const reflectionId = `${userEmail}_${reviewModal.exam.code}_${reviewModal.exam.type}`.replace(/\s+/g, '-');
 
-      // 2. Package the data
       const reflectionData = {
         userEmail: userEmail,
         programId: userContext.programId,
@@ -46,16 +41,11 @@ function Exams() {
 
       // 3. Send it to Firestore! (Saves in a collection called 'reflections')
       await setDoc(doc(db, "reflections", reflectionId), reflectionData);
-      // 3. Send it to Firestore!
-      await setDoc(doc(db, "reflections", reflectionId), reflectionData);
       
-      // 🌟 NEW: Instantly update the UI to show it's completed!
       setCompletedReflections(prev => new Set(prev).add(reviewModal.exam.code));
       
       alert("Reflection successfully saved to your profile!");
-      
-      alert("Reflection successfully saved to your profile!");
-      setReviewModal({ isOpen: false, exam: null }); // Close the modal
+      setReviewModal({ isOpen: false, exam: null });
 
     } catch (error) {
       console.error("Error saving reflection:", error);
@@ -63,30 +53,22 @@ function Exams() {
     }
   };
 
-  // 🌟 NEW: State for the Review/Reflection Modal
   const [reviewModal, setReviewModal] = useState({ isOpen: false, exam: null });
   const [reflection, setReflection] = useState({ expectedMarks: '', lostMarksNotes: '' });
 
-  // Function to handle opening the modal
-  // 🌟 UPGRADED: Opens the modal AND fetches past data from Firebase
   const handleOpenReview = async (exam) => {
-    // 1. Open the modal immediately so the UI feels fast
     setReviewModal({ isOpen: true, exam: exam, isLoading: true });
     
-    // Clear out any old data from a previous click
     setReflection({ expectedMarks: '', lostMarksNotes: '', isExisting: false }); 
 
     try {
-      // 2. Re-calculate the exact ID we used to save it
       const userEmail = userContext.email || "guest_user";
       const reflectionId = `${userEmail}_${exam.code}_${exam.type}`.replace(/\s+/g, '-');
 
-      // 3. Ask Firebase: "Do you have a document with this ID?"
       const docRef = doc(db, "reflections", reflectionId);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        // 4. BINGO! We found old data. Let's inject it into the inputs!
         const savedData = docSnap.data();
         setReflection({
           expectedMarks: savedData.expectedMarks || '',
@@ -97,7 +79,6 @@ function Exams() {
     } catch (error) {
       console.error("Error fetching reflection:", error);
     } finally {
-      // Turn off the loading state
       setReviewModal(prev => ({ ...prev, isLoading: false }));
     }
   };
@@ -111,7 +92,6 @@ function Exams() {
     fetch(`http://localhost:5001/api/exams/${userContext.programId}/${userContext.semesterId}`)
       .then(res => res.json())
       .then(data => {
-        // Calculate the difference in days for every exam
         const processedExams = data.map(exam => {
           const eDate = new Date(exam.examDate);
           const today = new Date();
@@ -133,16 +113,13 @@ function Exams() {
       });
   }, [userContext.programId, userContext.semesterId]);
 
-  // 🌟 NEW: Fetch the user's existing reflections on page load
   useEffect(() => {
     const fetchUserReflections = async () => {
       const userEmail = userContext.email || "guest_user";
       try {
-        // Search the "reflections" collection for this user's email
         const q = query(collection(db, "reflections"), where("userEmail", "==", userEmail));
         const querySnapshot = await getDocs(q);
         
-        // Create a Set of examCodes that have been completed
         const completed = new Set();
         querySnapshot.forEach((doc) => {
           completed.add(doc.data().examCode);
@@ -163,7 +140,6 @@ function Exams() {
     date.getMonth() === today.getMonth() &&
     date.getFullYear() === today.getFullYear();
 
-  // 🌟 THE MAGIC: Splitting the master list into Upcoming vs Past!
   
   // 1. Upcoming Exams: Filter daysLeft >= 0, sort by closest date, take top 3
   const upcomingExams = allExams
@@ -177,7 +153,6 @@ function Exams() {
     .sort((a, b) => new Date(b.examDate) - new Date(a.examDate))
     .slice(0, 3);
 
-  // Logic for what displays when the user clicks a specific date on the calendar
   const displayExams = isSelectedDateToday 
     ? upcomingExams 
     : allExams.filter(exam => {
@@ -202,7 +177,6 @@ function Exams() {
     return null;
   };
 
-  // Helper function to color-code the exam type badge
   const getBadgeClass = (type) => {
     if (!type) return 'badge-default';
     const lowerType = type.toLowerCase();
@@ -214,7 +188,6 @@ function Exams() {
 
   return (
     <div className="exams-page-container">
-      {/* HEADER */}
       <div className="exams-page-header">
         <div className="header-title-box">
           <span className="graduation-icon">🎓</span>
@@ -222,12 +195,10 @@ function Exams() {
         </div>
       </div>
 
-      {/* TWO COLUMN LAYOUT */}
       <div className="exams-content-layout">
         
         <div className="exams-list-section">
           
-          {/* 🌟 1. UPCOMING EXAMS BLOCK 🌟 */}
           <div className="section-title">
             <h3>📅 {isSelectedDateToday ? "Upcoming Exams" : `Events for ${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}</h3>
             
@@ -253,7 +224,6 @@ function Exams() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                       <span className="exam-code">{exam.code}</span>
                       
-                      {/* 🌟 NEW: The bold Exam Type Badge */}
                       <span className={`exam-type-badge ${getBadgeClass(exam.type)}`}>
                         {exam.type}
                       </span>
@@ -261,7 +231,7 @@ function Exams() {
                     
                     <h4>{exam.name}</h4>
                     <p className="exam-date">{new Date(exam.examDate).toDateString()}</p>
-                    <p className="exam-meta">{exam.time}</p> {/* 🌟 Removed exam.type from here since it's a badge now! */}
+                    <p className="exam-meta">{exam.time}</p>
                   </div>
                   <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
                     <button className="btn-view-details" onClick={() => navigate(`/syllabus/${userContext.programId}/${userContext.semesterId}/${exam.code}`)}>
@@ -281,30 +251,24 @@ function Exams() {
             )}
           </div>
 
-{/* 🌟 2. RECENTLY COMPLETED EXAMS BLOCK 🌟 */}
           {isSelectedDateToday && pastExams.length > 0 && (
             <>
               <div className="section-title" style={{ marginTop: '30px' }}>
                 <h3>✅ Recently Completed</h3>
               </div>
               
-              {/* Uses a simple div without the heavy spacing */}
               <div>
                 {pastExams.map((exam) => (
                   <div className="exam-card-past" key={`past-${exam.id}`}>
                     
-                    {/* Tiny Checkmark Icon */}
                     <div className="past-icon-box">
                       ✓
                     </div>
                     
-                    {/* Compact Details on One Line */}
-                    {/* Compact Details on One Line */}
                     <div className="past-details" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px', padding: '4px 0' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <h4>{exam.name}</h4>
                         
-                        {/* 🌟 NEW: The bold Exam Type Badge for Past Exams! */}
                         <span className={`exam-type-badge ${getBadgeClass(exam.type)}`} style={{ marginBottom: 0, padding: '2px 8px', fontSize: '10px' }}>
                           {exam.type}
                         </span>
@@ -313,7 +277,6 @@ function Exams() {
                       <span className="exam-date">• {new Date(exam.examDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
                     
-                    {/* 🌟 UPGRADED: Smart Button that checks the completedReflections Set */}
                     <button 
                       className={`btn-review-past ${completedReflections.has(exam.code) ? 'completed' : ''}`} 
                       onClick={() => handleOpenReview(exam)}
@@ -329,24 +292,23 @@ function Exams() {
 
         </div>
 
-        {/* CALENDAR */}
         <div className="exams-calendar-section">
           <div className="calendar-widget">
             <Calendar 
               onChange={(newDate) => {
                 setDate(newDate);
-                setViewedMonth(newDate); // Updates viewed month if they click a specific day
+                setViewedMonth(newDate);
               }} 
               value={date} 
               tileContent={tileContent} 
-              onActiveStartDateChange={({ activeStartDate }) => setViewedMonth(activeStartDate)} // 🌟 MAGIC: Fires when they click the < or > arrows!
+              onActiveStartDateChange={({ activeStartDate }) => setViewedMonth(activeStartDate)} 
+
               next2Label={null} 
               prev2Label={null}
             />
             <div className="calendar-legend">
               {allExams
                 .filter(exam => {
-                  // 🌟 NEW: Only keep exams that match the currently viewed month and year
                   const eDate = new Date(exam.examDate);
                   return eDate.getMonth() === viewedMonth.getMonth() && 
                          eDate.getFullYear() === viewedMonth.getFullYear();
@@ -364,7 +326,6 @@ function Exams() {
         </div>
       </div>
 
-      {/* 🌟 THE POST-EXAM REFLECTION MODAL 🌟 */}
       {reviewModal.isOpen && (
         <div className="reflection-overlay" onClick={() => setReviewModal({ isOpen: false, exam: null })}>
           <div className="reflection-modal" onClick={(e) => e.stopPropagation()}>
@@ -383,12 +344,13 @@ function Exams() {
                 <div className="marks-input-wrapper">
                   <input 
                     type="number" 
-                    placeholder={`e.g. ${Math.round((reviewModal.exam.fullMarks || 100) * 0.85)}`} // 🌟 Bonus: Dynamically suggests an 85% score as the placeholder!
+                    placeholder={`e.g. ${Math.round((reviewModal.exam.fullMarks || 100) * 0.85)}`} 
+
                     value={reflection.expectedMarks}
                     onChange={(e) => setReflection({...reflection, expectedMarks: e.target.value})}
                   />
                   
-                  {/* 🌟 MAGIC: Dynamically pulls the max marks from your backend! */}
+
                   <span className="marks-total">/ {reviewModal.exam.fullMarks || 100}</span>
                   
                 </div>
@@ -427,7 +389,6 @@ function Exams() {
                 onClick={saveReflectionToFirebase}
                 disabled={reviewModal.isLoading}
               >
-                {/* 🌟 MAGIC: Changes text based on whether Firebase found old data! */}
                 {reviewModal.isLoading ? "Loading..." : reflection.isExisting ? "Update Reflection" : "Save Reflection"}
               </button>
             </div>

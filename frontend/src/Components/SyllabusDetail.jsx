@@ -64,7 +64,6 @@ function SyllabusDetail() {
       ) : (
         <div className="syllabus-detail-card">
           
-          {/* 🌟 COMPLETELY CLEANED HEADER: All inline styles and mouse events removed! */}
           <div className="detail-header-row">
 
             <div className="header-left">
@@ -86,7 +85,6 @@ function SyllabusDetail() {
             </div>
 
             <div className="header-right">
-              {/* 🌟 Change text to just the arrow for the circle button */}
               <button className="back-btn" onClick={() => navigate(`/syllabus/${programId}/${semesterId}`)}>
                 ←
               </button>

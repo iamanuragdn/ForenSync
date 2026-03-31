@@ -34,7 +34,7 @@ function PYQNotes() {
       });
   }, [programId, semesterId, subjectId, selectedExam, refreshTrigger]);
 
-  // real subject name using the syllabus endpoint
+
   useEffect(() => {
     fetch(`http://localhost:5001/api/syllabus/${programId}/${semesterId}`)
       .then(res => res.json())
@@ -53,7 +53,6 @@ function PYQNotes() {
   const handleSync = async () => {
     setIsSyncing(true); 
     try {
-      // 🌟 CHANGED: Point to the new admin sync route and send the exact location!
       const response = await fetch("http://localhost:5001/api/admin/sync", {
         method: "POST",
         headers: {

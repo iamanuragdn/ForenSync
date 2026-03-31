@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // 🌟 Added for routing
+import { useNavigate } from 'react-router-dom'; 
+
 import './AdminConsole.css';
 
 function AdminConsole() {
   const navigate = useNavigate();
 
-  // 🌟 Grab the user to check their clearance level
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved) : null;
@@ -76,7 +76,6 @@ function AdminConsole() {
     }
   };
 
-  // 🌟 SECURITY GUARD: Lock out regular students!
   if (!user || user.role !== 'Admin') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center' }}>

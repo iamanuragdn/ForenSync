@@ -42,7 +42,7 @@ function Syllabus() {
   return (
     <div className="syllabus-page">
       
-      {/* 🌟 UPGRADED HEADER: Sleek, compact, and side-by-side */}
+
       <div className="syllabus-header">
         <h1>{subjectData.name}</h1>
         
@@ -59,7 +59,7 @@ function Syllabus() {
         </div>
       </div>
 
-      {/* 🌟 UPGRADED ACCORDION: No more table, no more hours column! */}
+
       <div className="units-container">
         {subjectData.units && subjectData.units.length > 0 ? (
           subjectData.units.map((unit, index) => (
@@ -72,7 +72,7 @@ function Syllabus() {
                 </div>
                 
                 <div className="unit-meta">
-                  {/* 🌟 DELETED THE HOURS BADGE ENTIRELY */}
+
                   <span className={`dropdown-icon ${openUnitIndex === index ? 'open' : ''}`}>
                     ▼
                   </span>

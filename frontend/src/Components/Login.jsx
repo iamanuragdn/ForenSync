@@ -1,4 +1,3 @@
-// src/Components/Login.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider, db } from '../firebase'; 
@@ -9,10 +8,8 @@ import './Login.css';
 import campusImage from '../assets/nfsu-campus.jpeg';
 import logoImage from '../assets/logo_muted_blue.png';
 
-// Import our custom DevCards
 import DevCard from './DevCard';
 
-//Dps
 import anuragImage from '../assets/anurag-dp.jpeg';
 import reejitImage from '../assets/reejit-dp.png';
 import anindyaImage from '../assets/anindya-dp.jpg';
@@ -72,10 +69,8 @@ function Login() {
     setLoading(false);
   };
 
-  // 🌟 NEW: Password Reset Function
   const handleForgotPassword = async () => {
     setError('');
-    // Ensure they actually typed an email before clicking the button
     if (!email) {
       setError("Please type your email into the box first, then click 'Forgot Password'.");
       return;
@@ -84,7 +79,6 @@ function Login() {
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      // Give them a success message in the exact same style as your other errors/alerts!
       setError("Success! 📩 We've sent a password reset link to your email.");
     } catch (err) {
       console.error(err);
@@ -103,7 +97,6 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    // 🌟 1. Front-End Validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
       return; 
@@ -114,45 +107,34 @@ function Login() {
       let userCredential;
       
       if (isLoginMode) {
-        // ==========================================
-        // 🔐 SIGN IN MODE
-        // ==========================================
         userCredential = await signInWithEmailAndPassword(auth, email, password);
         
-        // Check if they verified their email before letting them in!
         if (!userCredential.user.emailVerified) {
-          await signOut(auth); // Kick them out
+          await signOut(auth);
           setError("Please verify your email address before logging in. Check your inbox for the link!");
           setLoading(false);
-          return; // Stop the function completely
+          return;
         }
 
       } else {
-        // ==========================================
-        // 📝 SIGN UP MODE
-        // ==========================================
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        // Send the Verification Email automatically
         await sendEmailVerification(userCredential.user);
         
-        // Sign them out immediately
         await signOut(auth);
         
-        // Switch UI to Login Mode and show success message
         setIsLoginMode(true);
         setError("Account created! 📩 We've sent a verification link to your email. Please click it before logging in.");
         setLoading(false);
-        return; // 🌟 THE FIX: This stops checkUserAndRedirect from running and crashing!
+        return; 
+
       }
 
-      // If they are logging in AND verified, send them to the dashboard/onboarding!
       await checkUserAndRedirect(userCredential.user);
 
     } catch (err) {
       console.error(err);
       
-      // Friendly Error Translations
       if (err.code === 'auth/invalid-credential') {
         setError("Invalid email or password. If you don't have an account, please click 'Sign up here' below!");
       } else if (err.code === 'auth/email-already-in-use') {
@@ -175,7 +157,6 @@ function Login() {
   return (
     <div className="landing-wrapper">
       
-      {/* 🌟 Theme Toggle */}
       <button 
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease' }}
@@ -184,10 +165,8 @@ function Login() {
         {theme === 'dark' ? '☀️' : '🌙'}
       </button>
 
-      {/* 🌟 Master container for layout positioning */}
       <section className="hero-section">
         
-        {/* 🌟 Isolated Background & Mask Layer */}
         <div className="hero-background" style={{ backgroundImage: `url(${campusImage})` }}>
           <div className="hero-overlay"></div>
           
@@ -199,18 +178,15 @@ function Login() {
           </div>
         </div>
 
-        {/* 🌟 Subtitle - Removed quotes, added a <br/> for a perfect split, upgraded to h2 */}
         <h2 className="hero-subtitle">
           “Your entire academic world,<br />perfectly synced in one place.”
         </h2>
 
-        {/* 🌟 Scroll indicator (Text unchanged, styling will do the heavy lifting) */}
         <div className="scroll-indicator" onClick={scrollToAbout}>
           <p>Learn more about ForenSync</p>
           <span>↓</span>
         </div>
 
-        {/* 🌟 Login Card Layer - Sits outside the mask to prevent clipping! */}
         <div className="hero-auth-container">
           <div className="auth-glass-card">
             <h3 className="auth-title">{isLoginMode ? "Welcome Back" : "Create Account"}</h3>
@@ -264,7 +240,6 @@ function Login() {
       <section id="about-section" className="about-section">
         <h2>Why ForenSync?</h2>
         <div className="features-grid">
-  {/* Card 1 */}
   <div className="feature-card">
     <div className="feature-icon icon-blue">☁️</div>
     <h3>Drive Synced Notes</h3>
@@ -275,7 +250,6 @@ function Login() {
     </ul>
   </div>
 
-  {/* Card 2 */}
   <div className="feature-card">
     <div className="feature-icon icon-purple">📝</div>
     <h3>PYQ & Mock Tests</h3>
@@ -286,7 +260,6 @@ function Login() {
     </ul>
   </div>
 
-  {/* Card 3 */}
   <div className="feature-card">
     <div className="feature-icon icon-orange">📅</div>
     <h3>Smart Scheduling</h3>
@@ -297,7 +270,6 @@ function Login() {
     </ul>
   </div>
 
-  {/* Card 4 */}
   <div className="feature-card">
     <div className="feature-icon icon-green">🔒</div>
     <h3>Role-Based Security</h3>

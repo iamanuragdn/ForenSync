@@ -3,7 +3,6 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import './Search.css';
 
 function Search() {
-  // 🌟 useSearchParams automatically grabs the "?q=xyz" from the URL!
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || ''; 
   
@@ -21,12 +20,12 @@ useEffect(() => {
     const fetchSearchResults = async () => {
       setLoading(true);
       try {
-        // 🌟 1. Call your actual backend!
         const response = await fetch(`http://localhost:5001/api/search?q=${encodeURIComponent(query)}`);
         if (!response.ok) throw new Error('Search failed');
         
         const data = await response.json();
-        setResults(data); // 🌟 2. Save the real data to state
+        setResults(data); 
+
       } catch (error) {
         console.error("Error fetching search results:", error);
         setResults([]);
@@ -46,7 +45,6 @@ useEffect(() => {
       </div>
 
     {loading ? (
-        /* 🌟 UPGRADED: The Skeleton Loader Grid */
         <div className="results-grid">
           {[...Array(6)].map((_, index) => (
             <div key={index} className="result-card" style={{ cursor: 'default', transform: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.01)' }}>

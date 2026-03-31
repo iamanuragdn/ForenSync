@@ -12,7 +12,6 @@ function PYQDashboard() {
 
   const [semesters, setSemesters] = useState([]);
   
-  // 🌟 Safe fallback: default to sem-1 if Admin has no semester
   const [selectedSemester, setSelectedSemester] = useState(() => {
     if (user && user.semesterId) return user.semesterId;
     return "sem-1"; 
@@ -26,9 +25,10 @@ function PYQDashboard() {
   const [selectedExam, setSelectedExam] = useState('CA2'); 
   const [subjects, setSubjects] = useState([]);
 
-  // Fetch available semesters
+
   useEffect(() => {
-    if (!user) return; // 🌟 Removed Admin block
+    if (!user) return; 
+
 
     fetch(`http://localhost:5001/api/programs/${programId}/semesters`)
       .then(res => res.json())
@@ -39,9 +39,10 @@ function PYQDashboard() {
       .catch(err => console.error(err));
   }, [programId, user]);
 
-  // Fetch syllabus subjects when semester changes
+
   useEffect(() => {
-    if (!user || !selectedSemester) return; // 🌟 Removed Admin block
+    if (!user || !selectedSemester) return; 
+
 
     fetch(`http://localhost:5001/api/syllabus/${programId}/${selectedSemester}`)
       .then(res => {

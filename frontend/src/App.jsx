@@ -16,49 +16,46 @@ import AdminConsole from './Components/AdminConsole';
 import Login from './Components/Login.jsx'; 
 import Onboarding from './Components/Onboarding.jsx';
 import './App.css';
-import React, { useState, useEffect } from 'react'; // 🌟 Add these
-import { doc, onSnapshot } from 'firebase/firestore'; // 🌟 Add these
-import { db } from './firebase'; // 🌟 Add this so we can talk to the database
+import React, { useState, useEffect } from 'react'; 
+
+import { doc, onSnapshot } from 'firebase/firestore'; 
+
+import { db } from './firebase'; 
+
 import Search from './Components/Search';
 import './index.css';
 
-// 🌟 THE LIVE SECURITY GUARD
 function ProtectedLayout({ children }) {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved) : null;
   });
 
-  // 🌟 THE MAGIC: Listen to Firebase in real-time!
   useEffect(() => {
     if (!user || !user.uid) return;
 
     const unsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
       if (docSnap.exists()) {
         const freshData = docSnap.data();
-        // If the Superadmin changed their status, update the app instantly!
         if (freshData.isVerifiedAdmin !== user.isVerifiedAdmin) {
           setUser(freshData);
           localStorage.setItem("forensync_user", JSON.stringify(freshData));
         }
       }
       else {
-        // 🚨 THE KILL SWITCH: If the database record is deleted, kick them out instantly!
         localStorage.removeItem("forensync_user");
         setUser(null);
         window.location.href = '/login'; 
       }
     });
 
-    return () => unsubscribe(); // Cleanup listener
+    return () => unsubscribe();
   }, [user?.uid, user?.isVerifiedAdmin]);
 
-  // 1. If not logged in, kick to Login
   if (!user) {
     return <Navigate to="/login" />;
   }
 
-  // 2. If Admin but NOT verified, show the lock screen
   if (user.role === 'Admin' && user.isVerifiedAdmin === false) {
     return (
       <div style={{ display: 'flex', height: '100vh', width: '100vw', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-app)', flexDirection: 'column', textAlign: 'center', padding: '20px' }}>
@@ -79,11 +76,9 @@ function ProtectedLayout({ children }) {
     );
   }
 
-  // 3. Render the main layout!
   return (
     <div className="main-layout" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       
-      {/* 🌟 MOVED HERE: The Blur Overlay now sits at the top level and covers the whole app! */}
       <div 
         className="mobile-overlay" 
         onClick={() => {
@@ -111,12 +106,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         
-        {/* 🌟 FULL SCREEN ROUTES (No Sidebar/Nav) */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
 
-        {/* 🌟 MAIN DASHBOARD ROUTES (Wrapped in the Security Guard) */}
         <Route path="/*" element={
           <ProtectedLayout>
             <Routes>

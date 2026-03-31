@@ -1,9 +1,6 @@
 const examData = {
   "btech-mtech-cybersecurity": {
     "sem-2": [
-      // ==========================================
-      // 📚 PAST EXAMS: CA2 (Mid-Sem) - 50 Marks
-      // ==========================================
       {
         code: 'CTВT-BSC-201',
         name: 'Mathematics-II',
@@ -65,9 +62,6 @@ const examData = {
         dotColor: '#22c55e'
       },
 
-      // ==========================================
-      // 🚀 UPCOMING EXAMS: CA4 (End-Sem) - 100 Marks
-      // ==========================================
       {
         code: 'CTВT-BSC-201',
         name: 'Mathematics-II',
