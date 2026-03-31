@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import './sidebar.css';
+import './sidebarStyle.css';
 import side_bar_logo from '../assets/sidebar-logo.png';
 
 function Sidebar() {
