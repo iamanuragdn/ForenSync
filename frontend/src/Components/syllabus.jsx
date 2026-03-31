@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './Syllabus.css';
+import './syllabus.css';
 
 function Syllabus() {
   const { programId, semesterId, subjectId } = useParams();
