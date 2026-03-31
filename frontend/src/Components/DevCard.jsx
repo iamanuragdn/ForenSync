@@ -1,5 +1,5 @@
 import React from 'react';
-import './devcard.css';
+import './DevCard.css';
 
 function DevCard({ name, role, handle, status, portraitUrl, avatarUrl, githubUrl, email }) {
   return (
