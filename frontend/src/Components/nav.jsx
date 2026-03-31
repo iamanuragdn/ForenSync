@@ -80,22 +80,27 @@ function Navbar() {
   };
 
   const toggleMobileSidebar = () => {
-    document.body.classList.toggle('mobile-sidebar-open');
+    // 🌟 CHANGED: Targets the sidebar directly to trigger the CSS animation
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
   };
 
   // 🌟 FIX: Only ONE return statement, wrapping everything in a Fragment <>
+  // 🌟 FIX: Cleaned up return statement (Overlay moved to App.jsx)
   return (
     <>
-      {/* 🌟 The Dark Click-Away Overlay */}
-      <div 
-        className="mobile-overlay" 
-        onClick={() => document.body.classList.remove('mobile-sidebar-open')}
-      ></div>
-
       <div className="top-navbar">
         
         {/* Mobile Hamburger Button */}
-        <button className="mobile-menu-btn" onClick={toggleMobileSidebar}>
+        <button 
+          className="hamburger-btn" 
+          onClick={() => {
+            document.body.classList.toggle('tablet-sidebar-open');
+            document.body.classList.toggle('mobile-sidebar-open'); // Toggles both just to be safe!
+          }}
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>

@@ -182,19 +182,17 @@
   gap: 0.75rem;
 }
 
-.list-view .file-card {
-  align-items: center;
-  padding: 1rem 1.5rem;
-  gap: 1.5rem;
-}
+/* 5. STOP FILE NAME TRUNCATION IN LIST VIEW */
+  .list-view .file-card {
+    padding: 1rem;
+    gap: 12px;
+  }
 
-.list-view .file-icon { 
-  width: 40px; 
-  height: 40px; 
-  flex-shrink: 0; 
-  background: transparent;
-  font-size: 1.8rem;
-}
+  .list-view .file-info h3 { /* 🌟 Removed .grid-view and .file-info h3 from here! */
+    white-space: normal; 
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
 
 .list-view .file-info { 
   display: flex; 
@@ -218,8 +216,152 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* 🌟 NOTES DASHBOARD MOBILE UI OVERHAUL 🌟 */
 @media (max-width: 900px) {
   .notes-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .list-view .file-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
   .list-view .file-info h3 { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  /* 1. Fix the massive desktop padding */
+  .notes-dashboard {
+    padding: 16px;
+  }
+
+  /* 2. Fix the breadcrumbs so they don't break the layout */
+  .breadcrumb {
+    font-size: 0.75rem; /* Dropped slightly so it's less distracting */
+    margin-bottom: 1rem; /* Less empty space below it */
+    flex-wrap: wrap; 
+    line-height: 1.5;
+  }
+
+  /* 3. Shrink massive headers to perfectly match homepage */
+  .header-text h1 {
+    font-size: 1.15rem !important; /* Shrunk down significantly */
+    line-height: 1.3 !important; 
+    margin-bottom: 4px; 
+  }
+
+  .header-text .subtitle {
+    font-size: 0.8rem !important; /* Made subtext a tiny bit smaller too */
+  }
+
+  /* 4. Make the Action buttons sit perfectly */
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-primary-gradient {
+    flex-grow: 1; /* Makes the sync button fill all remaining space */
+    text-align: center;
+    padding: 0.6rem 1rem;
+  }
+
+  /* 5. STOP FILE NAME TRUNCATION & MATCH HOMEPAGE SIZE */
+  .list-view .file-card {
+    padding: 1rem;
+    gap: 12px;
+  }
+
+  .list-view .file-info h3 {
+    white-space: normal !important; 
+    font-size: 0.85rem !important; /* 🌟 Shrunk from 0.95rem to match homepage subjects */
+    line-height: 1.4 !important;
+  }
+  
+  .grid-view .file-info h3,
+  .file-info h3 {
+    white-space: normal !important; /* Lets the text drop to the next line */
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .file-actions {
+    gap: 8px; /* Tighter gap between view and download button */
+  }
+
+  .btn-view {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  /* 🌟 TRUE MOBILE GRID VIEW (2 Columns) 🌟 */
+  .grid-view {
+    grid-template-columns: repeat(2, 1fr) !important; /* Forces exactly 2 columns */
+    gap: 12px !important; /* Tighter gap so they fit */
+  }
+
+  /* Make the card stack its contents vertically */
+  .grid-view .file-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 12px !important;
+    gap: 10px !important;
+    text-align: left;
+  }
+
+  /* Shrink the icon so it doesn't take up the whole box */
+  .grid-view .file-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.2rem !important;
+  }
+
+  /* Allow the file name to wrap nicely */
+  .grid-view .file-info {
+    width: 100%;
+  }
+
+  .grid-view .file-info h3 {
+    font-size: 0.85rem !important; 
+    line-height: 1.4 !important; 
+    margin-bottom: 8px !important; 
+    width: 100% !important;
+    word-break: break-word !important; 
+  }
+
+  /* Stack the buttons side-by-side at the bottom */
+  .grid-view .file-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+    gap: 6px !important;
+    margin-top: auto; /* Pushes buttons to the bottom edge */
+  }
+
+  .grid-view .btn-view {
+    flex: 1; /* View button takes up remaining space */
+    padding: 6px 4px !important;
+    font-size: 0.75rem !important;
+    justify-content: center;
+  }
+
+  .grid-view .btn-download {
+    width: 32px !important; /* Keep the download button a small square */
+    height: 32px !important;
+  }
+
+  /* 🌟 6. INSTANT TOUCH FEEDBACK FOR MOBILE 🌟 */
+  .file-card, .btn-primary-gradient, .btn-view, .btn-download, .toggle-btn, .crumb-link {
+    transition: all 0.15s ease !important;
+  }
+
+  .file-card:active {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.04) !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .btn-primary-gradient:active {
+    transform: scale(0.98) !important;
+  }
+  
+  .btn-view:active, .btn-download:active, .toggle-btn:active {
+    background-color: #e2e8f0 !important;
+    transform: scale(0.95) !important;
+  }
 }

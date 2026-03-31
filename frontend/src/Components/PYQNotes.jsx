@@ -53,16 +53,25 @@ function PYQNotes() {
   const handleSync = async () => {
     setIsSyncing(true); 
     try {
-      const response = await fetch("http://localhost:5001/api/sync-drive", {
+      // 🌟 CHANGED: Point to the new admin sync route and send the exact location!
+      const response = await fetch("http://localhost:5001/api/admin/sync", {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            programId: programId,
+            semesterId: semesterId,
+            subjectId: subjectId,
+            type: "PYQ" // Tells Firebase to look in the PYQ collection
+        })
       });
+      
       const result = await response.json();
       
       if (response.ok) {
+        alert(`🚀 ${result.message}`);
         setRefreshTrigger(prev => prev + 1); 
-        
-        alert("🚀 Drive Sync Complete! Refreshing your notes..."); 
-        
       } else {
         alert("Sync failed: " + result.error);
       }

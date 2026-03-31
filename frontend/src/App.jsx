@@ -20,6 +20,7 @@ import React, { useState, useEffect } from 'react'; // 🌟 Add these
 import { doc, onSnapshot } from 'firebase/firestore'; // 🌟 Add these
 import { db } from './firebase'; // 🌟 Add this so we can talk to the database
 import Search from './Components/Search';
+import './index.css';
 
 // 🌟 THE LIVE SECURITY GUARD
 function ProtectedLayout({ children }) {
@@ -81,7 +82,18 @@ function ProtectedLayout({ children }) {
   // 3. Render the main layout!
   return (
     <div className="main-layout" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+      
+      {/* 🌟 MOVED HERE: The Blur Overlay now sits at the top level and covers the whole app! */}
+      <div 
+        className="mobile-overlay" 
+        onClick={() => {
+          document.body.classList.remove('tablet-sidebar-open');
+          document.body.classList.remove('mobile-sidebar-open');
+        }}
+      ></div>
+
       <Sidebar />
+      
       <div className="content-area" style={{ flex: 1, backgroundColor: '#f4f7f6', display: 'flex', flexDirection: 'column' }}>
         <Nav /> 
         <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
@@ -91,6 +103,7 @@ function ProtectedLayout({ children }) {
     </div>
   );
 }
+
 
 
 function App() {

@@ -64,63 +64,34 @@ function SyllabusDetail() {
       ) : (
         <div className="syllabus-detail-card">
           
-          <div 
-            className="detail-header-row"
-            style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center', 
-              flexWrap: 'wrap',     
-              gap: '20px',
-              paddingBottom: '24px', 
-              borderBottom: '1px solid #e2e8f0', 
-              marginBottom: '24px' 
-            }}
-          >
+          {/* 🌟 COMPLETELY CLEANED HEADER: All inline styles and mouse events removed! */}
+          <div className="detail-header-row">
 
-            <div className="header-left" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px', flex: 1 }}>
+            <div className="header-left">
               
-              <h1 style={{ fontSize: '1.75rem', color: '#1e293b', margin: '0', fontWeight: '700' }}>
+              <h1 className="subject-title">
                 {subject?.name || "Loading Subject..."}
               </h1>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#64748b', fontSize: '0.9rem' }}>
-                <span style={{ fontWeight: '600', color: '#4a6583', background: '#f0f4f8', padding: '5px 12px', borderRadius: '8px', letterSpacing: '0.5px' }}>
-                  {subjectId}
-                </span>
+              <div className="subject-meta">
+                <span className="meta-code">{subjectId}</span>
                 
-                <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span>Credits: <strong style={{ color: '#475569' }}>{subject?.credits || '--'}</strong></span>
-                  <span style={{ color: '#cbd5e1' }}>|</span>
-                  <span>Teacher: <strong style={{ color: '#475569' }}>{subject?.teacher || 'TBA'}</strong></span>
+                <span className="meta-details">
+                  <span>Credits: <strong>{subject?.credits || '--'}</strong></span>
+                  <span className="meta-divider">|</span>
+                  <span>Teacher: <strong>{subject?.teacher || 'TBA'}</strong></span>
                 </span>
               </div>
 
             </div>
 
             <div className="header-right">
-              <button 
-                className="back-btn" 
-                onClick={() => navigate(`/syllabus/${programId}/${semesterId}`)}
-                style={{ 
-                  padding: '8px 16px', 
-                  background: 'white', 
-                  border: '1px solid #cbd5e1', 
-                  borderRadius: '8px', 
-                  cursor: 'pointer', 
-                  fontWeight: '600', 
-                  color: '#475569',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-                onMouseOver={(e) => { e.target.style.background = '#f8fafc'; e.target.style.borderColor = '#94a3b8'; }}
-                onMouseOut={(e) => { e.target.style.background = 'white'; e.target.style.borderColor = '#cbd5e1'; }}
-              >
-                ← Back to Semester
+              {/* 🌟 Change text to just the arrow for the circle button */}
+              <button className="back-btn" onClick={() => navigate(`/syllabus/${programId}/${semesterId}`)}>
+                ←
               </button>
             </div>
+            
           </div>
 
           <table className="units-table">
@@ -128,7 +99,6 @@ function SyllabusDetail() {
               <tr>
                 <th className="unit-col">Unit</th>
                 <th className="content-col">Content</th>
-                <th className="hours-col">Hours</th>
               </tr>
             </thead>
             <tbody>
@@ -144,12 +114,11 @@ function SyllabusDetail() {
                         <div className="content-desc">{unit.topics.join(', ')}</div>
                       </div>
                     </td>
-                    <td className="hours-col-data">-</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" className="status-message empty">
+                  <td colSpan="2" className="status-message empty">
                     No units uploaded yet.
                   </td>
                 </tr>

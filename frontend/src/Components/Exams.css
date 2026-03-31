@@ -120,6 +120,27 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.03);
 }
 
+/* 🌟 EXAM TYPE BADGE 🌟 */
+.exam-type-badge {
+  display: inline-flex; /* Changed from inline-block */
+  align-items: center;  /* Forces the text inside to center perfectly */
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 0; /* REMOVED the margin-bottom that was pushing it up! */
+  text-transform: uppercase;
+  height: 24px; /* Optional: Sets a strict height to match the exam code box */
+  box-sizing: border-box;
+}
+
+/* Colors for the Badges based on the type */
+.badge-ca1, .badge-ca3 { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; } /* Green for Class Tests */
+.badge-ca2 { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; } /* Yellow/Orange for Mid-Sems */
+.badge-end-semester { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; } /* Red for End Sems */
+.badge-default { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; } /* Gray default */
+
 .days-box {
   width: 76px; 
   height: 84px; 
@@ -259,18 +280,398 @@
 .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #64748b; }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
 
-/* 🌟 EXAMS MOBILE STACK 🌟 */
-@media (max-width: 768px) {
+
+/* 🌟 PAST EXAM CARD STYLING 🌟 */
+.exam-card-past {
+  display: flex;
+  align-items: center;
+  background: #f8fafc; /* Very soft grey background */
+  padding: 12px 20px; /* Much slimmer padding than upcoming exams */
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  gap: 16px;
+  transition: all 0.2s ease;
+  margin-bottom: 8px; /* Tighter spacing */
+}
+
+.exam-card-past:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* The tiny checkmark circle */
+.past-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.past-details {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.past-details h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+  text-decoration: line-through; /* Strikes through the name */
+  text-decoration-color: #94a3b8;
+}
+
+.past-details .exam-date {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 🌟 Smart Reflection Button Styles */
+.btn-review-past {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-review-past:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #94a3b8;
+}
+
+/* When the reflection has already been saved */
+.btn-review-past.completed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+.btn-review-past.completed:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+/* 🌟 ENTERPRISE POST-EXAM REFLECTION MODAL 🌟 */
+.reflection-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.reflection-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 16px; /* 🌟 Perfectly matches your exam cards */
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.reflection-header {
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #ffffff;
+}
+
+.reflection-badge {
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.reflection-header h3 {
+  margin: 10px 0 0 0;
+  font-size: 1.3rem;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+/* 🌟 Apple-style close button */
+.btn-close {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-close:hover { 
+  background: #f1f5f9; 
+  color: #0f172a; 
+  border-color: #cbd5e1;
+}
+
+.reflection-body { padding: 24px; background: #ffffff; }
+
+.input-group { margin-bottom: 24px; }
+.input-group:last-child { margin-bottom: 0; }
+
+.input-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+.marks-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 🌟 Inputs match your search bar styling */
+.marks-input-wrapper input {
+  width: 120px;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.marks-input-wrapper input:focus, .input-group textarea:focus {
+  border-color: #4a6583; /* 🌟 Snaps to your brand blue */
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(74, 101, 131, 0.1);
+}
+
+.marks-total {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.input-group textarea {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+/* 🌟 Much cleaner locked widget */
+.actual-results-locked {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.lock-icon { 
+  font-size: 18px; 
+  background: #ffffff;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.locked-text h4 { margin: 0 0 4px 0; color: #334155; font-size: 0.95rem; font-weight: 600; }
+.locked-text p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.5; }
+
+.reflection-footer {
+  padding: 20px 24px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-end; /* Pushes buttons to the right */
+  gap: 12px;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid transparent;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover { background: #f1f5f9; color: #1e293b; }
+
+.btn-save-reflection {
+  background: #4a6583; /* 🌟 Matches your prepare button */
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(74, 101, 131, 0.2);
+}
+
+.btn-save-reflection:hover { 
+  background: #3b526b; 
+  transform: translateY(-1px); 
+  box-shadow: 0 4px 6px rgba(74, 101, 131, 0.3);
+}
+
+/* 🌟 TABLET VIEW (iPads & Narrow Screens) 🌟 */
+@media (max-width: 1024px) {
   .exams-content-layout {
-    flex-direction: column !important; /* Forces the calendar under the list */
+    flex-direction: column !important; /* Stack the list and calendar */
+    gap: 24px;
   }
+  
   .exams-calendar-section {
-    width: 100% !important; /* Allows the calendar to stretch */
+    width: 100% !important; /* Let the calendar stretch fully */
     flex: none;
   }
+
+  .exams-list-section {
+    width: 100%;
+  }
+}
+
+/* 🌟 MOBILE VIEW (Phones) 🌟 */
+@media (max-width: 768px) {
+  /* 1. Fix the "Too Wide" issue by reducing the massive desktop padding */
+  .exams-page-container {
+    padding: 16px; 
+  }
+
+  .exams-page-header {
+    margin-bottom: 20px;
+  }
+
+  .header-title-box h2 {
+    font-size: 1.15rem; /* Shrink header slightly to fit */
+  }
+
+  /* 2. Format the Upcoming Exams neatly */
   .exam-card {
     flex-direction: column;
     text-align: center;
     align-items: center;
+    padding: 16px; /* 🌟 Shrunk padding from 20px to 16px */
+    gap: 12px; /* 🌟 Tighter gap between the box and the text */
+  }
+
+  .exam-card .days-box {
+    height: 70px; /* Shrunk from 84px */
+    width: 70px;  /* Shrunk from 76px */
+  }
+
+  .exam-card .days-box h2 {
+    font-size: 22px; /* Slightly smaller number */
+  }
+
+  .exam-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* 3. FIX THE OVERLAP in "Recently Completed" Exams */
+  .exam-card-past {
+    flex-direction: column; /* Stacks the icon, details, and button vertically */
+    align-items: flex-start;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .past-details {
+    flex-direction: column; /* Stacks the title, date, and badge safely */
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .exam-details h4 {
+    margin: 6px 0 2px 0; 
+    font-size: 1.05rem; 
+  }
+
+  .exam-details .exam-date {
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+  }
+  
+  .exam-details .exam-meta {
+    font-size: 0.8rem;
+    margin-bottom: 12px; /* Pushes the buttons down slightly */
+  }
+
+  .btn-review-past {
+    width: 100%; /* Makes the button full-width for easy tapping */
+    text-align: center;
+    margin-top: 4px;
+    padding: 10px;
+  }
+
+  /* 4. Align the buttons in the Upcoming Exams to fit perfectly */
+  .exam-details > div[style*="display: flex"] {
+    justify-content: center;
+    flex-wrap: wrap; /* Prevents Syllabus/Prepare buttons from overlapping */
+    gap: 8px !important;
   }
 }

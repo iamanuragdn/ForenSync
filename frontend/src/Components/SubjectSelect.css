@@ -204,3 +204,81 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* 🌟 TABLET VIEW (iPads) 🌟 */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 24px 32px;
+  }
+  
+  /* Enable scrolling if the screen gets just a bit too narrow */
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .subject-table {
+    min-width: 750px; 
+  }
+}
+
+/* 🌟 MOBILE VIEW (Phones) 🌟 */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 16px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+
+  /* 1. Shrink the Summary Box into a compact 2x2 grid */
+  .semester-summary {
+    padding: 16px; /* Shrunk from 1.25rem 2rem */
+    gap: 16px; /* Tighter spacing */
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+
+  .summary-item {
+    min-width: calc(50% - 8px); /* Forces exactly 2 items per row */
+    margin: 0;
+  }
+
+  .summary-value {
+    font-size: 1.2rem; /* Scaled down the big numbers */
+    margin-bottom: 4px;
+  }
+
+  .summary-label {
+    font-size: 0.7rem; /* Scaled down the uppercase text */
+  }
+
+  /* 2. 🌟 THE MAGIC: Horizontal Scrolling Table */
+  .table-container {
+    border-radius: 8px; 
+    overflow-x: auto; /* Enables horizontal swiping */
+    -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+    box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow to hint that it scrolls */
+  }
+
+  .subject-table {
+    min-width: 650px; /* Forces the table to stay wide so it doesn't crush the columns */
+  }
+
+  .subject-table th, 
+  .subject-table td {
+    padding: 12px 16px; /* Tighter row height for mobile */
+    white-space: nowrap; /* Stops text from awkwardly dropping to the next line */
+  }
+
+  /* We let the Subject Name wrap a little bit so it doesn't stretch too far */
+  .name-col {
+    white-space: normal;
+    min-width: 200px;
+    line-height: 1.4;
+  }
+}

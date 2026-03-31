@@ -162,3 +162,95 @@
 }
 
 .support-btn:hover { background: #1e40af; }
+
+/* 🌟 TABLET VIEW (iPads & Narrow Screens) 🌟 */
+@media (max-width: 1024px) {
+  .semester-dashboard {
+    padding: 0 24px;
+  }
+
+  .hero-content h1 {
+    font-size: 1.8rem; /* Shrinks the massive desktop title */
+  }
+
+  /* Drops from 4 columns to 3 columns so they don't squeeze */
+  .semester-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+/* 🌟 MOBILE VIEW (Phones) 🌟 */
+@media (max-width: 768px) {
+  .semester-dashboard {
+    padding: 0 16px;
+    margin: 20px auto;
+  }
+
+  /* 1. Shrink the Program Name so it doesn't take up the whole screen */
+  .hero-content h1 {
+    font-size: 1.4rem; 
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+
+  /* Stacks the stats neatly */
+  .stats-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-title h2 {
+    font-size: 1.2rem;
+  }
+
+  /* 2. Format the Semester Boxes (2 Side-by-Side) */
+  .semester-grid {
+    grid-template-columns: repeat(2, 1fr); /* 🌟 Forces 2 neat columns on phones */
+    gap: 12px; /* Tighter gap */
+    margin-bottom: 30px;
+  }
+
+  /* 3. Make the boxes themselves smaller and more compact */
+  .semester-card {
+    padding: 16px 12px; /* 🌟 Cut padding in half to shrink the box */
+  }
+
+  .sem-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+
+  .semester-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+  }
+
+  .semester-card p {
+    font-size: 0.75rem;
+  }
+
+  /* 4. Fix the Support Banner so it stacks instead of overflowing */
+  .support-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  .support-left {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .support-btn {
+    width: 100%; /* Makes the button easy to tap on mobile */
+  }
+}

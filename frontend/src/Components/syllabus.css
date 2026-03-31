@@ -5,17 +5,69 @@
 }
 
 .syllabus-header {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: white;
-  padding: 30px;
-  border-radius: 12px;
+  background: transparent;
+  color: #1e293b;
+  padding: 0 0 24px 0;
+  border-bottom: 1px solid #e2e8f0;
   margin-bottom: 24px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .syllabus-header h1 {
-  margin: 0 0 10px 0;
+  margin: 0 0 16px 0;
   font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.header-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; 
+  gap: 16px;
+}
+
+.meta-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.meta-box {
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4a6583;
+}
+
+.meta-text {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.meta-text strong {
+  color: #1e293b;
+}
+
+.btn-back-semester {
+  background: white;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn-back-semester:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #1e293b;
 }
 
 .credits-badge {
@@ -72,15 +124,6 @@
   gap: 15px;
 }
 
-.hours-badge {
-  background: #f3f4f6;
-  color: #4b5563;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
 .dropdown-icon {
   color: #9ca3af;
   font-size: 1.2rem;
@@ -106,4 +149,56 @@
 .unit-content li {
   margin-bottom: 10px;
   line-height: 1.6;
+}
+
+/* 🌟 TABLET & MOBILE RESPONSIVENESS 🌟 */
+@media (max-width: 768px) {
+  .syllabus-page {
+    padding: 16px;
+    margin: 10px auto;
+  }
+
+  .syllabus-header h1 {
+    font-size: 1.4rem; /* Shrinks the long subject title */
+  }
+
+  /* Stacks the meta row and the back button vertically */
+  .header-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Makes the back button stretch full width for easy tapping */
+  .btn-back-semester {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* Ensures long Unit names wrap properly instead of squishing */
+  .unit-header {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .unit-title-group {
+    align-items: flex-start;
+    flex-direction: column; /* Stacks "Unit 1" on top of the title name */
+    gap: 4px;
+  }
+
+  .unit-number {
+    font-size: 0.9rem;
+  }
+
+  .unit-name {
+    font-size: 1rem;
+    line-height: 1.4;
+    padding-right: 16px; /* Keeps text away from the dropdown arrow */
+  }
+  
+  /* Fix padding for the dropdown content so it aligns with the title */
+  .unit-content {
+    padding: 0 16px 16px 16px; 
+  }
 }

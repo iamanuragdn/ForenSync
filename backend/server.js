@@ -8,6 +8,8 @@ const path = require("path");
 const { google } = require('googleapis'); 
 
 const syllabusData = require("./syllabusData");
+const examData = require("./examData"); // 🌟 NEW: Import your exam dates!
+
 
 // Import extractor
 const { extractQuestions } = require("./extractor"); 
@@ -463,29 +465,26 @@ async function processFileInBackground(fileBuffer, mimeType) {
 }
 
 
-// FETCH EXAMS FOR CALENDAR
+// 🌟 UPGRADED: FETCH EXAMS FOR CALENDAR (From Local File)
 app.get('/api/exams/:programId/:semesterId', async (req, res) => {
   try {
     const { programId, semesterId } = req.params;
     
-    const snapshot = await db.collection("programs").doc(programId)
-                             .collection("semesters").doc(semesterId)
-                             .collection("exams")
-                             .orderBy("examDate", "asc")
-                             .get();
-
-    if (snapshot.empty) {
-      return res.status(200).json([]); 
-    }
-
-    const exams = [];
-    snapshot.forEach(doc => {
-      exams.push({ id: doc.id, ...doc.data() });
-    });
-
-    res.status(200).json(exams);
+    // 1. Look inside our local examData.js file
+    const programExams = examData[programId];
+    
+    // 2. If the program and semester exist in our file, send them!
+    if (programExams && programExams[semesterId]) {
+      // Sort them by date before sending just to be safe
+      const sortedExams = programExams[semesterId].sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+      return res.status(200).json(sortedExams);
+    } 
+    
+    // 3. If nothing is found, send an empty array so the frontend doesn't crash
+    return res.status(200).json([]);
+    
   } catch (error) {
-    console.error("Error fetching exams:", error);
+    console.error("Error fetching exams from local file:", error);
     res.status(500).json({ error: "Failed to fetch exams" });
   }
 });
@@ -514,8 +513,76 @@ app.get('/api/drive/folders', async (req, res) => {
     }
 });
 
+// 🌟 NEW: SYNC DRIVE ROUTE (Cleans up missing/trashed files)
+app.post('/api/admin/sync', async (req, res) => {
+    try {
+        const { programId, semesterId, subjectId, type } = req.body;
 
-// ADMIN: DRIVE + FIREBASE UPLOADER
+        console.log(`🔄 Starting sync for: ${subjectId} / ${type}`);
+
+        // 1. Authenticate with Google Drive
+        const oauth2Client = new google.auth.OAuth2(
+            process.env.GDRIVE_CLIENT_ID,
+            process.env.GDRIVE_CLIENT_SECRET,
+            "https://developers.google.com/oauthplayground"
+        );
+        oauth2Client.setCredentials({ refresh_token: process.env.GDRIVE_REFRESH_TOKEN });
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+        // 2. Fetch all file records currently sitting in Firebase
+        const collectionRef = db.collection("programs").doc(programId)
+                                .collection("semesters").doc(semesterId)
+                                .collection("subjects").doc(subjectId)
+                                .collection(type);
+                                
+        const snapshot = await collectionRef.get();
+        let deletedCount = 0;
+
+        // 3. Cross-check each file with Google Drive simultaneously 
+        const checkPromises = snapshot.docs.map(async (doc) => {
+            const fileId = doc.id; // Our Firebase Doc IDs are the Drive File IDs!
+            
+            try {
+                // Ask Drive about this specific file
+                const driveFile = await drive.files.get({
+                    fileId: fileId,
+                    fields: 'id, trashed'
+                });
+
+                // If it's in the Drive trash, delete the Firebase record
+                if (driveFile.data.trashed) {
+                    await collectionRef.doc(fileId).delete();
+                    deletedCount++;
+                    console.log(`🗑️ Cleaned up trashed file: ${doc.data().name}`);
+                }
+            } catch (error) {
+                // Error 404 means the file was permanently deleted from Drive
+                if (error.code === 404 || error.status === 404) {
+                    await collectionRef.doc(fileId).delete();
+                    deletedCount++;
+                    console.log(`🧨 Cleaned up missing file: ${doc.data().name}`);
+                } else {
+                    console.error(`Warning: Couldn't check file ${fileId}`, error.message);
+                }
+            }
+        });
+
+        // Wait for all the checks to finish
+        await Promise.all(checkPromises);
+
+        console.log(`✅ Sync complete. Removed ${deletedCount} ghost files.`);
+        res.status(200).json({ 
+            message: `Sync complete! Removed ${deletedCount} missing files.`,
+            deletedCount: deletedCount 
+        });
+
+    } catch (error) {
+        console.error("🔥 Sync Error:", error);
+        res.status(500).json({ error: "Failed to sync with Google Drive." });
+    }
+});
+
+// 🌟 NEW: ADMIN FIREBASE UPLOADER (Strictly OAuth 2.0 Version)
 app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     try {
         const { targetDriveFolderId, programId, semesterId, subjectId, type, fileName } = req.body;
@@ -523,16 +590,29 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
 
-        // Authenticate with FULL Drive permissions to upload
-        const uploadAuth = new google.auth.GoogleAuth({
-            keyFile: './serviceAccountKey.json',
-            scopes: ['https://www.googleapis.com/auth/drive'], 
+        console.log("🚀 Starting OAuth Upload...");
+        console.log("Client ID loaded:", !!process.env.GDRIVE_CLIENT_ID);
+        console.log("Refresh Token loaded:", !!process.env.GDRIVE_REFRESH_TOKEN);
+
+        // 1. Authenticate with OAuth2 (Bypassing the Service Account entirely)
+        const oauth2Client = new google.auth.OAuth2(
+            process.env.GDRIVE_CLIENT_ID,
+            process.env.GDRIVE_CLIENT_SECRET,
+            "https://developers.google.com/oauthplayground"
+        );
+
+        oauth2Client.setCredentials({
+            refresh_token: process.env.GDRIVE_REFRESH_TOKEN
         });
-        const uploadDrive = google.drive({ version: 'v3', auth: uploadAuth });
+
+        // 2. Initialize Drive with ONLY the OAuth client
+        const uploadDrive = google.drive({ version: 'v3', auth: oauth2Client });
 
         const bufferStream = new stream.PassThrough();
         bufferStream.end(fileObject.buffer);
 
+        // 3. Upload the file
+        console.log("Uploading to folder:", targetDriveFolderId);
         const driveResponse = await uploadDrive.files.create({
             requestBody: {
                 name: fileName || fileObject.originalname,
@@ -546,16 +626,19 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         });
 
         const fileId = driveResponse.data.id;
+        console.log("✅ Uploaded! File ID:", fileId);
 
+        // 4. Make it readable by anyone
         await uploadDrive.permissions.create({
             fileId: fileId,
             requestBody: { role: 'reader', type: 'anyone' },
         });
 
+        // 5. Save metadata to Firebase
         const docRef = db.collection("programs").doc(programId)
                          .collection("semesters").doc(semesterId)
                          .collection("subjects").doc(subjectId)
-                         .collection(type).doc(fileId); // Use the Drive File ID as the Firebase Doc ID!
+                         .collection(type).doc(fileId); 
         
         await docRef.set({
             name: fileName || fileObject.originalname,
@@ -568,8 +651,8 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         res.status(200).json({ message: "Upload successful!" });
     } catch (error) {
-        console.error("Upload error:", error);
-        res.status(500).json({ error: "Failed to upload file" });
+        console.error("🔥 Detailed Upload Error:", error.message);
+        res.status(500).json({ error: "Failed to upload file to Drive." });
     }
 });
 

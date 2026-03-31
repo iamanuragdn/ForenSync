@@ -95,3 +95,94 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* 🌟 TABLET VIEW (iPads & Narrow Screens) 🌟 */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 24px 32px; /* Slim down the massive desktop padding */
+  }
+  
+  .program-grid, .page-header {
+    max-width: 100%; /* Let it utilize the full tablet screen */
+  }
+}
+
+/* 🌟 MOBILE VIEW (Phones) 🌟 */
+@media (max-width: 768px) {
+  /* 1. Reset container to use full width */
+  .page-container {
+    padding: 16px !important; 
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. 🌟 FIX: Force Header to align perfectly to the left */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start !important; /* Forces left alignment */
+    text-align: left !important;
+    gap: 6px; 
+    margin-bottom: 24px;
+    width: 100% !important;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem !important; 
+    margin: 0 !important;
+    width: 100%;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  /* 3. 🌟 FIX: Force the Grid to stretch 100% across the screen */
+  .program-grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important; /* Removes the centering pinch */
+  }
+
+  /* 4. Let cards fill the new 100% width */
+  .program-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 16px !important; 
+    gap: 12px !important; 
+  }
+
+  /* 5. Shrink the Icon Box */
+  .program-icon {
+    margin-right: 0 !important; 
+    padding: 10px !important;
+    font-size: 1.4rem !important;
+    width: 46px !important;
+    height: 46px !important;
+    flex-shrink: 0 !important; 
+  }
+
+  /* 6. Let the text breathe horizontally */
+  .program-details {
+    flex-grow: 1 !important;
+    min-width: 0 !important; 
+  }
+
+  .program-details h3 {
+    font-size: 0.95rem !important; 
+    margin-bottom: 4px !important;
+    line-height: 1.3 !important;
+  }
+
+  .program-details p {
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .program-arrow {
+    margin-left: 8px !important;
+    font-size: 1.2rem !important;
+    flex-shrink: 0 !important; 
+  }
+}

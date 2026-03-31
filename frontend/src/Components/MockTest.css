@@ -1,4 +1,4 @@
-/* MENU UI (White Cards) */
+c/* MENU UI (White Cards) */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -149,3 +149,116 @@
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+
+/* 🌟 TABLET VIEW 🌟 */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 2rem 24px;
+  }
+  
+  .practice-grid {
+    /* Drops the minimum width so they fit on an iPad */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+  }
+}
+
+/* 🌟 MOBILE VIEW (PHONES) 🌟 */
+@media (max-width: 768px) {
+  /* 1. Fix the main page layout */
+  .page-container {
+    padding: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .practice-grid {
+    grid-template-columns: 1fr !important; /* Forces 1 card per row */
+    gap: 1rem;
+  }
+
+  .practice-card {
+    padding: 20px 16px; /* Slims down the massive desktop padding */
+  }
+
+  .card-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+
+  .practice-card h2 {
+    font-size: 1.25rem;
+  }
+
+  /* 2. Fix the Popup / Exam View */
+  .test-full-screen {
+    padding: 12px; /* Brings the modal closer to the screen edges */
+  }
+
+  .test-card {
+    min-height: 85vh; /* Takes up most of the phone screen */
+    max-height: 95vh;
+  }
+
+  /* Stack the header cleanly */
+  .test-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .header-left h2 {
+    font-size: 1.2rem;
+  }
+
+  .finish-btn {
+    width: 100%; /* Makes it a full-width thumb target */
+    padding: 12px;
+    text-align: center;
+  }
+
+  /* Allow long questions to scroll */
+  .test-body {
+    padding: 20px 16px;
+    overflow-y: auto; /* 🌟 MAGIC: Adds a scrollbar inside the card if text is too long */
+  }
+
+  .test-tags {
+    flex-wrap: wrap; /* Prevents tags from overflowing */
+    gap: 8px;
+    margin-bottom: 1.2rem;
+  }
+
+  .question-content h3 {
+    font-size: 1.2rem; /* Shrinks the massive question text */
+    line-height: 1.5;
+  }
+
+  /* Split the Next/Prev buttons 50/50 */
+  .test-footer {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .nav-btn {
+    flex: 1; /* Makes them share the row equally */
+    padding: 12px 0;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+  }
+}

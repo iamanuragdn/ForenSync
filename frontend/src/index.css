@@ -88,3 +88,67 @@ body {
     flex: 1 !important;
   }
 }
+
+/* 💻 IPAD / TABLET SIDEBAR DRAWER (Perfectly Matched to App.jsx) */
+@media (max-width: 1024px) {
+  
+  /* 1. Target your EXACT sidebar class (.app-sidebar) */
+  .app-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -350px !important; /* Hides it off-screen */
+    height: 100vh !important;
+    z-index: 9999 !important; 
+    transition: left 0.3s ease-in-out !important;
+    background: #ffffff !important;
+  }
+
+  /* 2. Slide it in when the hamburger adds the class to the body */
+  body.tablet-sidebar-open .app-sidebar {
+    left: 0 !important;
+    box-shadow: none !important; /* Killed the heavy shadow */
+    border-right: 1px solid #e2e8f0 !important; /* Added a sleek, subtle line instead */
+  }
+
+  /* 3. Target your EXACT content wrapper (.content-area) */
+  .content-area {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+    margin-left: 0 !important;
+  }
+
+  /* 4. Show the dark overlay when open */
+  .mobile-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.25); /* Sleek dark tint */
+    backdrop-filter: blur(4px); /* This creates the Apple-style glass blur! */
+    -webkit-backdrop-filter: blur(4px); /* For Safari support */
+    z-index: 9998; /* Sits perfectly underneath the sidebar */
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  body.tablet-sidebar-open .mobile-overlay {
+    opacity: 1;
+    pointer-events: auto; /* This allows it to actually be clicked! */
+  }
+
+  .hamburger-btn {
+    display: flex !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important; /* Removes any weird button shadows */
+    color: #475569 !important; /* Matches your text color */
+    cursor: pointer;
+    padding: 4px;
+  }
+}
+
+/* 🖥️ DESKTOP ONLY (Hides hamburger menu on big screens) */
+@media (min-width: 1025px) {
+  .hamburger-btn {
+    display: none !important;
+  }
+}

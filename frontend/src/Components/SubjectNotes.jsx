@@ -12,6 +12,8 @@ function SubjectNotes() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+
   const handleSync = async () => {
     const btn = document.querySelector(".btn-primary-gradient");
     const originalText = btn.innerText;
@@ -20,17 +22,31 @@ function SubjectNotes() {
         btn.innerText = "⏳ Syncing...";
         btn.disabled = true;
 
-        const response = await fetch("http://localhost:5001/api/sync-drive", {
+        // 🌟 CHANGED: Point to the new admin sync route and send the exact location!
+        const response = await fetch("http://localhost:5001/api/admin/sync", {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                programId: programId,
+                semesterId: semesterId,
+                subjectId: subjectId,
+                type: "Notes" // Tells Firebase to look in the Notes collection
+            })
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-            alert("🚀 Drive Sync Complete! Refreshing your notes...");
-            window.location.reload(); 
+            alert(`🚀 ${data.message}`);
+            // 🌟 CHANGED: Use your refresh trigger instead of a hard page reload!
+            setRefreshTrigger(prev => prev + 1); 
         } else {
-            alert("❌ Sync failed. Check server console.");
+            alert(`❌ Sync failed: ${data.error}`);
         }
     } catch (err) {
+        console.error(err);
         alert("❌ Error connecting to server.");
     } finally {
         btn.innerText = originalText;

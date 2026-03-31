@@ -1,3 +1,4 @@
+/* 🌟 BASE PAGE LAYOUT */
 .page-container {
   padding: 3rem 4rem;
   animation: fadeIn 0.3s ease-out;
@@ -20,11 +21,6 @@
 .current-page { color: #2d3748; font-weight: 600; }
 .separator { color: #cbd5e1; }
 
-.status-message { padding: 2rem; border-radius: 8px; font-weight: 500; text-align: center; }
-.loading { color: #4a6583; background: #f0f4f8; }
-.error { color: #b91c1c; background: #fee2e2; }
-.empty { color: #64748b; background: transparent; padding: 3rem; }
-
 .syllabus-detail-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -33,58 +29,92 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
+.status-message { padding: 2rem; border-radius: 8px; font-weight: 500; text-align: center; }
+.loading { color: #4a6583; background: #f0f4f8; }
+.error { color: #b91c1c; background: #fee2e2; }
+.empty { color: #64748b; background: transparent; padding: 3rem; }
+
+/* 🌟 DESKTOP HEADER STYLES (Fixed!) */
 .detail-header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 2rem;
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 1.5rem;
+  gap: 20px;
+  position: relative; /* Needed for mobile button positioning */
 }
 
-.header-left h2 {
-  font-size: 1.6rem;
-  color: #2d3748;
-  margin: 0 0 0.5rem 0;
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  padding-right: 20px;
+}
+
+.subject-title {
+  font-size: 1.7rem;
+  color: #1e293b;
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.subject-meta {
   display: flex;
   align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.subject-code-dot {
-  color: #cbd5e1;
-  margin: 0 0.75rem;
-  font-size: 1.2rem;
+.meta-code {
+  font-weight: 600;
+  color: #4a6583;
+  background: #f0f4f8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
 }
 
-.subject-code-text {
-  font-size: 1.3rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.subject-meta-text {
+.meta-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: #64748b;
   font-size: 0.95rem;
-  margin: 0;
 }
 
+.meta-details strong { color: #1e293b; }
+.meta-divider { color: #cbd5e1; }
+
+/* 🌟 THE CIRCLE BACK BUTTON */
 .back-btn {
-  padding: 0.6rem 1rem;
-  background-color: transparent;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%; /* Makes it a perfect circle */
+  background-color: white;
   color: #4a6583;
   border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0; /* Clears default button padding */
 }
 
 .back-btn:hover {
   background-color: #f8fafc;
-  border-color: #4a6583;
+  border-color: #94a3b8;
+  transform: scale(1.05); /* Slight pop effect on hover */
 }
 
+/* 🌟 TABLE STYLES */
 .units-table {
   width: 100%;
   border-collapse: collapse;
@@ -92,26 +122,25 @@
 }
 
 .units-table th {
-  padding: 1rem 1.5rem;
+  padding: 1rem 1rem 1rem 0;
   font-size: 0.85rem;
-  color: #4a6583;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   font-weight: 600;
   border-bottom: 1px solid #e2e8f0;
 }
 
 .units-table td {
-  padding: 1.5rem;
+  padding: 1.5rem 1rem 1.5rem 0;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: top;
 }
 
-.unit-col { width: 10%; text-align: center; }
-.unit-col-data { text-align: center; color: #2d3748; font-size: 1rem; }
+.unit-col { width: 60px; }
+.unit-col-data { color: #2d3748; font-size: 1.1rem; }
 
-.hours-col { width: 10%; text-align: right; }
-.hours-col-data { text-align: right; color: #94a3b8; }
-
-.content-col { width: 80%; }
+.content-col { width: auto; }
 
 .content-wrapper {
   display: flex;
@@ -119,16 +148,21 @@
 }
 
 .content-title {
-  flex: 0 0 220px; 
+  flex: 0 0 200px;
   font-weight: 600;
-  color: #2d3748;
-  font-size: 0.95rem;
+  color: #1e293b;
+  font-size: 1rem;
 }
 
 .content-desc {
   color: #64748b;
   line-height: 1.6;
   font-size: 0.95rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 900px) {
@@ -141,7 +175,91 @@
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* 🌟 MOBILE & TABLET RESPONSIVENESS (PHONES) 🌟 */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 16px;
+  }
+  
+  .syllabus-detail-card {
+    padding: 16px;
+  }
+
+  /* 1. COMPACT HEADER */
+  .detail-header-row {
+    flex-direction: column;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  /* Shove the circle button absolutely to the top right corner! */
+  .header-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  /* Brutally shrink the subject title so it's manageable */
+  .subject-title {
+    font-size: 1.2rem !important; 
+    padding-right: 45px; /* Ensures text never overlaps the circle button */
+  }
+
+  /* 🌟 FIX: Force metadata strictly to the left edge */
+  .subject-meta {
+    flex-direction: column;
+    align-items: flex-start !important;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .meta-details {
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    gap: 6px;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  /* 2. 🌟 FIX: OPTIMIZE TABLE SPACE & PREVENT HEADER OVERLAP */
+  .units-table {
+    table-layout: fixed; 
+  }
+
+  /* Shrink the header text so "UNIT" fits inside the small box */
+  .units-table th {
+    font-size: 0.75rem;
+    padding: 12px 0;
+  }
+
+  /* Made the Unit column slightly wider (45px) and added right-padding to push Content away */
+  .unit-col, .unit-col-data {
+    width: 45px !important; 
+    padding: 12px 8px 12px 0 !important; 
+    font-size: 0.95rem;
+  }
+
+  /* Give Content column the rest of the space, with left-padding for a safe gap */
+  .content-col, .content-col-data {
+    width: calc(100% - 45px) !important;
+    padding: 12px 0 12px 8px !important; 
+  }
+
+  .content-title {
+    font-size: 0.95rem;
+  }
+
+  .content-desc {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
 }

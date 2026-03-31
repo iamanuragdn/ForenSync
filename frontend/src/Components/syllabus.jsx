@@ -41,11 +41,25 @@ function Syllabus() {
 
   return (
     <div className="syllabus-page">
+      
+      {/* 🌟 UPGRADED HEADER: Sleek, compact, and side-by-side */}
       <div className="syllabus-header">
-        <h1>{subjectData.name} ({subjectData.id || subjectId})</h1>
-        <span className="credits-badge">{subjectData.credits} Credits • {subjectData.type}</span>
+        <h1>{subjectData.name}</h1>
+        
+        <div className="header-meta-row">
+          <div className="meta-info">
+            <span className="meta-box">{subjectData.id || subjectId}</span>
+            <span className="meta-text">Credits: <strong>{subjectData.credits}</strong></span>
+            <span className="meta-text">Teacher: <strong>{subjectData.teacher || "TBA"}</strong></span>
+          </div>
+          
+          <button className="btn-back-semester" onClick={() => navigate(-1)}>
+            ← Back to Semester
+          </button>
+        </div>
       </div>
 
+      {/* 🌟 UPGRADED ACCORDION: No more table, no more hours column! */}
       <div className="units-container">
         {subjectData.units && subjectData.units.length > 0 ? (
           subjectData.units.map((unit, index) => (
@@ -53,12 +67,12 @@ function Syllabus() {
               
               <div className="unit-header" onClick={() => toggleUnit(index)}>
                 <div className="unit-title-group">
-                  <span className="unit-number">Unit {unit.unitNumber}</span>
+                  <span className="unit-number">Unit {unit.unitNumber || index + 1}</span>
                   <span className="unit-name">{unit.title}</span>
                 </div>
                 
                 <div className="unit-meta">
-                  <span className="hours-badge">{unit.topics ? unit.topics.length : 0} Topics</span>
+                  {/* 🌟 DELETED THE HOURS BADGE ENTIRELY */}
                   <span className={`dropdown-icon ${openUnitIndex === index ? 'open' : ''}`}>
                     ▼
                   </span>
@@ -78,7 +92,7 @@ function Syllabus() {
             </div>
           ))
         ) : (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
             No units uploaded for this subject yet.
           </div>
         )}

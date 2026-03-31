@@ -155,3 +155,91 @@
   border-radius: 12px;
   grid-column: 1 / -1; 
 }
+
+/* 🌟 TABLET VIEW (iPads) 🌟 */
+@media (max-width: 1024px) {
+  .home-container {
+    padding: 24px;
+  }
+  
+  .subjects-grid {
+    /* Slightly shrinks the minimum width so cards fit nicely on a tablet */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  }
+}
+
+/* 🌟 MOBILE VIEW (Phones) 🌟 */
+@media (max-width: 768px) {
+  /* 1. Reclaim screen space by shrinking the huge padding */
+  .home-container {
+    padding: 16px;
+  }
+
+  .pyq-header {
+    margin-bottom: 20px;
+  }
+
+  .pyq-header h2 {
+    font-size: 1.5rem; /* Shrink title */
+  }
+
+  /* 2. Stack the Dropdown and Tabs cleanly */
+  .pyq-filters-row {
+    flex-direction: column;
+    align-items: stretch !important; /* Forces children to stretch 100% wide */
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .theme-dropdown {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
+  /* 3. 🌟 SINGLE ROW SWIPEABLE TABS */
+  .exam-tabs {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Forces everything onto 1 single row */
+    overflow-x: auto !important; /* Enables horizontal swiping */
+    -webkit-overflow-scrolling: touch; /* Smooth iOS scrolling */
+    gap: 8px;
+    width: 100%;
+    padding-bottom: 8px; /* Gives the swipe area a tiny bit of breathing room */
+    scrollbar-width: none; /* Hides the ugly scrollbar on Firefox */
+  }
+
+  /* Hides the ugly scrollbar on Chrome/Safari/Edge */
+  .exam-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .exam-tab-btn {
+    flex: 0 0 auto !important; /* Stops the buttons from squishing inwards */
+    white-space: nowrap !important; /* Keeps "CA2 (Mid-Sem)" on exactly one line */
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* 4. Make the Subject Cards span full width */
+  .subjects-grid {
+    grid-template-columns: 1fr; /* 1 column on phones */
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .subject-card {
+    padding: 16px; /* Tighter padding inside the card */
+  }
+
+  .subject-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .subject-info h3 {
+    font-size: 1.05rem;
+  }
+}
