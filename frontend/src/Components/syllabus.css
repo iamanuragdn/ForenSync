@@ -6,9 +6,9 @@
 
 .syllabus-header {
   background: transparent;
-  color: #1e293b;
+  color: var(--text-primary);
   padding: 0 0 24px 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
@@ -35,39 +35,39 @@
 }
 
 .meta-box {
-  background: #f1f5f9;
+  background: var(--bg-hover);
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #4a6583;
+  color: var(--accent-blue);
 }
 
 .meta-text {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .meta-text strong {
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .btn-back-semester {
-  background: white;
-  border: 1px solid #cbd5e1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   padding: 8px 16px;
   border-radius: 8px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.9rem;
 }
 
 .btn-back-semester:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #1e293b;
+  background: var(--bg-hover);
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
 .credits-badge {
@@ -79,10 +79,10 @@
 }
 
 .unit-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   margin-bottom: 12px;
-  background: white;
+  background: var(--bg-card);
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
@@ -97,7 +97,7 @@
 }
 
 .unit-header:hover {
-  background-color: #f9fafb;
+  background-color: var(--bg-hover);
 }
 
 .unit-title-group {
@@ -107,14 +107,14 @@
 }
 
 .unit-number {
-  color: #2563eb;
+  color: var(--accent-blue);
   font-weight: 700;
   font-size: 1.1rem;
 }
 
 .unit-name {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.05rem;
 }
 
@@ -125,7 +125,7 @@
 }
 
 .dropdown-icon {
-  color: #9ca3af;
+  color: var(--text-secondary);
   font-size: 1.2rem;
   transition: transform 0.3s ease;
 }
@@ -136,14 +136,14 @@
 
 .unit-content {
   padding: 0 20px 20px 60px; 
-  border-top: 1px solid #f3f4f6;
-  background: #fafafa;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-app);
 }
 
 .unit-content ul {
   margin: 15px 0 0 0;
   padding-left: 20px;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .unit-content li {

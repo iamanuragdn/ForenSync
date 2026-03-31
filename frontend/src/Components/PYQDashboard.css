@@ -1,7 +1,7 @@
 .home-container {
   padding: 30px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .pyq-header {
@@ -11,13 +11,13 @@
 .pyq-header h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
 }
 
 .pyq-header p {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -32,9 +32,9 @@
 .theme-dropdown {
   padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid #cbd5e0;
-  background-color: #ffffff;
-  color: #1e293b;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -46,12 +46,12 @@
 }
 
 .theme-dropdown:hover {
-  border-color: #94a3b8;
+  border-color: var(--border-color);
   box-shadow: 0 4px 6px rgba(0,0,0,0.04);
 }
 
 .theme-dropdown:focus {
-  border-color: #4a6583;
+  border-color: var(--accent-blue);
 }
 
 .exam-tabs {
@@ -70,19 +70,19 @@
 }
 
 .exam-tab-btn.active {
-  background-color: #4a6583;
+  background-color: var(--accent-blue);
   color: #ffffff;
   box-shadow: 0 4px 6px rgba(74, 101, 131, 0.2);
 }
 
 .exam-tab-btn.inactive {
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: var(--bg-hover);
+  color: var(--text-secondary);
 }
 
 .exam-tab-btn.inactive:hover {
-  background-color: #e2e8f0;
-  color: #475569;
+  background-color: var(--border-color); /* Creates a nice active hover contrast */
+  color: var(--text-secondary);
 }
 
 .subjects-grid {
@@ -93,7 +93,7 @@
 }
 
 .subject-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 20px;
   text-decoration: none; 
@@ -101,7 +101,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 6px rgba(0,0,0,0.03);
-  border: 1px solid #eaeaea;
+  border: 1px solid var(--border-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -112,7 +112,7 @@
 
 .subject-icon {
   font-size: 24px;
-  background: #f8fafc;
+  background: var(--bg-hover);
   width: 45px;
   height: 45px;
   display: flex;
@@ -126,19 +126,19 @@
   font-size: 16px;
   font-weight: 700;
   margin: 0 0 5px 0;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .subject-info p {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0 0 15px 0;
 }
 
 .subject-code {
   display: inline-block;
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 12px;
@@ -149,9 +149,9 @@
 .empty-state {
   text-align: center;
   padding: 40px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 500;
-  background: #f8fafc;
+  background: var(--bg-app);
   border-radius: 12px;
   grid-column: 1 / -1; 
 }

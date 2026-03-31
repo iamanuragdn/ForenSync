@@ -15,9 +15,20 @@ button, input, select, textarea {
   line-height: 1.5;
   font-weight: 400;
 
+  /* Theme variables */
+  --bg-app: #f4f7f6;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --bg-hover: #f8fafc;
+  --accent-blue: #4a6583;
+
+  /* Default text and background fallback */
+  color: var(--text-primary);
+  background-color: var(--bg-app);
+
   color-scheme: light dark;
-  color:  black;
-  background-color: #ECEFF4;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,6 +38,19 @@ button, input, select, textarea {
   min-height: 100vh;
 }
 
+[data-theme='dark'] {
+  --bg-app: #0f172a;
+  --bg-card: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+  --bg-hover: #334155;
+  --accent-blue: #60a5fa;
+  
+  color: var(--text-primary);
+  background-color: var(--bg-app);
+}
+
 /* 🌟 THE VITE NUKE: Kills default centering so your dashboard starts at the left edge! */
 body {
   margin: 0;
@@ -34,6 +58,9 @@ body {
   display: block !important; /* Overrides Vite's default 'display: flex' on the body */
   min-height: 100vh;
   place-items: unset !important; /* Stops it from centering the app */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
 }
 
 #root {
@@ -50,6 +77,8 @@ body {
   width: 100%; /* Changed from 100vw to 100% */
   height: 100vh;
   overflow: hidden;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
 }
 
 /* Ensure the sidebar doesn't shrink */
@@ -69,7 +98,7 @@ body {
     height: 100vh;
     z-index: 9999;
     width: 260px; /* Locks the width */
-    background: #ffffff;
+    background-color: var(--bg-card);
     transform: translateX(-100%); /* 🌟 Pushes it completely off the screen! */
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: none;
@@ -86,6 +115,8 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     flex: 1 !important;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
   }
 }
 
@@ -100,14 +131,14 @@ body {
     height: 100vh !important;
     z-index: 9999 !important; 
     transition: left 0.3s ease-in-out !important;
-    background: #ffffff !important;
+    background-color: var(--bg-card) !important;
   }
 
   /* 2. Slide it in when the hamburger adds the class to the body */
   body.tablet-sidebar-open .app-sidebar {
     left: 0 !important;
     box-shadow: none !important; /* Killed the heavy shadow */
-    border-right: 1px solid #e2e8f0 !important; /* Added a sleek, subtle line instead */
+    border-right: 1px solid var(--border-color) !important; /* Added a sleek, subtle line instead */
   }
 
   /* 3. Target your EXACT content wrapper (.content-area) */
@@ -116,6 +147,8 @@ body {
     max-width: 100% !important;
     flex: 1 !important;
     margin-left: 0 !important;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
   }
 
   /* 4. Show the dark overlay when open */
@@ -140,7 +173,7 @@ body {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important; /* Removes any weird button shadows */
-    color: #475569 !important; /* Matches your text color */
+    color: var(--text-secondary) !important; /* Matches your text color */
     cursor: pointer;
     padding: 4px;
   }

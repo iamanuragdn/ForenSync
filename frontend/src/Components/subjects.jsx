@@ -139,7 +139,7 @@ function Subjects() {
               <div 
                 className="progress-circle"
                 style={{
-                  background: `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#4B6583 ${progressPercentage}%, #f1f5f9 0)`
+                  background: `radial-gradient(closest-side, var(--bg-card) 79%, transparent 80% 100%), conic-gradient(var(--accent-blue) ${progressPercentage}%, var(--border-color) 0)`
                 }}
               >
                 <span className="percentage">{progressPercentage}%</span>
@@ -152,13 +152,13 @@ function Subjects() {
         <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '30px' }}>
           <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className="icon" style={{ fontSize: '1.5rem' }}>📚</span>
-            <h3 style={{ margin: 0, fontSize: '1.3rem', color: '#1e293b' }}>Study Materials</h3>
+            <h3 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--text-primary)' }}>Study Materials</h3>
           </div>
           
           <select 
             value={viewingSemester} 
             onChange={(e) => setViewingSemester(e.target.value)}
-            style={{ padding: '8px 16px', borderRadius: '8px', border: '2px solid #e2e8f0', backgroundColor: 'white', fontWeight: 'bold', color: '#334155', cursor: 'pointer', outline: 'none' }}
+            style={{ padding: '8px 16px', borderRadius: '8px', border: '2px solid var(--border-color)', backgroundColor: 'var(--bg-card)', fontWeight: 'bold', color: 'var(--text-primary)', cursor: 'pointer', outline: 'none' }}
           >
             <option value="sem-1">Semester 1</option>
             <option value="sem-2">Semester 2</option>
@@ -169,7 +169,7 @@ function Subjects() {
 
         <div className="subjects-grid">
           {subjects.length === 0 ? (
-            <div style={{ padding: '20px', color: '#64748b', backgroundColor: 'white', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+            <div style={{ padding: '20px', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-card)', borderRadius: '12px', border: '1px dashed var(--border-color)' }}>
               No subjects found for this semester yet.
             </div>
           ) : (

@@ -13,8 +13,8 @@
 }
 
 .admin-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 30px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
@@ -23,7 +23,7 @@
 .admin-card h3 {
   margin: 0 0 20px 0;
   font-size: 1.25rem;
-  color: #1e293b;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -32,8 +32,8 @@
 }
 
 .path-display {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
   padding: 12px 16px;
   border-radius: 8px;
   display: flex;
@@ -44,19 +44,19 @@
 
 .path-label {
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .path-text {
-  color: #0f172a;
+  color: var(--text-primary);
   font-family: monospace;
   font-size: 1rem;
 }
 
 .btn-back-up {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #475569;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   padding: 8px 16px;
   border-radius: 6px;
   font-weight: 600;
@@ -66,8 +66,8 @@
 }
 
 .btn-back-up:hover {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .folder-grid {
@@ -77,8 +77,8 @@
 }
 
 .folder-item {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 16px;
   display: flex;
@@ -91,16 +91,16 @@
 
 .folder-item:hover {
   transform: translateY(-2px);
-  border-color: #cbd5e1;
+  border-color: var(--border-color);
   box-shadow: 0 6px 12px rgba(0,0,0,0.04);
-  background: #f8fafc;
+  background: var(--bg-hover);
 }
 
 .folder-icon { font-size: 1.5rem; }
-.folder-name { font-weight: 600; color: #334155; font-size: 0.95rem; }
+.folder-name { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; }
 
 .empty-folder-msg {
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 10px 0;
 }
@@ -126,17 +126,17 @@
 .input-group label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .custom-select, .custom-input {
   padding: 12px 16px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--bg-app);
+  color: var(--text-primary);
   font-size: 1rem;
   font-family: inherit;
   transition: border-color 0.2s, background 0.2s;
@@ -144,14 +144,14 @@
 }
 
 .custom-select:focus, .custom-input:focus {
-  border-color: #3b82f6;
-  background: #ffffff;
+  border-color: var(--accent-blue);
+  background: var(--bg-card);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .file-drop-zone {
-  border: 2px dashed #cbd5e1;
-  background: #f8fafc;
+  border: 2px dashed var(--border-color);
+  background: var(--bg-app);
   border-radius: 12px;
   padding: 30px;
   text-align: center;
@@ -159,18 +159,18 @@
 }
 
 .file-drop-zone:hover {
-  border-color: #94a3b8;
-  background: #f1f5f9;
+  border-color: var(--accent-blue);
+  background: var(--bg-hover);
 }
 
 .file-input {
   width: 100%;
   cursor: pointer;
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 .btn-upload-submit {
-  background: #4a6583;
+  background: var(--accent-blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -183,7 +183,8 @@
 }
 
 .btn-upload-submit:hover {
-  background: #3b526b;
+  background: var(--accent-blue);
+  opacity: 0.9;
 }
 
 .status-banner {

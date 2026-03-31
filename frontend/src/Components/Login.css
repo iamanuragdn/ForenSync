@@ -7,7 +7,7 @@
 .landing-wrapper {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  background-color: #F5F7F6; 
+  background-color: var(--bg-app); 
   box-sizing: border-box;
 }
 
@@ -118,7 +118,7 @@
   top: calc(100% + 50px); 
   left: 6vw; 
   z-index: 50; 
-  color: #1e293b; 
+  color: var(--text-primary); 
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.8rem;
   font-weight: 700;
@@ -142,12 +142,12 @@
 }
 
 .auth-glass-card {
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 40px;
   border-radius: 20px;
   width: 90%;
   max-width: 420px;
-  border: 1px solid #F5F7F6; 
+  border: 1px solid var(--border-color); 
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02); 
   position: relative;
   animation: fadeInUp 0.6s ease-out forwards;
@@ -155,7 +155,7 @@
 
 .auth-title {
   text-align: center;
-  color: #1e293b;
+  color: var(--text-primary);
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.6rem;
   font-weight: 800;
@@ -193,7 +193,7 @@
   top: calc(100% + 65px); 
   right: 6vw; 
   z-index: 50; 
-  color: #64748b; 
+  color: var(--text-secondary); 
   text-align: right;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -204,7 +204,7 @@
 }
 
 .scroll-indicator:hover { 
-  color: #0f172a; 
+  color: var(--text-primary); 
   transform: translateY(-3px);
 }
 
@@ -234,18 +234,18 @@
 
 .btn-google { 
   width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
-  background: #ffffff; border: 1px solid #e2e8f0; color: #3E4E5F; padding: 12px;
+  background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px;
   border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem;
   font-weight: 700; cursor: pointer; transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
-.btn-google:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+.btn-google:hover { background: var(--bg-hover); border-color: var(--border-color); transform: translateY(-1px); }
 .btn-google img { width: 20px; height: 20px; }
 
 .divider { text-align: center; margin: 20px 0; position: relative; }
-.divider::before { content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e2e8f0; z-index: 1; }
+.divider::before { content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border-color); z-index: 1; }
 .divider span { 
-  background: white; padding: 0 14px; color: #94a3b8; font-size: 0.75rem; 
+  background: var(--bg-card); padding: 0 14px; color: var(--text-secondary); font-size: 0.75rem; 
   font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; 
   position: relative; z-index: 2; 
 }
@@ -260,25 +260,25 @@
 .login-form input { 
   width: 100%; 
   padding: 14px 16px; 
-  background-color: #ffffff; 
-  border: 1px solid #e2e8f0; 
+  background-color: var(--bg-app); 
+  border: 1px solid var(--border-color); 
   border-radius: 12px; 
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #1e293b; 
+  color: var(--text-primary); 
   outline: none; 
   transition: all 0.2s ease;
 }
-.login-form input::placeholder { color: #94a3b8; }
+.login-form input::placeholder { color: var(--text-secondary); }
 .login-form input:focus { 
-  border-color: #94a3b8; 
+  border-color: var(--accent-blue); 
   box-shadow: 0 0 0 3px rgba(226, 232, 240, 0.5); 
 }
 
 .btn-primary { 
   width: 100%; 
-  background: #334155; 
+  background: var(--accent-blue); 
   color: white; 
   border: none; 
   padding: 14px; 
@@ -292,14 +292,15 @@
   box-shadow: 0 2px 8px rgba(51, 65, 85, 0.15);
 }
 .btn-primary:hover { 
-  background: #1e293b; 
+  background: var(--accent-blue); 
+  opacity: 0.9;
   transform: translateY(-2px); 
   box-shadow: 0 6px 12px rgba(51, 65, 85, 0.2); 
 }
 
-.toggle-mode { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #64748b; }
-.toggle-mode span { color: #3b82f6; font-weight: 600; cursor: pointer; transition: color 0.2s ease; }
-.toggle-mode span:hover { color: #2563eb; }
+.toggle-mode { text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--text-secondary); }
+.toggle-mode span { color: var(--accent-blue); font-weight: 600; cursor: pointer; transition: color 0.2s ease; }
+.toggle-mode span:hover { color: var(--text-primary); }
 
 /* ==================================
    SECTION 2: ABOUT WEBSITE
@@ -310,14 +311,14 @@
   text-align: center;
   max-width: 100%; 
   margin: 0 auto;
-  background-color: #F5F7F6; /* Soft gray background */
+  background-color: var(--bg-app); 
 }
 
 .about-section h2 { 
   font-family: 'Plus Jakarta Sans', sans-serif; 
   font-size: 2.2rem; 
   font-weight: 800;
-  color: #0f172a; 
+  color: var(--text-primary); 
   margin-bottom: 50px; 
   letter-spacing: -0.03em; 
 }
@@ -334,15 +335,50 @@
   .features-grid { grid-template-columns: repeat(2, 1fr); } 
 }
 @media (max-width: 768px) {
-  .features-grid { grid-template-columns: 1fr; } 
+  .features-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px;
+  } 
+
+  .feature-card {
+    padding: 20px 15px; 
+  }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    border-radius: 12px;
+  }
+
+  .feature-card h3 {
+    font-size: 0.95rem; 
+    margin-bottom: 6px;
+  }
+
+  .feature-card p {
+    font-size: 0.75rem; 
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .feature-list li {
+    font-size: 0.7rem; 
+    gap: 6px;
+  }
+  
+  .feature-list li::before {
+    font-size: 0.8rem;
+  }
 }
 
 .feature-card { 
-  background: white; 
+  background: var(--bg-card); 
   padding: 35px 25px; 
   border-radius: 24px; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
-  border: 1px solid #e2e8f0; 
+  border: 1px solid var(--border-color); 
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* 🌟 Aligns everything to the left */
@@ -353,7 +389,7 @@
 .feature-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 16px 32px rgba(0,0,0,0.06);
-  border-color: #cbd5e1;
+  border-color: var(--border-color);
 }
 
 .feature-icon { 
@@ -380,7 +416,7 @@
 
 .feature-card h3 { 
   font-family: 'Plus Jakarta Sans', sans-serif; 
-  color: #0f172a; 
+  color: var(--text-primary); 
   margin: 0 0 10px 0; 
   font-size: 1.2rem; 
   font-weight: 800;
@@ -388,12 +424,12 @@
 }
 
 .feature-card p { 
-  color: #64748b; 
+  color: var(--text-secondary); 
   font-size: 0.9rem; 
   line-height: 1.5; 
   margin: 0 0 20px 0;
   padding-bottom: 20px;
-  border-bottom: 1px solid #F5F7F6; /* 🌟 Divider line before the bullet points */
+  border-bottom: 1px solid var(--border-color); 
 }
 
 /* 🌟 CUSTOM CHECKLIST STYLING */
@@ -410,7 +446,7 @@
 .feature-list li {
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--text-secondary);
   font-weight: 600;
   display: flex;
   align-items: flex-start;
@@ -421,7 +457,7 @@
 /* 🌟 Creates a custom blue checkmark for every list item */
 .feature-list li::before {
   content: "✓";
-  color: #3b82f6; /* Brand blue */
+  color: var(--accent-blue); /* Brand blue */
   font-weight: 900;
   font-size: 0.95rem;
 }
@@ -432,7 +468,7 @@
 .team-section { 
   position: relative;
   padding: 80px 20px 100px; 
-  background: #ffffff; /* Pure white background */
+  background: var(--bg-card); /* Pure white background */
   text-align: center; 
 }
 
@@ -445,7 +481,7 @@
   left: 0;
   width: 100%;
   height: 15px; /* 🌟 Matches the height of the hero wave */
-  background-color: #FFF; 
+  background-color: var(--bg-card); 
   
   -webkit-mask-image: var(--campus-wave-mask);
   mask-image: var(--campus-wave-mask);
@@ -465,13 +501,13 @@
   font-family: 'Plus Jakarta Sans', sans-serif; 
   font-size: 2.2rem; 
   font-weight: 800;
-  color: #0f172a; 
+  color: var(--text-primary); 
   margin: 0 0 10px 0; 
   letter-spacing: -0.03em;
 }
 
 .team-subtitle { 
-  color: #64748b; 
+  color: var(--text-secondary); 
   margin-bottom: 60px; 
   font-size: 1rem;
   font-weight: 500;
@@ -494,7 +530,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Clean, airy drop shadow */
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth, slightly bouncy lift */
   /* Adds a tiny light border to separate dark cards from the white background */
-  border: 1px solid rgba(15, 23, 42, 0.05); 
+  border: 1px solid var(--border-color); 
 }
 
 .dev-card:hover {
@@ -509,8 +545,11 @@
 @media (max-width: 900px) {
   .team-grid { grid-template-columns: repeat(2, 1fr); } /* 2x2 with 1 on bottom */
 }
-@media (max-width: 600px) {
-  .team-grid { grid-template-columns: 1fr; } /* Stacked completely on mobile */
+@media (max-width: 768px) {
+  .team-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px;
+  }
 }
 
 /* ==================================
@@ -559,6 +598,13 @@
   .hero-section {
     margin-bottom: 480px;
   }
+
+  .auth-glass-card {
+    width: 90%;
+    max-width: 350px;
+    margin: 0 auto;
+    padding: 24px;
+  }
 }
 
 /* 3. SMALL MOBILE PHONES */
@@ -583,7 +629,14 @@
   .hero-logo-img {
     width: 110px; 
   }
+
+  .auth-glass-card {
+    width: 95%;
+    max-width: 100%;
+    padding: 24px 20px;
+  }
 }
+
 
 /* 🌟 FORGOT PASSWORD STYLING */
 .forgot-password {
@@ -591,13 +644,13 @@
   margin: -8px 5px 5px 0; /* Pulls it up slightly closer to the password box */
   font-size: 0.8rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .forgot-password:hover {
-  color: #3b82f6; /* Pops to your brand blue on hover */
+  color: var(--accent-blue); /* Pops to your brand blue on hover */
   text-decoration: underline;
 }
 

@@ -13,13 +13,13 @@
 
 .page-header h1 {
   font-size: 2.2rem;
-  color: #2d3748; 
+  color: var(--text-primary); 
   margin: 0 0 0.5rem 0;
 }
 
 .page-header .subtitle {
   font-size: 1.1rem;
-  color: #64748b; 
+  color: var(--text-secondary); 
   margin: 0;
 }
 
@@ -33,8 +33,8 @@
 }
 
 .program-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -46,19 +46,19 @@
 .program-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.04);
-  border-color: #a3b8cc; 
+  border-color: var(--accent-blue); 
 }
 
 .program-icon {
   font-size: 1.8rem;
   margin-right: 1.5rem;
-  background-color: #f8fafc;
+  background-color: var(--bg-hover);
   padding: 1rem;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4a6583;
+  color: var(--accent-blue);
 }
 
 .program-details {
@@ -68,26 +68,26 @@
 .program-details h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
   margin: 0 0 0.25rem 0;
   line-height: 1.4;
 }
 
 .program-details p {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   margin: 0;
 }
 
 .program-arrow {
-  color: #cbd5e1;
+  color: var(--border-color);
   font-size: 1.5rem;
   margin-left: 1rem;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .program-card:hover .program-arrow {
-  color: #4a6583;
+  color: var(--accent-blue);
   transform: translateX(4px);
 }
 

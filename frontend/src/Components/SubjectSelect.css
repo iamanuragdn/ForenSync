@@ -8,7 +8,7 @@
 .breadcrumb {
   margin: 0 0 2rem 0; 
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -18,8 +18,8 @@
 }
 
 .crumb-link { cursor: pointer; transition: color 0.2s ease; }
-.crumb-link:hover { color: #4a6583; text-decoration: underline; }
-.current-page { color: #2d3748; font-weight: 600; }
+.crumb-link:hover { color: var(--accent-blue); text-decoration: underline; }
+.current-page { color: var(--text-primary); font-weight: 600; }
 
 .page-header {
   margin: 0 0 2.5rem 0; 
@@ -31,27 +31,27 @@
 
 .page-header h1 { 
   font-size: 2.2rem; 
-  color: #2d3748; 
+  color: var(--text-primary); 
   margin: 0 0 0.5rem 0; 
 }
 
 .page-header .subtitle { 
   font-size: 1.1rem; 
-  color: #64748b; 
+  color: var(--text-secondary); 
   margin: 0; 
 }
 
 .status-message { padding: 2rem; border-radius: 8px; font-weight: 500; text-align: center; }
-.loading { color: #4a6583; background: #f0f4f8; }
+.loading { color: var(--accent-blue); background: var(--bg-hover); }
 .error { color: #b91c1c; background: #fee2e2; }
-.empty { color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; }
+.empty { color: var(--text-secondary); background: var(--bg-hover); border: 1px dashed var(--border-color); }
 
 
 .semester-summary {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1.25rem 2rem;
   margin-bottom: 2rem;
@@ -68,14 +68,14 @@
 .summary-value {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   line-height: 1;
   margin-bottom: 0.25rem;
 }
 
 .summary-label {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 600;
@@ -84,7 +84,7 @@
 .summary-divider {
   width: 1px;
   height: 40px;
-  background-color: #e2e8f0;
+  background-color: var(--border-color);
   margin: 0 2rem;
 }
 
@@ -102,8 +102,8 @@
 }
 
 .table-container {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
@@ -120,17 +120,17 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 600;
-  border-bottom: 1px solid #e2e8f0;
-  background-color: #f8fafc; 
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-hover); 
 }
 
 .subject-table td {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-color);
   font-size: 0.95rem;
-  color: #334155;
+  color: var(--text-primary);
 }
 
 .subject-row {
@@ -139,25 +139,25 @@
 }
 
 .subject-row:hover {
-  background-color: #f8fafc; 
+  background-color: var(--bg-hover); 
 }
 
 
 .serial-col {
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-weight: 500;
   width: 5%;
 }
 
 .code-col {
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 500;
   width: 15%;
 }
 
 .name-col {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
   width: 35%;
 }
 
@@ -174,14 +174,14 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #4a6583;
+  color: var(--accent-blue);
   font-weight: 500;
 }
 
 .teacher-avatar {
   width: 28px;
   height: 28px;
-  background-color: #e0e7ff;
+  background-color: var(--bg-hover);
   border-radius: 50%;
   display: inline-block;
 }
@@ -197,8 +197,8 @@
   border-radius: 6px;
 }
 
-.type-badge.core { color: #64748b; }
-.type-badge.lab { color: #4a6583; background-color: #f0f4f8; }
+.type-badge.core { color: var(--text-secondary); }
+.type-badge.lab { color: var(--accent-blue); background-color: var(--bg-hover); }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

@@ -10,6 +10,14 @@ import logoImage from '../assets/logo_muted_blue.png';
 
 function Onboarding() {
   const navigate = useNavigate();
+  
+  const [theme, setTheme] = useState(() => localStorage.getItem('forensync_theme') || 'light');
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('forensync_theme', theme);
+  }, [theme]);
+
   const [role, setRole] = useState('Student');
   const [adminType, setAdminType] = useState('Teacher'); 
   const [fullName, setFullName] = useState('');
@@ -59,6 +67,16 @@ function Onboarding() {
 
   return (
     <div className="onboarding-wrapper">
+      
+      {/* 🌟 Theme Toggle */}
+      <button 
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease' }}
+        title="Toggle Theme"
+      >
+        {theme === 'dark' ? '☀️' : '🌙'}
+      </button>
+
       <div className="onboarding-card">
         
         <div className="onboarding-header">

@@ -9,26 +9,26 @@
   gap: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin-bottom: 25px;
 }
 
 .breadcrumb a {
-  color: #94a3b8;
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
-  color: #475569;
+  color: var(--text-primary);
 }
 
 .breadcrumb .divider {
-  color: #cbd5e0;
+  color: var(--border-color);
 }
 
 .breadcrumb .current-page {
-  color: #1e293b;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -42,18 +42,18 @@
 .header-text h1 {
   font-size: 28px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
 }
 
 .header-text p {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .sync-btn {
-  background: #4a6583;
+  background: var(--accent-blue);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -68,7 +68,8 @@
 }
 
 .sync-btn:hover {
-  background: #334a66;
+  background: var(--accent-blue);
+  opacity: 0.9;
 }
 
 .files-list {
@@ -81,10 +82,10 @@
   display: flex;
   align-items: center;
   gap: 1.5rem; 
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 1rem 1.5rem; 
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
   transition: all 0.2s ease;
 }
@@ -92,7 +93,7 @@
 .file-item:hover {
   transform: translateY(-2px); 
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.04);
-  border-color: #cbd5e1;
+  border-color: var(--border-color);
 }
 
 
@@ -107,7 +108,7 @@
 
 .file-info h3 { 
   margin: 0; 
-  color: #2d3748; 
+  color: var(--text-primary); 
   font-size: 1.05rem; 
   font-weight: 600; 
   white-space: nowrap; 
@@ -136,7 +137,7 @@
 .file-name {
   font-size: 15px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 
@@ -144,7 +145,7 @@
   flex: 1;
   text-align: center;
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -159,7 +160,7 @@
 
 .btn-view {
   background: transparent;
-  color: #3b82f6;
+  color: var(--accent-blue);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -169,16 +170,16 @@
 }
 
 .btn-view:hover {
-  background: #eff6ff;
+  background: var(--bg-hover);
 }
 
 .btn-download {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  background: white;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  background: var(--bg-card);
   text-decoration: none;
   width: 36px;
   height: 36px;
@@ -189,22 +190,22 @@
 }
 
 .btn-download:hover {
-  border-color: #cbd5e0;
-  color: #1e293b;
-  background: #f8fafc;
+  border-color: var(--border-color);
+  color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  background: #f8fafc;
+  background: var(--bg-app);
   border-radius: 12px;
-  border: 1px dashed #cbd5e0;
-  color: #475569;
+  border: 1px dashed var(--border-color);
+  color: var(--text-secondary);
 }
 
 .empty-subtext {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin-top: 8px;
 }

@@ -6,16 +6,16 @@
   padding: 0 30px;
   overflow-x: hidden; /* 🌟 Kills any weird horizontal scrolling */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .breadcrumb {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 .current-page { 
-  color: #4B6583; 
+  color: var(--accent-blue); 
   font-weight: 500; 
 }
 
@@ -41,11 +41,11 @@
 .hero-content h1 {
   font-size: 2.2rem;
   margin: 0 0 16px 0;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .hero-content p {
-  color: #4b5563;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0 0 24px 0;
   font-size: 1.05rem;
@@ -55,7 +55,7 @@
 .stats-row {
   display: flex;
   gap: 24px;
-  color: #4b5563;
+  color: var(--text-secondary);
   font-weight: 500;
   font-size: 0.95rem;
 }
@@ -76,11 +76,11 @@
 .blue-line {
   width: 6px;
   height: 24px;
-  background-color: #4B6583;
+  background-color: var(--accent-blue);
   border-radius: 4px;
 }
 
-.section-title h2 { margin: 0; font-size: 1.4rem; color: #1f2937; }
+.section-title h2 { margin: 0; font-size: 1.4rem; color: var(--text-primary); }
 
 .semester-grid {
   display: grid;
@@ -90,8 +90,8 @@
 }
 
 .semester-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 30px 20px;
   text-align: center;
@@ -103,13 +103,13 @@
 .semester-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 20px rgba(0,0,0,0.06);
-  border-color: #bfdbfe;
+  border-color: var(--accent-blue);
 }
 
 .sem-number {
   width: 36px;
   height: 36px;
-  background: #4B6583;
+  background: var(--accent-blue);
   color: white;
   display: flex;
   align-items: center;
@@ -120,12 +120,12 @@
   margin: 0 auto 16px auto;
 }
 
-.semester-card h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: #111827; }
-.semester-card p { margin: 0; font-size: 0.85rem; color: #6b7280; font-weight: 500; }
+.semester-card h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: var(--text-primary); }
+.semester-card p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
 
 .support-banner {
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px 30px;
   display: flex;
@@ -141,17 +141,17 @@
 
 .support-icon {
   font-size: 2rem;
-  background: white;
+  background: var(--bg-card);
   padding: 10px;
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .support-left h4 { margin: 0 0 4px 0; font-size: 1.1rem; }
-.support-left p { margin: 0; color: #6b7280; font-size: 0.95rem; }
+.support-left p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; }
 
 .support-btn {
-  background: #1d4ed8;
+  background: var(--accent-blue);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -161,7 +161,7 @@
   transition: background 0.2s;
 }
 
-.support-btn:hover { background: #1e40af; }
+.support-btn:hover { background: var(--accent-blue); opacity: 0.9; }
 
 /* 🌟 TABLET VIEW (iPads & Narrow Screens) 🌟 */
 @media (max-width: 1024px) {

@@ -1,8 +1,8 @@
 .app-sidebar {
   width: 180px;
   height: 100vh;
-  background-color: #ffffff;
-  border-right: 1px solid #e2e8f0; 
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-color); 
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
@@ -27,7 +27,7 @@
 }
 
 .sidebar-brand h2 {
-  color: #4a6583; 
+  color: var(--accent-blue); 
 
   font-size: 1.4rem;     
 
@@ -48,7 +48,7 @@
   align-items: center;
   padding: 0.85rem 1rem;
   text-decoration: none;
-  color: #64748b;
+  color: var(--text-secondary);
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -65,8 +65,8 @@
 
 
 .nav-item:hover {
-  background-color: #f8fafc; 
-  color: #4a6583; 
+  background-color: var(--bg-hover); 
+  color: var(--accent-blue); 
 }
 
 .nav-item:hover .nav-icon {
@@ -75,8 +75,8 @@
 
 
 .nav-item.active {
-  background-color: #f0f4f8; 
-  color: #3b526b; 
+  background-color: var(--bg-hover); 
+  color: var(--accent-blue); 
   font-weight: 600;
 }
 
@@ -85,15 +85,14 @@
 }
 
 .admin-link {
-  margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid #d6dee8;  
-  background-color: #e4edf6;     
+  border-top: 1px solid var(--border-color);  
+  background-color: var(--bg-hover);     
   font-weight: 600;
-  color: #3b526b; 
+  color: var(--accent-blue); 
 }
 
 .admin-link:hover {
-  background-color: #d6e3f1;    
-  color: #2f4358;
+  background-color: var(--border-color);    
+  color: var(--accent-blue);
 }

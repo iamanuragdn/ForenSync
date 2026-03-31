@@ -3,7 +3,7 @@
   min-height: 100vh;
   width: 100vw;
   /* Matches the background of the main dashboard perfectly */
-  background-color: #f4f7f6; 
+  background-color: var(--bg-app); 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,8 +11,8 @@
 }
 
 .onboarding-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   /* Soft shadow matching your subject cards */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); 
   border-radius: 16px;
@@ -33,7 +33,7 @@
 }
 
 .onboarding-header h2 {
-  color: #1e293b;
+  color: var(--text-primary);
   font-size: 1.8rem;
   font-weight: 800;
   margin: 0 0 8px 0;
@@ -41,7 +41,7 @@
 }
 
 .onboarding-header p {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   margin: 0;
 }
@@ -60,7 +60,7 @@
 
 .input-group label {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -68,19 +68,19 @@
 
 .onboarding-input, .onboarding-select {
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
-  background: #ffffff;
-  color: #1e293b;
+  background: var(--bg-app);
+  color: var(--text-primary);
   transition: all 0.2s;
   font-family: inherit;
   box-shadow: 0 1px 2px rgba(0,0,0,0.01);
 }
 
 .onboarding-input:focus, .onboarding-select:focus {
-  border-color: #4a6583; /* Matches your dashboard buttons */
+  border-color: var(--accent-blue); /* Matches your dashboard buttons */
   box-shadow: 0 0 0 3px rgba(74, 101, 131, 0.1);
 }
 
@@ -105,7 +105,7 @@
 
 .btn-onboarding-submit {
   /* Matches your dashboard accent color perfectly */
-  background: #4a6583; 
+  background: var(--accent-blue); 
   color: white;
   border: none;
   padding: 14px;
@@ -119,12 +119,13 @@
 }
 
 .btn-onboarding-submit:hover:not(:disabled) {
-  background: #3b526b;
+  background: var(--accent-blue);
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
 .btn-onboarding-submit:disabled {
-  background: #94a3b8;
+  background: var(--text-secondary);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -132,4 +133,39 @@
 @keyframes fadeInUp { 
   from { opacity: 0; transform: translateY(15px); } 
   to { opacity: 1; transform: translateY(0); } 
+}
+
+/* ==================================
+   RESPONSIVE LAYOUT FIXES
+   (Tablets & Mobile)
+=================================== */
+
+@media (max-width: 1024px) {
+  .onboarding-card {
+    max-width: 600px;
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .onboarding-card {
+    width: 95%;
+    max-width: 100%;
+    padding: 24px 20px;
+    margin: 10px;
+  }
+
+  .onboarding-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .onboarding-header p {
+    font-size: 0.85rem;
+  }
+
+  /* Stack side-by-side fields on mobile */
+  .student-fields-row {
+    flex-direction: column;
+    gap: 18px;
+  }
 }

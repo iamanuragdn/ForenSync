@@ -2,8 +2,8 @@
   display: flex;
   justify-content: space-between;
   padding: 15px 30px;
-  background-color: white;
-  border-bottom: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
   align-items: center;
   position: relative;
   z-index: 100;
@@ -18,16 +18,16 @@
   width: 100%;
   padding: 10px 16px;
   border-radius: 20px;
-  border: 1px solid #cbd5e1;
-  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-app);
   outline: none;
   transition: all 0.2s;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .navbar-search:focus {
   border-color: #6366f1;
-  background-color: white;
+  background-color: var(--bg-card);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
@@ -62,7 +62,7 @@
 }
 
 .user-profile-btn:hover {
-  background-color: #f1f5f9;
+  background-color: var(--bg-hover);
 }
 
 .user-info {
@@ -72,13 +72,13 @@
 .user-name {
   display: block;
   font-weight: bold;
-  color: #1e293b;
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .user-id {
   display: block;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.8rem;
 }
 
@@ -100,11 +100,11 @@
   top: 60px;
   right: 0;
   width: 320px;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-radius: 24px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0,0,0,0.05);
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   animation: dropIn 0.2s ease-out;
 }
 
@@ -116,7 +116,7 @@
 .dropdown-header {
   text-align: center;
   padding: 24px 20px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .dropdown-avatar-large {
@@ -135,19 +135,19 @@
 
 .dropdown-header h3 {
   margin: 0 0 4px 0;
-  color: #0f172a;
+  color: var(--text-primary);
   font-size: 1.3rem;
 }
 
 .dropdown-email {
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .dropdown-body {
   padding: 16px 24px;
-  background-color: #f8fafc;
+  background-color: var(--bg-hover);
 }
 
 .dropdown-item {
@@ -162,7 +162,7 @@
 
 .item-label {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -171,22 +171,22 @@
 
 .item-value {
   font-size: 0.95rem;
-  color: #334155;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .dropdown-footer {
   padding: 16px;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   text-align: center;
 }
 
 .btn-logout {
   width: 100%;
   padding: 12px;
-  border: 1px solid #e2e8f0;
-  background-color: white;
-  color: #0f172a;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -194,9 +194,9 @@
 }
 
 .btn-logout:hover {
-  background-color: #f1f5f9;
+  background-color: var(--bg-hover);
   color: #ef4444;
-  border-color: #cbd5e1;
+  border-color: var(--border-color);
 }
 
 /* 🌟 SEARCH SUGGESTIONS DROPDOWN STYLES 🌟 */
@@ -207,8 +207,8 @@
   left: 0;
   right: 0;
   margin-top: 8px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); /* Soft, premium shadow */
   z-index: 100;
@@ -220,7 +220,7 @@
 .suggestions-header {
   font-size: 11px;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-secondary);
   padding: 8px 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -230,7 +230,7 @@
   padding: 10px 12px;
   font-size: 14px;
   font-weight: 500;
-  color: #334155;
+  color: var(--text-primary);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -241,13 +241,13 @@
 
 .suggestion-icon {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   opacity: 0.7;
 }
 
 .suggestion-item:hover {
-  background: #f8fafc; /* Soft gray hover state */
-  color: #2563eb; /* Snaps to your brand blue */
+  background: var(--bg-hover); /* Soft gray hover state */
+  color: var(--accent-blue); /* Snaps to your brand blue */
 }
 
 .suggestion-item:hover .suggestion-icon {
@@ -259,7 +259,7 @@
   display: none; /* Hidden on desktop! */
   background: transparent;
   border: none;
-  color: #2d3748;
+  color: var(--text-primary);
   cursor: pointer;
   padding: 8px 12px 8px 0;
   margin-right: 8px;
@@ -269,7 +269,7 @@
   display: none; /* Hidden on desktop by default */
   background: transparent;
   border: none;
-  color: #2d3748;
+  color: var(--text-primary);
   cursor: pointer;
   padding: 8px 12px 8px 0;
   margin-right: 8px;
@@ -277,7 +277,7 @@
 }
 
 .hamburger-btn:hover { 
-  color: #4a6583; 
+  color: var(--accent-blue); 
 }
 
 /* 🌟 NAV MEDIA QUERIES (Tablet & Mobile) 🌟 */

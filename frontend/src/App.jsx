@@ -61,16 +61,16 @@ function ProtectedLayout({ children }) {
   // 2. If Admin but NOT verified, show the lock screen
   if (user.role === 'Admin' && user.isVerifiedAdmin === false) {
     return (
-      <div style={{ display: 'flex', height: '100vh', width: '100vw', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', flexDirection: 'column', textAlign: 'center', padding: '20px' }}>
-        <div style={{ background: 'white', padding: '40px', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', maxWidth: '450px' }}>
+      <div style={{ display: 'flex', height: '100vh', width: '100vw', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-app)', flexDirection: 'column', textAlign: 'center', padding: '20px' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '40px', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', maxWidth: '450px' }}>
           <div style={{ fontSize: '3.5rem', marginBottom: '15px' }}>⏳</div>
-          <h2 style={{ color: '#1e293b', marginBottom: '10px' }}>Verification Pending</h2>
+          <h2 style={{ color: 'var(--text-primary)', marginBottom: '10px' }}>Verification Pending</h2>
           <p style={{ color: '#64748b', lineHeight: '1.6', marginBottom: '25px', fontSize: '0.95rem' }}>
             Your Faculty/Admin account has been created successfully, but it requires manual security verification from a Superadmin before you can access the ForenSync ecosystem.
           </p>
           <button 
             onClick={() => { localStorage.removeItem('forensync_user'); window.location.href='/login'; }}
-            style={{ padding: '12px 24px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}
+            style={{ padding: '12px 24px', background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}
           >
             Sign Out
           </button>
@@ -94,7 +94,7 @@ function ProtectedLayout({ children }) {
 
       <Sidebar />
       
-      <div className="content-area" style={{ flex: 1, backgroundColor: '#f4f7f6', display: 'flex', flexDirection: 'column' }}>
+      <div className="content-area" style={{ flex: 1, backgroundColor: 'transparent', display: 'flex', flexDirection: 'column' }}>
         <Nav /> 
         <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
           {children}

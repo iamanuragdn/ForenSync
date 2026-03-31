@@ -8,15 +8,15 @@
 .breadcrumb {
   margin: 0 0 2rem 0;
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 .crumb-link { cursor: pointer; transition: color 0.2s; }
-.crumb-link:hover { color: #4a6583; text-decoration: underline; }
-.current-page { color: #2d3748; font-weight: 600; }
-.separator { color: #cbd5e1; }
+.crumb-link:hover { color: var(--accent-blue); text-decoration: underline; }
+.current-page { color: var(--text-primary); font-weight: 600; }
+.separator { color: var(--border-color); }
 
 .notes-header {
   display: flex;
@@ -24,11 +24,11 @@
   align-items: flex-end;
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.header-text h1 { font-size: 2.2rem; color: #2d3748; margin: 0 0 0.5rem 0; }
-.header-text .subtitle { font-size: 1.1rem; color: #64748b; margin: 0; }
+.header-text h1 { font-size: 2.2rem; color: var(--text-primary); margin: 0 0 0.5rem 0; }
+.header-text .subtitle { font-size: 1.1rem; color: var(--text-secondary); margin: 0; }
 
 .header-actions {
   display: flex;
@@ -38,10 +38,10 @@
 
 .view-toggle {
   display: flex;
-  background-color: #f1f5f9;
+  background-color: var(--bg-hover);
   padding: 4px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .toggle-btn {
@@ -49,7 +49,7 @@
   border: none;
   border-radius: 6px;
   padding: 6px 10px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -57,15 +57,15 @@
   transition: all 0.2s ease;
 }
 
-.toggle-btn:hover { color: #64748b; }
+.toggle-btn:hover { color: var(--text-primary); }
 .toggle-btn.active {
-  background-color: #ffffff;
-  color: #4a6583;
+  background-color: var(--bg-card);
+  color: var(--accent-blue);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary-gradient {
-  background-color: #4a6583;
+  background-color: var(--accent-blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -75,18 +75,18 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
-.btn-primary-gradient:hover:not(:disabled) { background-color: #3b526b; }
+.btn-primary-gradient:hover:not(:disabled) { background-color: var(--accent-blue); opacity: 0.9; }
 .btn-primary-gradient:disabled { opacity: 0.7; cursor: not-allowed; }
 
 
 .status-message { padding: 3rem; border-radius: 12px; text-align: center; font-weight: 500; }
-.loading { background: #f8fafc; color: #4a6583; }
+.loading { background: var(--bg-hover); color: var(--accent-blue); }
 .error { background: #fee2e2; color: #b91c1c; }
-.empty-state { padding: 4rem; text-align: center; color: #64748b; font-size: 1.1rem; width: 100%; }
+.empty-state { padding: 4rem; text-align: center; color: var(--text-secondary); font-size: 1.1rem; width: 100%; }
 
 .file-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
   transition: all 0.2s ease;
@@ -96,11 +96,11 @@
 .file-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.04);
-  border-color: #cbd5e1;
+  border-color: var(--border-color);
 }
 
 .file-icon {
-  background-color: #f8fafc;
+  background-color: var(--bg-hover);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +119,7 @@
 
 .file-info h3 { 
   margin: 0; 
-  color: #2d3748; 
+  color: var(--text-primary); 
   font-size: 1.05rem; 
   font-weight: 600; 
   white-space: nowrap; 
@@ -131,8 +131,8 @@
 .file-actions { display: flex; gap: 0.5rem; }
 
 .btn-view {
-  background-color: #eff6ff;
-  color: #3b82f6;
+  background-color: var(--bg-hover);
+  color: var(--accent-blue);
   text-decoration: none;
   padding: 0.4rem 1rem;
   border-radius: 6px;
@@ -142,12 +142,12 @@
   align-items: center;
   transition: background 0.2s;
 }
-.btn-view:hover { background-color: #dbeafe; }
+.btn-view:hover { background-color: var(--bg-hover); opacity: 0.9; }
 
 .btn-download {
   background-color: transparent;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   width: 36px;
   display: flex;
@@ -156,7 +156,7 @@
   text-decoration: none;
   transition: all 0.2s;
 }
-.btn-download:hover { background-color: #f8fafc; color: #2d3748; border-color: #cbd5e1; }
+.btn-download:hover { background-color: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color); }
 
 
 .grid-view {
@@ -353,7 +353,7 @@
   .file-card:active {
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 6px rgba(0,0,0,0.04) !important;
-    border-color: #cbd5e1 !important;
+    border-color: var(--border-color) !important;
   }
 
   .btn-primary-gradient:active {
@@ -361,7 +361,7 @@
   }
   
   .btn-view:active, .btn-download:active, .toggle-btn:active {
-    background-color: #e2e8f0 !important;
+    background-color: var(--border-color) !important;
     transform: scale(0.95) !important;
   }
 }

@@ -123,12 +123,12 @@ function PYQNotes() {
           {files.map(file => (
             <div key={file.id} className="file-item" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
               
-              <div className="file-icon" style={{ fontSize: '1.5rem', background: '#f8fafc', padding: '10px', borderRadius: '8px' }}>
+              <div className="file-icon" style={{ fontSize: '1.5rem', background: 'var(--bg-hover)', padding: '10px', borderRadius: '8px' }}>
                 📕
               </div>
 
               <div className="file-info" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-                <span className="file-name" title={file.name} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: '600', color: '#1e293b' }}>
+                <span className="file-name" title={file.name} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: '600', color: 'var(--text-primary)' }}>
                   {file.name.replace(`${selectedExam} / `, '')}
                 </span>
               </div>

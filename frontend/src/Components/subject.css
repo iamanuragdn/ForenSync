@@ -1,7 +1,9 @@
 .subject
 {
     padding: 20px 30px;
-    background-color: #FAFBFD;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     transition: all 250ms;
     cursor: pointer;

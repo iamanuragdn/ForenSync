@@ -154,8 +154,8 @@ function Navbar() {
                       >
                         <span className="suggestion-icon" style={{ marginTop: '2px' }}>⚡</span>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ fontWeight: '600', color: '#1e293b' }}>{item.title}</span>
-                          <span style={{ fontSize: '11px', color: '#64748b', fontWeight: '500' }}>
+                          <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{item.title}</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '500' }}>
                             {item.type} • {item.description.substring(0, 40)}...
                           </span>
                         </div>

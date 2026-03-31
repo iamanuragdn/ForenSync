@@ -1,7 +1,7 @@
 .exams-page-container {
   padding: 30px;
   font-family: 'Inter', -apple-system, sans-serif;
-  background-color: #F3F7F6;
+  background-color: var(--bg-app);
   min-height: 100vh;
 }
 
@@ -26,7 +26,7 @@
   margin: 0; 
   font-size: 1.3rem; 
   font-weight: 700; 
-  color: #1e293b; 
+  color: var(--text-primary); 
 }
 
 /* 🌟 1. Replace Grid with Flexbox */
@@ -56,9 +56,9 @@
 .empty-state {
   padding: 40px; 
   text-align: center; 
-  background: #ffffff; 
+  background: var(--bg-card); 
   border-radius: 16px; 
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--border-color);
   width: 100%; /* Keeps it neatly inside its flex container */
   box-sizing: border-box;
 }
@@ -74,7 +74,7 @@
   margin: 0; 
   font-size: 1.1rem; 
   font-weight: 600; 
-  color: #334155; 
+  color: var(--text-primary); 
   display: flex;
   align-items: center;
   gap: 8px;
@@ -83,18 +83,18 @@
 .btn-back-today {
   padding: 6px 14px; 
   border-radius: 8px; 
-  border: 1px solid #e2e8f0; 
-  background: white; 
+  border: 1px solid var(--border-color); 
+  background: var(--bg-card); 
   cursor: pointer; 
   font-size: 12px; 
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
   transition: all 0.2s ease;
 }
 
 .btn-back-today:hover { 
-  background: #F3F7F6; 
-  border-color: #cbd5e1;
+  background: var(--bg-hover); 
+  border-color: var(--border-color);
 }
 
 .exams-list { 
@@ -106,10 +106,10 @@
 .exam-card {
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 20px;
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   box-shadow: 0 4px 6px rgba(0,0,0,0.01);
   gap: 20px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -139,7 +139,7 @@
 .badge-ca1, .badge-ca3 { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; } /* Green for Class Tests */
 .badge-ca2 { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; } /* Yellow/Orange for Mid-Sems */
 .badge-end-semester { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; } /* Red for End Sems */
-.badge-default { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; } /* Gray default */
+.badge-default { background: var(--bg-hover); color: var(--text-secondary); border: 1px solid var(--border-color); } /* Gray default */
 
 .days-box {
   width: 76px; 
@@ -159,15 +159,15 @@
 .exam-blue { background: #eff6ff; color: #1d4ed8; border: none; }
 .exam-red { background: #fef2f2; color: #b91c1c; border: none; }
 .exam-details { flex: 1; }
-.exam-code { font-size: 12px; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 4px 8px; border-radius: 6px;}
-.exam-details h4 { margin: 8px 0 4px 0; font-size: 17px; font-weight: 700; color: #1e293b; }
-.exam-date { font-size: 14px; color: #475569; margin: 0 0 4px 0; font-weight: 500;}
-.exam-meta { font-size: 13px; color: #94a3b8; margin: 0; }
+.exam-code { font-size: 12px; color: var(--text-secondary); font-weight: 600; background: var(--bg-hover); padding: 4px 8px; border-radius: 6px;}
+.exam-details h4 { margin: 8px 0 4px 0; font-size: 17px; font-weight: 700; color: var(--text-primary); }
+.exam-date { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px 0; font-weight: 500;}
+.exam-meta { font-size: 13px; color: var(--text-secondary); margin: 0; }
 
 .btn-view-details {
   background: transparent; 
-  border: 1px solid #e2e8f0; 
-  color: #475569;
+  border: 1px solid var(--border-color); 
+  color: var(--text-secondary);
   padding: 8px 16px; 
   border-radius: 8px; 
   font-size: 13px;
@@ -177,19 +177,19 @@
 }
 
 .btn-view-details:hover { 
-  background: #F3F7F6; 
-  border-color: #cbd5e1;
-  color: #334155;
+  background: var(--bg-hover); 
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
-.empty-title { color: #64748b; font-weight: 600; font-size: 15px; margin: 0; }
-.empty-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+.empty-title { color: var(--text-secondary); font-weight: 600; font-size: 15px; margin: 0; }
+.empty-sub { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
 
 .calendar-widget {
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 24px;
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   box-shadow: 0 4px 6px rgba(0,0,0,0.01);
 }
 
@@ -204,20 +204,20 @@
 .react-calendar__navigation button { 
   font-size: 15px; 
   font-weight: 700; 
-  color: #1e293b; 
+  color: var(--text-primary); 
   border-radius: 8px; 
   background: transparent; 
   border: none; 
   cursor: pointer;
   padding: 8px;
 }
-.react-calendar__navigation button:hover { background: #F3F7F6 !important; }
+.react-calendar__navigation button:hover { background: var(--bg-hover) !important; }
 
 .react-calendar__month-view__weekdays {
   text-transform: uppercase; 
   font-weight: 700; 
   font-size: 11px; 
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin-bottom: 8px;
 }
 .react-calendar__month-view__weekdays__weekday abbr { text-decoration: none; }
@@ -230,7 +230,7 @@
   padding: 10px 0 !important; 
   font-size: 14px; 
   font-weight: 500;
-  color: #475569; 
+  color: var(--text-secondary); 
   border-radius: 10px;
   background: transparent; 
   border: none; 
@@ -239,8 +239,8 @@
   transition: all 0.2s ease;
 }
 
-.react-calendar__tile:hover { background: #F3F7F6 !important; color: #1e293b; }
-.react-calendar__tile--now { background: #f1f5f9 !important; font-weight: 700; color: #2563eb; }
+.react-calendar__tile:hover { background: var(--bg-hover) !important; color: var(--text-primary); }
+.react-calendar__tile--now { background: var(--bg-hover) !important; font-weight: 700; color: var(--accent-blue); }
 .react-calendar__tile--active { background: #2563eb !important; color: white !important; font-weight: 700; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); }
 .react-calendar__tile--active:hover { background: #1d4ed8 !important; color: white !important; }
 
@@ -253,11 +253,11 @@
   gap: 12px; 
   margin-top: 24px; 
   padding-top: 20px; 
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border-color);
 }
 
 .btn-prepare {
-  background-color: #4a6583;
+  background-color: var(--accent-blue);
   color: #ffffff;
   border: none;
   padding: 8px 16px;
@@ -272,12 +272,13 @@
 }
 
 .btn-prepare:hover {
-  background-color: #3b526b; 
+  background-color: var(--accent-blue); 
+  opacity: 0.9;
   transform: translateY(-2px); 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #64748b; }
+.legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
 
 
@@ -285,18 +286,18 @@
 .exam-card-past {
   display: flex;
   align-items: center;
-  background: #f8fafc; /* Very soft grey background */
+  background: var(--bg-hover); /* Very soft grey background */
   padding: 12px 20px; /* Much slimmer padding than upcoming exams */
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   gap: 16px;
   transition: all 0.2s ease;
   margin-bottom: 8px; /* Tighter spacing */
 }
 
 .exam-card-past:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--bg-app);
+  border-color: var(--border-color);
 }
 
 /* The tiny checkmark circle */
@@ -324,22 +325,22 @@
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
   text-decoration: line-through; /* Strikes through the name */
-  text-decoration-color: #94a3b8;
+  text-decoration-color: var(--text-secondary);
 }
 
 .past-details .exam-date {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 /* 🌟 Smart Reflection Button Styles */
 .btn-review-past {
   background: transparent;
-  border: 1px solid #cbd5e1;
-  color: #64748b;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 12px;
@@ -350,9 +351,9 @@
 }
 
 .btn-review-past:hover {
-  background: #f1f5f9;
-  color: #1e293b;
-  border-color: #94a3b8;
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-color);
 }
 
 /* When the reflection has already been saved */
@@ -383,11 +384,11 @@
 }
 
 .reflection-modal {
-  background: #ffffff;
+  background: var(--bg-card);
   width: 100%;
   max-width: 520px;
   border-radius: 16px; /* 🌟 Perfectly matches your exam cards */
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
   overflow: hidden;
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -401,16 +402,16 @@
 
 .reflection-header {
   padding: 24px 24px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background: #ffffff;
+  background: var(--bg-card);
 }
 
 .reflection-badge {
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -421,14 +422,14 @@
 .reflection-header h3 {
   margin: 10px 0 0 0;
   font-size: 1.3rem;
-  color: #1e293b;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
 /* 🌟 Apple-style close button */
 .btn-close {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
   width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -436,18 +437,18 @@
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  color: #64748b;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-close:hover { 
-  background: #f1f5f9; 
-  color: #0f172a; 
-  border-color: #cbd5e1;
+  background: var(--bg-app); 
+  color: var(--text-primary); 
+  border-color: var(--border-color);
 }
 
-.reflection-body { padding: 24px; background: #ffffff; }
+.reflection-body { padding: 24px; background: var(--bg-card); }
 
 .input-group { margin-bottom: 24px; }
 .input-group:last-child { margin-bottom: 0; }
@@ -456,7 +457,7 @@
   display: block;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
@@ -470,37 +471,37 @@
 .marks-input-wrapper input {
   width: 120px;
   padding: 12px 16px;
-  border: 1px solid #cbd5e1;
-  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-app);
   border-radius: 10px;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
   text-align: center;
   outline: none;
   transition: all 0.2s;
 }
 
 .marks-input-wrapper input:focus, .input-group textarea:focus {
-  border-color: #4a6583; /* 🌟 Snaps to your brand blue */
-  background-color: #ffffff;
+  border-color: var(--accent-blue); /* 🌟 Snaps to your brand blue */
+  background-color: var(--bg-card);
   box-shadow: 0 0 0 3px rgba(74, 101, 131, 0.1);
 }
 
 .marks-total {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .input-group textarea {
   width: 100%;
   padding: 16px;
-  border: 1px solid #cbd5e1;
-  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-app);
   border-radius: 12px;
   font-size: 0.95rem;
-  color: #1e293b;
+  color: var(--text-primary);
   line-height: 1.6;
   outline: none;
   resize: vertical;
@@ -511,8 +512,8 @@
 
 /* 🌟 Much cleaner locked widget */
 .actual-results-locked {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px 20px;
   display: flex;
@@ -523,21 +524,21 @@
 
 .lock-icon { 
   font-size: 18px; 
-  background: #ffffff;
+  background: var(--bg-card);
   width: 40px; height: 40px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.locked-text h4 { margin: 0 0 4px 0; color: #334155; font-size: 0.95rem; font-weight: 600; }
-.locked-text p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.5; }
+.locked-text h4 { margin: 0 0 4px 0; color: var(--text-primary); font-size: 0.95rem; font-weight: 600; }
+.locked-text p { margin: 0; color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
 
 .reflection-footer {
   padding: 20px 24px;
-  background: #f8fafc;
-  border-top: 1px solid #f1f5f9;
+  background: var(--bg-hover);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end; /* Pushes buttons to the right */
   gap: 12px;
@@ -545,7 +546,7 @@
 
 .btn-cancel {
   background: transparent;
-  color: #64748b;
+  color: var(--text-secondary);
   border: 1px solid transparent;
   padding: 10px 20px;
   border-radius: 8px;
@@ -554,10 +555,10 @@
   transition: all 0.2s;
 }
 
-.btn-cancel:hover { background: #f1f5f9; color: #1e293b; }
+.btn-cancel:hover { background: var(--bg-card); color: var(--text-primary); }
 
 .btn-save-reflection {
-  background: #4a6583; /* 🌟 Matches your prepare button */
+  background: var(--accent-blue); /* 🌟 Matches your prepare button */
   color: white;
   border: none;
   padding: 10px 24px;
@@ -569,7 +570,7 @@
 }
 
 .btn-save-reflection:hover { 
-  background: #3b526b; 
+  background: var(--accent-blue); opacity: 0.9;
   transform: translateY(-1px); 
   box-shadow: 0 4px 6px rgba(74, 101, 131, 0.3);
 }

@@ -18,22 +18,22 @@
 .search-header {
   margin-bottom: 40px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .search-header h2 {
   font-size: 1.8rem;
-  color: #2d3748; /* Exact match from welcome-content h1 */
+  color: var(--text-primary); /* Exact match from welcome-content h1 */
   margin: 0 0 8px 0;
   font-weight: 700;
 }
 
 .highlight {
-  color: #4a6583; /* Syncs to your primary button color */
+  color: var(--accent-blue); /* Syncs to your primary button color */
 }
 
 .search-header p {
-  color: #64748b; /* Muted text from welcome-content p */
+  color: var(--text-secondary); /* Muted text from welcome-content p */
   margin: 0;
   font-size: 0.95rem;
   font-weight: 500;
@@ -48,10 +48,10 @@
 
 /* 🌟 RESULT CARDS (Cloned from .subject-card) 🌟 */
 .result-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 12px; /* Matched from subject-card */
   padding: 24px; 
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); /* Matched from subject-card */
   cursor: pointer;
   position: relative;
@@ -64,7 +64,7 @@
 .result-card:hover {
   transform: translateY(-4px); /* Pushes it exactly as high as the subject cards */
   box-shadow: 0 12px 20px rgba(0,0,0,0.04); 
-  border-color: #cbd5e1;
+  border-color: var(--border-color);
 }
 
 .result-card-header {
@@ -78,7 +78,7 @@
 .result-card h3 {
   margin: 0;
   font-size: 1.05rem; /* Matched from subject-card h3 */
-  color: #2d3748; 
+  color: var(--text-primary); 
   font-weight: 600;
   line-height: 1.3;
   flex: 1; 
@@ -89,7 +89,7 @@
 
 .result-card p {
   margin: 0;
-  color: #64748b; /* Matched from subject-card p */
+  color: var(--text-secondary); /* Matched from subject-card p */
   font-size: 0.85rem; 
   line-height: 1.5;
   flex-grow: 1;
@@ -109,11 +109,11 @@
 }
 
 /* Muted, professional pastel colors that fit the new theme */
-.badge-program { background: #f0f4f8; color: #4a6583; border-color: #e2e8f0; }
+.badge-program { background: var(--bg-hover); color: var(--accent-blue); border-color: var(--border-color); }
 .badge-subject { background: #f0fdf4; color: #16a34a; border-color: #dcfce7; }
 .badge-exam { background: #fff1f2; color: #e11d48; border-color: #ffe4e6; }
 .badge-pyq { background: #fffbeb; color: #d97706; border-color: #fef3c7; }
-.badge-notes { background: #f8fafc; color: #64748b; border-color: #e2e8f0; }
+.badge-notes { background: var(--bg-hover); color: var(--text-secondary); border-color: var(--border-color); }
 .badge-practice { background: #f0f9ff; color: #0284c7; border-color: #e0f2fe; }
 
 /* 🌟 LOADING & EMPTY STATES (Styled like the Dashboard widgets) 🌟 */
@@ -124,9 +124,9 @@
   justify-content: center;
   padding: 60px 20px;
   text-align: center;
-  background: #ffffff;
+  background: var(--bg-app);
   border-radius: 12px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--border-color);
   margin-top: 20px;
 }
 
@@ -134,7 +134,7 @@
 
 /* The sweeping light gradient effect */
 .skeleton-pulse {
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border-color) 50%, var(--bg-hover) 75%);
   background-size: 200% 100%;
   animation: skeletonShimmer 1.5s infinite linear;
   border-radius: 6px;
@@ -169,14 +169,14 @@
 }
 
 .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
-.empty-search-state h3 { color: #2d3748; margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 600;}
-.empty-search-state p { color: #64748b; max-width: 450px; line-height: 1.5; margin: 0 auto 24px auto; font-size: 0.95rem; }
+.empty-search-state h3 { color: var(--text-primary); margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 600;}
+.empty-search-state p { color: var(--text-secondary); max-width: 450px; line-height: 1.5; margin: 0 auto 24px auto; font-size: 0.95rem; }
 
 /* Cloned from .btn-white in your subject.css */
 .btn-back {
   background: transparent; 
-  color: #4a6583; 
-  border: 1px solid #e2e8f0; 
+  color: var(--accent-blue); 
+  border: 1px solid var(--border-color); 
   padding: 8px 20px; 
   border-radius: 8px; 
   font-weight: 600;
@@ -185,4 +185,4 @@
   transition: all 0.2s ease;
 }
 
-.btn-back:hover { background: #f8fafc; border-color: #cbd5e1; color: #2d3748; }
+.btn-back:hover { background: var(--bg-hover); border-color: var(--border-color); color: var(--text-primary); }
