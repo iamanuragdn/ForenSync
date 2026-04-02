@@ -16,21 +16,12 @@ function Subjects() {
   const cardColors = ['purple', 'blue', 'green', 'pink', 'teal', 'orange'];
   
   const [selectedCourse, setSelectedCourse] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.programId || "btech-mtech-cybersecurity";
-    }
-    return "btech-mtech-cybersecurity";
+    const rawUser = JSON.parse(localStorage.getItem('forensync_user')) || {};
+    return rawUser.programId || "btech-mtech-cybersecurity";
   });
-  
   const [viewingSemester, setViewingSemester] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.semesterId || "sem-1";
-    }
-    return "sem-1";
+    const rawUser = JSON.parse(localStorage.getItem('forensync_user')) || {};
+    return rawUser.semesterId || "sem-1";
   });
 
   useEffect(() => {
@@ -63,8 +54,6 @@ function Subjects() {
   }, [navigate, selectedCourse, viewingSemester]); 
 
   useEffect(() => {
-    if (!user) return; 
-    
     fetch(`${import.meta.env.VITE_API_URL}/exams/${selectedCourse}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
@@ -89,11 +78,9 @@ function Subjects() {
         }
       })
       .catch(err => console.error("Error fetching next exam:", err));
-  }, [user, selectedCourse]); 
+  }, [selectedCourse, viewingSemester]); 
 
   useEffect(() => {
-    if (!user) return; 
-
     fetch(`${import.meta.env.VITE_API_URL}/semester-info/${selectedCourse}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
@@ -104,7 +91,7 @@ function Subjects() {
         }
       })
       .catch(err => console.error("Error fetching dates:", err));
-  }, [user, viewingSemester, selectedCourse]);
+  }, [viewingSemester, selectedCourse]);
 
   const getSemesterProgress = () => {
     if (!semesterDates) return 0; 

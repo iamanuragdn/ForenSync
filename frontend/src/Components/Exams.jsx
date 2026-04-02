@@ -85,8 +85,13 @@ function Exams() {
   };
   
   const [userContext] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    return saved ? JSON.parse(saved) : { programId: "btech-mtech-cybersecurity", semesterId: "sem-2" };
+    const user = JSON.parse(localStorage.getItem('forensync_user')) || {};
+    return {
+      programId: user.programId || "btech-mtech-cybersecurity",
+      semesterId: user.semesterId || "sem-1",
+      email: user.email || "guest_user",
+      role: user.role || "Student"
+    };
   });
 
   useEffect(() => {

@@ -4,21 +4,15 @@ import { subjectIconMap, FallbackIcon } from '../utils/iconMap';
 import './PYQDashboard.css'; 
 
 function PYQDashboard() {
-  const [user] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    return saved ? JSON.parse(saved) : null;
-  });
-
   const [semesters, setSemesters] = useState([]);
   
   const [selectedSemester, setSelectedSemester] = useState(() => {
-    if (user && user.semesterId) return user.semesterId;
-    return "sem-1"; 
+    const user = JSON.parse(localStorage.getItem('forensync_user')) || {};
+    return user.semesterId || "sem-1";
   });
-
   const [selectedCourse, setSelectedCourse] = useState(() => {
-    if (user && user.programId) return user.programId;
-    return "btech-mtech-cybersecurity";
+    const user = JSON.parse(localStorage.getItem('forensync_user')) || {};
+    return user.programId || "btech-mtech-cybersecurity";
   });
 
   const [selectedExam, setSelectedExam] = useState('CA2'); 
@@ -26,7 +20,7 @@ function PYQDashboard() {
 
 
   useEffect(() => {
-    if (!user) return; 
+    if (!selectedCourse) return;
 
     fetch(`${import.meta.env.VITE_API_URL}/db/programs/${selectedCourse}/semesters`)
       .then(res => res.json())
@@ -35,20 +29,20 @@ function PYQDashboard() {
         else setSemesters([]); 
       })
       .catch(err => console.error(err));
-  }, [selectedCourse, user]);
+  }, [selectedCourse]);
 
 
   useEffect(() => {
-    if (!user || !selectedSemester) return; 
+    if (!selectedCourse || !selectedSemester || !selectedExam) return; 
 
-    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${selectedCourse}/${selectedSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/programs/${selectedCourse}/semesters/${selectedSemester}/exams/${selectedExam}/subjects`)
       .then(res => {
         if (!res.ok) throw new Error("Semester not found");
         return res.json();
       })
-      .then(data => setSubjects(data.subjects || []))
+      .then(data => setSubjects(data || []))
       .catch(() => setSubjects([]));
-  }, [selectedCourse, selectedSemester, user]);
+  }, [selectedCourse, selectedSemester, selectedExam]);
 
   return (
     <div className="home-container">
@@ -65,7 +59,7 @@ function PYQDashboard() {
           onChange={(e) => setSelectedCourse(e.target.value)}
         >
           <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
-          <option value="bsc-msc-forensics">BSc-MSc Forensic Science</option>
+          <option value="bsc-msc-forensic">BSc-MSc Forensic Science</option>
         </select>
 
         <select 
@@ -115,7 +109,7 @@ function PYQDashboard() {
           })
         ) : (
           <div className="empty-state">
-             <p>No subjects found for {selectedSemester ? selectedSemester.replace('-', ' ') : 'this semester'} yet.</p>
+             <p>No subjects found for {selectedSemester} yet.</p>
           </div>
         )}
       </div>
