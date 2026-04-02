@@ -85,7 +85,7 @@ const syllabusData = {
                 ]
             },
             "CTВT-BSC-102L": { name: "Engineering Physics Laboratory", credits: 1, teacher: "Dr. Bapi Dey", type: "Lab", units: [] },
-            "CTBT-ESC-103L": { name: "Engineering Graphics Laboratory", credits: 1, teacher: "Mr. Abhijit Das", type: "Lab", units: [] },
+            "CTBT-ESC-103L": { name: "Engineering Graphics Laboratory", credits: 1, teacher: "Dr. Sandipan Debnath", type: "Lab", units: [] },
             "CTBT-ESC-102L": { name: "Programming for Problem Solving Laboratory", credits: 1, teacher: "Dr. Priya Saha", type: "Lab", units: [] }
         },
         "sem-2": {
