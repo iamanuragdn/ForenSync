@@ -433,7 +433,15 @@ app.get('/api/drive/folders', async (req, res) => {
 
 app.post('/api/admin/sync', async (req, res) => {
     try {
-        const { programId, semesterId, subjects, type } = req.body;
+        const { programId, semesterId, subjectId, subjects, type } = req.body;
+        
+        // Match what the frontend sends (subjectId) but fallback to subjects if older frontend code hits it
+        const finalSubjectId = subjectId || subjects;
+
+        // Strict Safety Verification (Prevent Firestore native crashes entirely)
+        if (!programId || !semesterId || !finalSubjectId) {
+            return res.status(400).json({ error: "Missing required path parameters for Sync" });
+        }
 
         const oauth2Client = new google.auth.OAuth2(
             process.env.GDRIVE_CLIENT_ID,
@@ -443,14 +451,57 @@ app.post('/api/admin/sync', async (req, res) => {
         oauth2Client.setCredentials({ refresh_token: process.env.GDRIVE_REFRESH_TOKEN });
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
+        const targetType = type || 'Unknown';
+        const ROOT_NFSU_FOLDER_ID = '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
+
+        // 1. Locate the correct Google Drive folder for this specific Subject dynamically
+        const drivePrograms = await getDriveChildren(ROOT_NFSU_FOLDER_ID, drive, true);
+        const progFolder = drivePrograms.find(p => p.name === programId);
+        if (!progFolder) throw new Error(`Program folder '${programId}' not found in Drive`);
+
+        const driveSemesters = await getDriveChildren(progFolder.id, drive, true);
+        const semFolder = driveSemesters.find(s => s.name === semesterId);
+        if (!semFolder) throw new Error(`Semester folder '${semesterId}' not found in Drive`);
+
+        const driveTypes = await getDriveChildren(semFolder.id, drive, true);
+        const typeFolder = driveTypes.find(t => t.name === targetType);
+        if (!typeFolder) throw new Error(`Type folder '${targetType}' not found in Drive`);
+
+        const driveSubjects = await getDriveChildren(typeFolder.id, drive, true);
+        const subjFolder = driveSubjects.find(s => s.name === finalSubjectId);
+        if (!subjFolder) throw new Error(`Subject folder '${finalSubjectId}' not found in Drive`);
+
+        // First, fetch the current list of files from the Google Drive subject folder
+        const driveFiles = await fetchAllFilesRecursively(subjFolder.id, drive);
+
+        // Second, fetch the current list of documents from the Firestore collection
         const collectionRef = db.collection("programs").doc(programId)
                                 .collection("semesters").doc(semesterId)
-                                .collection("subjects").doc(subjects)
-                                .collection(type);
+                                .collection("subjects").doc(finalSubjectId)
+                                .collection(targetType);
                                 
         const snapshot = await collectionRef.get();
+        const existingDocIds = snapshot.docs.map(doc => doc.id);
+
+        let addedCount = 0;
         let deletedCount = 0;
 
+        // Check for Additions: If Drive has a file Firestore doesn't, add it.
+        for (const file of driveFiles) {
+            if (!existingDocIds.includes(file.id)) {
+                await collectionRef.doc(file.id).set({
+                    name: file.displayName || file.name,
+                    webViewLink: file.webViewLink || "#",
+                    webContentLink: file.webContentLink || "#",
+                    mimeType: file.mimeType,
+                    type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
+                    lastSynced: admin.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                addedCount++;
+            }
+        }
+
+        // Check for Removals: Old logic that wipes Firestore records if no longer on Drive
         const checkPromises = snapshot.docs.map(async (doc) => {
             const fileId = doc.id; 
             
@@ -477,22 +528,165 @@ app.post('/api/admin/sync', async (req, res) => {
         await Promise.all(checkPromises);
 
         res.status(200).json({ 
-            message: `Sync complete! Removed ${deletedCount} missing files.`,
+            message: `Sync complete! Added ${addedCount}, Removed ${deletedCount} files.`,
+            addedCount: addedCount,
             deletedCount: deletedCount 
         });
 
     } catch (error) {
         console.error("🔥 Sync Error:", error);
-        res.status(500).json({ error: "Failed to sync with Google Drive." });
+        // Safely return precise error preventing hard lockups
+        res.status(500).json({ error: error.message || "Failed to sync with Google Drive." });
+    }
+});
+
+app.post('/api/admin/sync-global', async (req, res) => {
+    try {
+        const oauth2Client = new google.auth.OAuth2(
+            process.env.GDRIVE_CLIENT_ID,
+            process.env.GDRIVE_CLIENT_SECRET,
+            "https://developers.google.com/oauthplayground"
+        );
+        oauth2Client.setCredentials({ refresh_token: process.env.GDRIVE_REFRESH_TOKEN });
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+        const ROOT_NFSU_FOLDER_ID = '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
+        const programs = await getDriveChildren(ROOT_NFSU_FOLDER_ID, drive, true);
+
+        let totalAdded = 0;
+        let totalRemoved = 0;
+        let addedFiles = [];
+        let removedFiles = [];
+
+        for (const prog of programs) {
+            let progId = prog.name;
+            const lowerName = prog.name.toLowerCase();
+            if (lowerName.includes('b.tech') || lowerName.includes('btech') || lowerName.includes('cyber')) progId = 'btech-mtech-cybersecurity';
+            else if (lowerName.includes('b.sc') || lowerName.includes('bsc') || lowerName.includes('forensic')) progId = 'bsc-msc-forensic';
+
+            try {
+                const semesters = await getDriveChildren(prog.id, drive, true);
+                for (const sem of semesters) {
+                    try {
+                        const types = await getDriveChildren(sem.id, drive, true);
+                        for (const type of types) {
+                            try {
+                                const subjects = await getDriveChildren(type.id, drive, true);
+                                for (const subj of subjects) {
+                                    console.log(`\n[SYNC] Scanning: ${prog.name} -> ${sem.name} -> ${type.name} -> ${subj.name}`);
+                                    try {
+                                        const driveFiles = await fetchAllFilesRecursively(subj.id, drive);
+
+                                        const collectionRef = db.collection("programs").doc(progId)
+                                                                .collection("semesters").doc(sem.name)
+                                                                .collection("subjects").doc(subj.name)
+                                                                .collection(type.name);
+                                                                
+                                        const snapshot = await collectionRef.get();
+                                        const existingDocIds = snapshot.docs.map(doc => doc.id);
+
+                                        for (const file of driveFiles) {
+                                            if (!existingDocIds.includes(file.id)) {
+                                                const finalName = file.displayName || file.name;
+                                                await collectionRef.doc(file.id).set({
+                                                    name: finalName,
+                                                    webViewLink: file.webViewLink || "#",
+                                                    webContentLink: file.webContentLink || "#",
+                                                    mimeType: file.mimeType,
+                                                    type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
+                                                    lastSynced: admin.firestore.FieldValue.serverTimestamp()
+                                                }, { merge: true });
+                                                console.log(`[+] Added to Firestore: ${finalName}`);
+                                                addedFiles.push(finalName);
+                                                totalAdded++;
+                                            }
+                                        }
+
+                                        const checkPromises = snapshot.docs.map(async (doc) => {
+                                            const fileId = doc.id; 
+                                            const docData = doc.data();
+                                            const docName = docData.name || fileId;
+                                            try {
+                                                const driveFile = await drive.files.get({
+                                                    fileId: fileId,
+                                                    fields: 'id, trashed'
+                                                });
+                                                if (driveFile.data.trashed) {
+                                                    await collectionRef.doc(fileId).delete();
+                                                    console.log(`[-] Removed from Firestore: ${docName}`);
+                                                    removedFiles.push(docName);
+                                                    totalRemoved++;
+                                                }
+                                            } catch (error) {
+                                                if (error.code === 404 || error.status === 404) {
+                                                    await collectionRef.doc(fileId).delete();
+                                                    console.log(`[-] Removed from Firestore: ${docName}`);
+                                                    removedFiles.push(docName);
+                                                    totalRemoved++;
+                                                } else {
+                                                    console.error(`Warning: Couldn't check file ${fileId}`, error.message);
+                                                }
+                                            }
+                                        });
+
+                                        await Promise.all(checkPromises);
+                                    } catch (err) {
+                                        console.error(`Error syncing subject ${subj.name}:`, err.message);
+                                    }
+                                }
+                            } catch (err) {
+                                console.error(`Error syncing type ${type.name}:`, err.message);
+                            }
+                        }
+                    } catch (err) {
+                        console.error(`Error syncing semester ${sem.name}:`, err.message);
+                    }
+                }
+            } catch (err) {
+                console.error(`Error syncing program ${prog.name}:`, err.message);
+            }
+        }
+
+        res.status(200).json({ 
+            message: "Global Sync Complete", 
+            totalAdded, 
+            totalRemoved,
+            addedFiles,
+            removedFiles
+        });
+
+    } catch (error) {
+        console.error("🔥 Global Sync Error:", error);
+        res.status(500).json({ error: "Failed to perform global sync." });
     }
 });
 
 app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     try {
-        const { targetDriveFolderId, programId, semesterId, subjects, type, fileName } = req.body;
+        let { targetDriveFolderId, programId, semesterId, subjects, subjectId, type, fileName, pathArray } = req.body;
         const fileObject = req.file;
 
         if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
+
+        // Update the logic to extract variables from the path array
+        if (pathArray) {
+            try {
+                let parsedPath = typeof pathArray === 'string' ? JSON.parse(pathArray) : pathArray;
+                if (Array.isArray(parsedPath) && parsedPath.length > 0) {
+                    programId = programId || parsedPath[1] || 'btech-mtech-cybersecurity';
+                    semesterId = semesterId || parsedPath.find(n => n && typeof n === 'string' && n.toLowerCase().includes('sem')) || 'sem-1';
+                    type = type || parsedPath.find(n => n && typeof n === 'string' && (n.toLowerCase() === 'notes' || n.toLowerCase() === 'pyq')) || 'Notes';
+                    let foundSubject = parsedPath.find(n => n && typeof n === 'string' && n.includes('-') && !n.toLowerCase().includes('sem') && n !== programId);
+                    if (foundSubject) subjectId = subjectId || foundSubject;
+                }
+            } catch (err) {
+                console.error("Path array parsing failed:", err.message);
+            }
+        }
+
+        // Robust handling of missing subjects that don't match the standard Program -> Semester -> Subject -> Type structure
+        let actualSubject = subjects || subjectId;
+        const hasValidSubject = actualSubject && actualSubject !== 'Global' && actualSubject !== 'undefined' && actualSubject !== 'null' && actualSubject.trim() !== '';
 
         const oauth2Client = new google.auth.OAuth2(
             process.env.GDRIVE_CLIENT_ID,
@@ -528,21 +722,36 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
             requestBody: { role: 'reader', type: 'anyone' },
         });
 
-        const docRef = db.collection("programs").doc(programId)
-                         .collection("semesters").doc(semesterId)
-                         .collection("subjects").doc(subjects)
-                         .collection(type).doc(fileId); 
-        
-        await docRef.set({
-            name: fileName || fileObject.originalname,
-            webViewLink: driveResponse.data.webViewLink,
-            webContentLink: driveResponse.data.webContentLink,
-            mimeType: driveResponse.data.mimeType,
-            type: 'pdf',
-            lastSynced: admin.firestore.FieldValue.serverTimestamp()
-        });
+        try {
+            let docRef;
+            if (hasValidSubject) {
+                docRef = db.collection("programs").doc(programId || 'unknown-program')
+                           .collection("semesters").doc(semesterId || 'unknown-semester')
+                           .collection("subjects").doc(actualSubject)
+                           .collection(type || 'Unknown').doc(fileId); 
+            } else {
+                // Conditional Database Saving: If no subject, attach directly to the semester level without crashing
+                docRef = db.collection("programs").doc(programId || 'unknown-program')
+                           .collection("semesters").doc(semesterId || 'unknown-semester')
+                           .collection(type || 'general').doc(fileId);
+            }
+            
+            await docRef.set({
+                name: fileName || fileObject.originalname,
+                webViewLink: driveResponse.data.webViewLink,
+                webContentLink: driveResponse.data.webContentLink,
+                mimeType: driveResponse.data.mimeType,
+                type: 'pdf',
+                lastSynced: admin.firestore.FieldValue.serverTimestamp()
+            });
 
-        res.status(200).json({ message: "Upload successful!" });
+            // Always returns a 200 OK if the Drive upload and Database sync both succeed
+            res.status(200).json({ message: "Upload successful!" });
+        } catch (dbError) {
+            console.error("🔥 Database Sync Error:", dbError.message);
+            // Catch firestore error without bringing down the whole express endpoint violently
+            res.status(500).json({ error: "File uploaded to Drive perfectly, but Database sync failed." });
+        }
     } catch (error) {
         console.error("🔥 Detailed Upload Error:", error.message);
         res.status(500).json({ error: "Failed to upload file to Drive." });

@@ -43,7 +43,33 @@ function AdminConsole() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [status, setStatus] = useState('');
+  const [isGlobalSyncing, setIsGlobalSyncing] = useState(false);
+  const [syncReport, setSyncReport] = useState(null);
   const currentFolderId = pathHistory[pathHistory.length - 1].id;
+
+  const handleGlobalSync = async () => {
+    if (!window.confirm("Are you sure you want to run a global deep sync? This may take several minutes.")) return;
+    setIsGlobalSyncing(true);
+    setSyncReport(null);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/sync-global`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSyncReport({
+          added: data.addedFiles || [],
+          removed: data.removedFiles || []
+        });
+      } else {
+        alert(`Global Sync Failed: ${data.error || 'Server Error'}`);
+      }
+    } catch (err) {
+      alert("Error connecting to server for Global Sync.");
+    } finally {
+      setIsGlobalSyncing(false);
+    }
+  };
 
   useEffect(() => {
     // Only fetch if the user is actually an admin!
@@ -145,6 +171,69 @@ function AdminConsole() {
       </div>
 
       <div className="admin-content-wrapper">
+
+        <div className="admin-card global-sync-card">
+          <div className="card-header">
+            <h3>🚀 Run Global Sync</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '5px' }}>
+              Deep scan the entire Google Drive structure to add new files and remove dead links across all programs.
+            </p>
+          </div>
+          <button 
+            className="btn-upload-submit" 
+            style={{ 
+              background: isGlobalSyncing ? '#64748b' : '#3b82f6', 
+              marginTop: '15px',
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '8px',
+              opacity: isGlobalSyncing ? 0.7 : 1
+            }}
+            onClick={handleGlobalSync}
+            disabled={isGlobalSyncing}
+          >
+            {isGlobalSyncing ? (
+              <>
+                <Loader size={18} style={{ animation: 'spin 1s linear infinite' }} /> 
+                Scanning entire Google Drive... This may take a minute.
+              </>
+            ) : (
+              <>
+                <Rocket size={18} /> 
+                Run Global Sync
+              </>
+            )}
+          </button>
+          
+          {syncReport && (
+            <div style={{ marginTop: '20px', padding: '16px', backgroundColor: 'var(--bg-hover)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
+              <h4 style={{ margin: '0 0 10px 0', color: 'var(--text-primary)' }}>📊 Sync Report</h4>
+              {syncReport.added.length === 0 && syncReport.removed.length === 0 ? (
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>✅ No changes needed. Everything is up to date.</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '0.9rem' }}>
+                  {syncReport.added.length > 0 && (
+                    <div>
+                      <h5 style={{ color: '#10b981', margin: '0 0 5px 0' }}>➕ Added Files ({syncReport.added.length})</h5>
+                      <ul style={{ color: 'var(--text-secondary)', paddingLeft: '20px', margin: 0, maxHeight: '150px', overflowY: 'auto' }}>
+                        {syncReport.added.map((name, i) => <li key={i} style={{ padding: '2px 0' }}>{name}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {syncReport.removed.length > 0 && (
+                    <div>
+                      <h5 style={{ color: '#ef4444', margin: '0 0 5px 0' }}>➖ Removed Dead Links ({syncReport.removed.length})</h5>
+                      <ul style={{ color: 'var(--text-secondary)', paddingLeft: '20px', margin: 0, maxHeight: '150px', overflowY: 'auto' }}>
+                        {syncReport.removed.map((name, i) => <li key={i} style={{ padding: '2px 0' }}>{name}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
         
         <div className="admin-card">
           <div className="card-header">

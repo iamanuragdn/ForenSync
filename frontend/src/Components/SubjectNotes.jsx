@@ -36,7 +36,7 @@ function SubjectNotes() {
         const data = await response.json();
 
         if (response.ok) {
-            alert(`🚀 ${data.message}`);
+            alert('Sync complete! Added: ' + data.addedCount + ', Removed: ' + data.removedCount);
             setRefreshTrigger(prev => prev + 1); 
         } else {
             alert(`❌ Sync failed: ${data.error}`);
