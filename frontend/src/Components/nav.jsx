@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase'; 
+import { Search, Zap, Eye } from 'lucide-react';
 import './nav.css';
 
 function Navbar() {
@@ -131,7 +132,7 @@ function Navbar() {
                         navigate(`/search?q=${encodeURIComponent(item)}`);
                       }} 
                     >
-                      <span className="suggestion-icon">🔍</span>
+                      <span className="suggestion-icon"><Search size={16} /></span>
                       {item}
                     </div>
                   ))}
@@ -147,7 +148,7 @@ function Navbar() {
                         onMouseDown={() => handleLiveSuggestionClick(item)}
                         style={{ alignItems: 'flex-start' }}
                       >
-                        <span className="suggestion-icon" style={{ marginTop: '2px' }}>⚡</span>
+                        <span className="suggestion-icon" style={{ marginTop: '2px' }}><Zap size={16} /></span>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                           <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{item.title}</span>
                           <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '500' }}>
@@ -158,7 +159,7 @@ function Navbar() {
                     ))
                   ) : (
                     <div className="suggestion-item" style={{ cursor: 'default', color: '#94a3b8' }}>
-                      <span className="suggestion-icon">👀</span>
+                      <span className="suggestion-icon"><Eye size={16} /></span>
                       Keep typing or hit Enter to deep search...
                     </div>
                   )}

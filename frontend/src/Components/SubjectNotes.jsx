@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Home, Cloud, Loader, FileText, Book, Presentation, File } from 'lucide-react';
 import './SubjectNotes.css';
 
 function SubjectNotes() {
@@ -15,12 +16,9 @@ function SubjectNotes() {
 
 
   const handleSync = async () => {
-    const btn = document.querySelector(".btn-primary-gradient");
-    const originalText = btn.innerText;
+    setIsSyncing(true);
     
     try {
-        btn.innerText = "⏳ Syncing...";
-        btn.disabled = true;
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/sync`, {
             method: "POST",
@@ -47,8 +45,7 @@ function SubjectNotes() {
         console.error(err);
         alert("❌ Error connecting to server.");
     } finally {
-        btn.innerText = originalText;
-        btn.disabled = false;
+        setIsSyncing(false);
     }
   };
 
@@ -101,8 +98,10 @@ function SubjectNotes() {
     <div className="notes-dashboard">
       
       
-      <div className="breadcrumb">
-        <span onClick={() => navigate('/')} className="crumb-link">🏠 Home</span> 
+      <div className="breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <span onClick={() => navigate('/')} className="crumb-link" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Home size={16} /> Home
+        </span>
         <span className="separator">/</span> 
         <span>{formatSemester(semesterId)}</span> 
         <span className="separator">/</span> 
@@ -138,8 +137,13 @@ function SubjectNotes() {
           </button>
         </div>
 
-          <button className="btn-primary-gradient" onClick={handleSync}>
-              ☁️ Sync Drive
+          <button 
+            className="btn-primary-gradient" 
+            onClick={handleSync}
+            disabled={isSyncing}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: isSyncing ? 0.7 : 1, cursor: isSyncing ? 'not-allowed' : 'pointer' }}
+          >
+              {isSyncing ? <><Loader size={16} /> Syncing...</> : <><Cloud size={16} /> Sync Drive</>}
           </button>
         </div>
       </div>
@@ -155,8 +159,14 @@ function SubjectNotes() {
           ) : (
             files.map((file, index) => (
               <div className="file-card" key={index}>
-                <div className="file-icon">
-                  {file.name.includes('.pdf') ? '📕' : '📘'}
+                <div className="file-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {file.name.toLowerCase().includes('.pdf') ? (
+                    <FileText size={24} color="var(--accent-blue)" />
+                  ) : file.name.toLowerCase().includes('.ppt') || file.name.toLowerCase().includes('.pptx') ? (
+                    <Presentation size={24} color="var(--accent-blue)" />
+                  ) : (
+                    <File size={24} color="var(--accent-blue)" />
+                  )}
                 </div>
                 
                 <div className="file-info">

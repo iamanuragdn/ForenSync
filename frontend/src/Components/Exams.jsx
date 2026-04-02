@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { GraduationCap, CalendarDays, FileText, Rocket, CheckCircle, Lock } from 'lucide-react';
 import './Exams.css';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
@@ -190,7 +191,7 @@ function Exams() {
     <div className="exams-page-container">
       <div className="exams-page-header">
         <div className="header-title-box">
-          <span className="graduation-icon">🎓</span>
+          <span className="graduation-icon"><GraduationCap size={28} /></span>
           <h2>Exam Schedule</h2>
         </div>
       </div>
@@ -200,7 +201,10 @@ function Exams() {
         <div className="exams-list-section">
           
           <div className="section-title">
-            <h3>📅 {isSelectedDateToday ? "Upcoming Exams" : `Events for ${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CalendarDays size={20} /> 
+              {isSelectedDateToday ? "Upcoming Exams" : `Events for ${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}
+            </h3>
             
             {!isSelectedDateToday && (
               <button className="btn-back-today" onClick={() => setDate(new Date())}>
@@ -213,8 +217,8 @@ function Exams() {
             {loading ? (
               <p className="loading-text">Syncing schedule...</p>
             ) : displayExams.length > 0 ? (
-              displayExams.map((exam) => (
-                <div className="exam-card" key={`upcoming-${exam.id}`}>
+              displayExams.map((exam, index) => (
+                <div className="exam-card" key={`upcoming-${exam.id || index}`}>
                   <div className={`days-box ${exam.colorClass || 'exam-blue'}`}>
                     {/* We ensure it never shows a negative number in the "Upcoming" view */}
                     <h2>{Math.max(0, exam.daysLeft)}</h2>
@@ -234,11 +238,11 @@ function Exams() {
                     <p className="exam-meta">{exam.time}</p>
                   </div>
                   <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-view-details" onClick={() => navigate(`/syllabus/${userContext.programId}/${userContext.semesterId}/${exam.code}`)}>
-                      📋 Syllabus
+                    <button className="btn-view-details" onClick={() => navigate(`/syllabus/${userContext.programId}/${userContext.semesterId}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                      <FileText size={16} /> Syllabus
                     </button>
-                    <button className="btn-prepare" onClick={() => navigate(`/notes/${userContext.programId}/${userContext.semesterId}/${exam.code}`)}>
-                      🚀 Prepare
+                    <button className="btn-prepare" onClick={() => navigate(`/notes/${userContext.programId}/${userContext.semesterId}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                      <Rocket size={16} /> Prepare
                     </button>
                   </div>
                 </div>
@@ -254,12 +258,12 @@ function Exams() {
           {isSelectedDateToday && pastExams.length > 0 && (
             <>
               <div className="section-title" style={{ marginTop: '30px' }}>
-                <h3>✅ Recently Completed</h3>
+                <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle size={20} color="var(--accent-green)" /> Recently Completed</h3>
               </div>
               
               <div>
-                {pastExams.map((exam) => (
-                  <div className="exam-card-past" key={`past-${exam.id}`}>
+                {pastExams.map((exam, index) => (
+                  <div className="exam-card-past" key={`past-${exam.id || index}`}>
                     
                     <div className="past-icon-box">
                       ✓
@@ -313,8 +317,8 @@ function Exams() {
                   return eDate.getMonth() === viewedMonth.getMonth() && 
                          eDate.getFullYear() === viewedMonth.getFullYear();
                 })
-                .map(exam => (
-                 <div className="legend-item" key={`legend-${exam.id}`}>
+                .map((exam, index) => (
+                 <div className="legend-item" key={`legend-${exam.id || index}`}>
                    <span className="dot" style={{ backgroundColor: exam.dotColor || '#3b82f6', opacity: exam.daysLeft < 0 ? 0.3 : 1 }}></span> 
                    <span style={{ textDecoration: exam.daysLeft < 0 ? 'line-through' : 'none', color: exam.daysLeft < 0 ? '#94a3b8' : 'inherit' }}>
                      {new Date(exam.examDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}: {exam.name}
@@ -368,7 +372,7 @@ function Exams() {
 
               {/* This section would only show up later when actual results are released! */}
               <div className="actual-results-locked">
-                <span className="lock-icon">🔒</span>
+                <span className="lock-icon"><Lock size={48} /></span>
                 <div className="locked-text">
                   <h4>Actual Score Pending</h4>
                   <p>Check back when university results are declared to compare your expectations!</p>

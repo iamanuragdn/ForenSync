@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield } from 'lucide-react';
 import './sidebarStyle.css';
 import side_bar_logo from '../assets/sidebar-logo.png';
 
@@ -26,27 +27,27 @@ function Sidebar() {
 
       <nav className="sidebar-nav">
         <NavLink to="/dashboard" className="nav-item">
-          <span className="nav-icon">🏠</span> 
+          <span className="nav-icon"><Home size={20} /></span> 
           <span className="nav-text">Home</span>
         </NavLink>
 
         <NavLink to="/exams" className="nav-item">
-          <span className="nav-icon">📝</span>
+          <span className="nav-icon"><FileText size={20} /></span>
           <span className="nav-text">Exams</span>
         </NavLink>
 
         <NavLink to="/syllabus" className="nav-item">
-          <span className="nav-icon">📑</span>
+          <span className="nav-icon"><BookOpen size={20} /></span>
           <span className="nav-text">Syllabus</span>
         </NavLink>
 
         <NavLink to="/practice" className="nav-item">
-          <span className="nav-icon">🎯</span>
+          <span className="nav-icon"><Target size={20} /></span>
           <span className="nav-text">Practice</span>
         </NavLink>
 
         <NavLink to="/pyq" className="nav-item">
-          <span className="nav-icon">📝</span>
+          <span className="nav-icon"><Files size={20} /></span>
           <span className="nav-text">PYQ</span>
         </NavLink>
       </nav>
@@ -65,12 +66,14 @@ function Sidebar() {
           alignItems: 'center',
           padding: '0.85rem 1rem'
         }}>
-          <span className="nav-icon" style={{ marginRight: '1rem' }}>{theme === 'light' ? '🌙' : '☀️'}</span>
+          <span className="nav-icon" style={{ marginRight: '1rem', display: 'flex', alignItems: 'center' }}>
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </span>
           <span className="nav-text" style={{ fontWeight: '500' }}>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
         </button>
         
         <NavLink to="/admin" className="nav-item admin-link" style={{ marginTop: 0 }}>
-          <span className="nav-icon">🔐</span>
+          <span className="nav-icon"><Shield size={20} /></span>
           <span className="nav-text">Admin</span>
         </NavLink>
       </div>

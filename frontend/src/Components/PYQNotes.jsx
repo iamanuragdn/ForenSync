@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { Home, Loader, Cloud, Book } from 'lucide-react';
 import './PYQNotes.css'; 
 
 function PYQNotes() {
@@ -89,7 +90,7 @@ function PYQNotes() {
       
       
       <div className="breadcrumb">
-        <span>🏠</span> 
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Home size={16} /></span> 
         <Link to="/">Home</Link> <span className="divider">/</span>
         <Link to="/pyq">{formattedSem}</Link> <span className="divider">/</span>
         <span className="current-page">{subjectName} {selectedExam} Papers</span>
@@ -107,9 +108,9 @@ function PYQNotes() {
             className="sync-btn" 
             onClick={handleSync} 
             disabled={isSyncing}
-            style={{ opacity: isSyncing ? 0.7 : 1, cursor: isSyncing ? 'not-allowed' : 'pointer' }}
+            style={{ opacity: isSyncing ? 0.7 : 1, cursor: isSyncing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            {isSyncing ? '⏳ Syncing...' : '☁️ Sync Drive'}
+            {isSyncing ? <><Loader size={16} /> Syncing...</> : <><Cloud size={16} /> Sync Drive</>}
           </button>
         </div>
       </div>
@@ -122,8 +123,8 @@ function PYQNotes() {
           {files.map(file => (
             <div key={file.id} className="file-item" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
               
-              <div className="file-icon" style={{ fontSize: '1.5rem', background: 'var(--bg-hover)', padding: '10px', borderRadius: '8px' }}>
-                📕
+              <div className="file-icon" style={{ fontSize: '1.5rem', background: 'var(--bg-hover)', padding: '10px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-blue)' }}>
+                <Book size={24} />
               </div>
 
               <div className="file-info" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>

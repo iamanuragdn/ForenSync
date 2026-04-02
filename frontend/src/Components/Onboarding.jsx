@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'; 
-import './Onboarding.css'; 
+import { Sun, Moon, Rocket, Loader } from 'lucide-react';
+import './Onboarding.css';
 
 import logoImage from '../assets/logo_muted_blue.png'; 
 
@@ -20,6 +21,7 @@ function Onboarding() {
   const [role, setRole] = useState('Student');
   const [adminType, setAdminType] = useState('Teacher'); 
   const [fullName, setFullName] = useState('');
+  const [programId, setProgramId] = useState('btech-mtech-cybersecurity');
   const [rollNumber, setRollNumber] = useState('');
   const [semester, setSemester] = useState('sem-1');
   const [loading, setLoading] = useState(false);
@@ -47,13 +49,18 @@ function Onboarding() {
         email: user.email,
         name: fullName,
         role: role,
-        programId: 'btech-mtech-cybersecurity', 
+        programId: programId, 
         ...(role === 'Admin' ? { adminType, isVerifiedAdmin: false } : {}), 
         ...(needsStudentFields ? { rollNumber, semesterId: semester } : {}) 
       };
 
       await setDoc(doc(db, 'users', user.uid), userProfile);
-      localStorage.setItem("forensync_user", JSON.stringify(userProfile));
+      
+      const safeProfile = { ...userProfile };
+      delete safeProfile.role;
+      delete safeProfile.adminType;
+      delete safeProfile.isVerifiedAdmin;
+      localStorage.setItem("forensync_user", JSON.stringify(safeProfile));
       
       navigate('/dashboard');
 
@@ -69,10 +76,10 @@ function Onboarding() {
       
       <button 
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease' }}
+        style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease', color: 'var(--text-primary)' }}
         title="Toggle Theme"
       >
-        {theme === 'dark' ? '☀️' : '🌙'}
+        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
       <div className="onboarding-card">
@@ -117,6 +124,14 @@ function Onboarding() {
             />
           </div>
 
+          <div className="input-group">
+            <label>Select Course</label>
+            <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="onboarding-select">
+              <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
+              <option value="bsc-msc-forensic">BSc-MSc Forensic Science</option>
+            </select>
+          </div>
+
           {needsStudentFields && (
             <div className="student-fields-row">
               <div className="input-group">
@@ -149,8 +164,8 @@ function Onboarding() {
             </div>
           )}
 
-          <button type="submit" className="btn-onboarding-submit" disabled={loading}>
-            {loading ? "⏳ Setting up workspace..." : "Launch Dashboard 🚀"}
+          <button type="submit" className="btn-onboarding-submit" disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {loading ? <><Loader size={18} /> Setting up workspace...</> : <>Launch Dashboard <Rocket size={18} /></>}
           </button>
         </form>
 

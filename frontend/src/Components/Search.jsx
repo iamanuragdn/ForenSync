@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Search as SearchIcon } from 'lucide-react';
 import './Search.css';
 
 function Search() {
@@ -77,7 +78,7 @@ useEffect(() => {
         </div>
       ) : (
         <div className="empty-search-state">
-          <span className="empty-icon">🔍</span>
+          <span className="empty-icon"><SearchIcon size={48} /></span>
           <h3>No exact matches found</h3>
           <p>We couldn't find anything matching "{query}". Try checking your spelling or using more general terms.</p>
           <button className="btn-back" onClick={() => navigate('/')}>

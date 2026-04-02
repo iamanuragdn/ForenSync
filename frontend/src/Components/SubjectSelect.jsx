@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Home } from 'lucide-react';
 import './SubjectSelect.css';
 
 function SubjectSelect() {
@@ -54,8 +55,10 @@ function SubjectSelect() {
 
   return (
     <div className="page-container">
-      <div className="breadcrumb">
-        <span onClick={() => navigate('/dashboard')} className="crumb-link">🏠 Home</span> 
+      <div className="breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <span onClick={() => navigate('/dashboard')} className="crumb-link" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Home size={16} /> Home
+        </span> 
         <span className="separator">/</span>
         <span onClick={() => navigate('/syllabus')} className="crumb-link">Courses</span>
         <span className="separator">/</span>

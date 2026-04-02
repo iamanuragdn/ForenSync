@@ -1,24 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-
+import { ShieldAlert, Folder, Rocket, Loader } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './AdminConsole.css';
 
 function AdminConsole() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("forensync_user");
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState(null);
+  const [isAdminVerifying, setIsAdminVerifying] = useState(true);
+
+  useEffect(() => {
+    const verifyAdmin = async () => {
+      const saved = localStorage.getItem("forensync_user");
+      if (!saved) {
+        navigate('/login');
+        return;
+      }
+      
+      try {
+        const cachedUser = JSON.parse(saved);
+        if (!cachedUser.uid) throw new Error("Invalid cache");
+        
+        const docRef = doc(db, 'users', cachedUser.uid);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          setUser(docSnap.data());
+        }
+      } catch (err) {
+        console.error("Firebase admin check failed:", err);
+      } finally {
+        setIsAdminVerifying(false);
+      }
+    };
+    verifyAdmin();
+  }, [navigate]);
 
   const [folders, setFolders] = useState([]);
   const [pathHistory, setPathHistory] = useState([{ id: '1bmI8_Bkn1airL4qznDJLWGc96wj76smp', name: 'NFSU' }]);
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
-  const [programId, setProgramId] = useState('btech-mtech-cybersecurity');
-  const [semesterId, setSemesterId] = useState('sem-1');
-  const [subjectId, setSubjectId] = useState('CTBT-BSC-101');
-  const [type, setType] = useState('Notes');
   const [status, setStatus] = useState('');
   const currentFolderId = pathHistory[pathHistory.length - 1].id;
 
@@ -48,12 +71,19 @@ function AdminConsole() {
 
     setStatus("⏳ Uploading to Drive and syncing to Firebase...");
 
+    // Auto-extract metadata from current folder path
+    const pathNames = pathHistory.map(p => p.name);
+    const inferredProgramId = pathNames[1] || 'btech-mtech-cybersecurity';
+    const inferredSemester = pathNames.find(n => n.toLowerCase().includes('sem')) || 'sem-1';
+    const inferredType = pathNames.find(n => n.toLowerCase() === 'notes' || n.toLowerCase() === 'pyq') || 'Notes';
+    const inferredSubject = pathNames.find(n => n.includes('-') && !n.toLowerCase().includes('sem') && n !== inferredProgramId) || 'Global';
+
     const formData = new FormData();
     formData.append('targetDriveFolderId', currentFolderId);
-    formData.append('programId', programId);
-    formData.append('semesterId', semesterId);
-    formData.append('subjectId', subjectId);
-    formData.append('type', type);
+    formData.append('programId', inferredProgramId);
+    formData.append('semesterId', inferredSemester);
+    formData.append('subjectId', inferredSubject);
+    formData.append('type', inferredType);
     formData.append('fileName', fileName || file.name);
     formData.append('file', file);
 
@@ -76,10 +106,21 @@ function AdminConsole() {
     }
   };
 
-  if (!user || user.role !== 'Admin') {
+  if (isAdminVerifying) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2.5rem', color: '#b91c1c', marginBottom: '10px' }}>🛑 Access Denied</h2>
+        <Loader size={40} color="var(--accent-blue)" style={{ animation: 'spin 1s linear infinite' }} />
+        <p style={{ marginTop: '15px', color: 'var(--text-secondary)', fontWeight: 'bold' }}>Verifying Admin Security Clearance...</p>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== 'Admin' || !user.isVerifiedAdmin) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '2.5rem', color: '#b91c1c', marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+          <ShieldAlert size={40} /> Access Denied
+        </h2>
         <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '400px', marginBottom: '25px', lineHeight: '1.5' }}>
           You do not have the required clearance to access the ForenSync Admin Console. This area is strictly for faculty and verified administrators.
         </p>
@@ -128,7 +169,7 @@ function AdminConsole() {
                 onClick={() => handleFolderClick(folder.id, folder.name)}
                 className="folder-item"
               >
-                <span className="folder-icon">📁</span> 
+                <span className="folder-icon"><Folder size={20} /></span> 
                 <span className="folder-name">{folder.name}</span>
               </div>
             ))}
@@ -143,35 +184,6 @@ function AdminConsole() {
           
           <form onSubmit={handleUpload} className="admin-upload-form">
             
-            <div className="form-row">
-              <div className="input-group">
-                <label>Semester</label>
-                <select value={semesterId} onChange={(e) => setSemesterId(e.target.value)} className="custom-select">
-                  <option value="sem-1">Semester 1</option>
-                  <option value="sem-2">Semester 2</option>
-                  <option value="sem-3">Semester 3</option>
-                </select>
-              </div>
-
-              <div className="input-group">
-                <label>Subject ID</label>
-                <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)} className="custom-select">
-                  <option value="CTBT-BSC-101">CTBT-BSC-101 (Maths)</option>
-                  <option value="CTBT-PCC-201">CTBT-PCC-201 (C++)</option>
-                  <option value="CTBT-ESC-201">CTBT-ESC-201 (DLD)</option>
-                  <option value="CTBT-EMC-201">CTBT-EMC-201 (Forensics)</option>
-                </select>
-              </div>
-
-              <div className="input-group">
-                <label>Material Type</label>
-                <select value={type} onChange={(e) => setType(e.target.value)} className="custom-select">
-                  <option value="Notes">Notes</option>
-                  <option value="PYQ">PYQ</option>
-                </select>
-              </div>
-            </div>
-
             <div className="input-group full-width">
               <label>Custom Display Name (Optional)</label>
               <input 
@@ -194,8 +206,8 @@ function AdminConsole() {
               />
             </div>
 
-            <button type="submit" className="btn-upload-submit">
-              🚀 Upload to ForenSync
+            <button type="submit" className="btn-upload-submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <Rocket size={18} /> Upload to ForenSync
             </button>
 
             {status && (

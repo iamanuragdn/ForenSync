@@ -71,6 +71,11 @@ async function syncDriveToFirebase() {
 
         //Crawl Programs
         for (const prog of programs) {
+            let progId = prog.name;
+            const lowerName = prog.name.toLowerCase();
+            if (lowerName.includes('b.tech') || lowerName.includes('btech') || lowerName.includes('cyber')) progId = 'btech-mtech-cybersecurity';
+            else if (lowerName.includes('b.sc') || lowerName.includes('bsc') || lowerName.includes('forensic')) progId = 'bsc-msc-forensic';
+
             const semesters = await getDriveChildren(prog.id, drive, true);
             
             //Crawl Semesters
@@ -90,7 +95,7 @@ async function syncDriveToFirebase() {
                         if (files.length > 0) {
                             for (const file of files) {
                                 
-                                const docRef = db.collection("programs").doc(prog.name)
+                                const docRef = db.collection("programs").doc(progId)
                                                  .collection("semesters").doc(sem.name)
                                                  .collection("subjects").doc(subj.name)
                                                  .collection(type.name).doc(file.id);

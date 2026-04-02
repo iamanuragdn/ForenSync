@@ -31,8 +31,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const upload = multer({ storage: multer.memoryStorage() });
 
 
-
+// ==========================================
 // GOOGLE DRIVE SYNC
+// ==========================================
 async function getDriveChildren(parentId, drive, isFolder = true) {
     let q = `'${parentId}' in parents and trashed=false`;
     q += isFolder ? ` and mimeType='application/vnd.google-apps.folder'` : ` and mimeType!='application/vnd.google-apps.folder'`;
@@ -50,8 +51,6 @@ async function getDriveChildren(parentId, drive, isFolder = true) {
     }
 }
 
-
-// RECURSIVE DEEP FETCHER IN FOLDER (everyth)
 async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
     let allFiles = [];
     try {
@@ -82,8 +81,6 @@ async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
 
 app.post("/api/sync-drive", async (req, res) => {
     try {
-
-        // Authenticate Google Drive
         const auth = new google.auth.GoogleAuth({
             keyFile: './serviceAccountKey.json',
             scopes: ['https://www.googleapis.com/auth/drive.readonly'],
@@ -95,23 +92,18 @@ app.post("/api/sync-drive", async (req, res) => {
         const programs = await getDriveChildren(ROOT_NFSU_FOLDER_ID, drive, true);
         
         for (const prog of programs) {
-            // Crawl Semesters (sem-1)
             const semesters = await getDriveChildren(prog.id, drive, true);
             
             for (const sem of semesters) {
-                // Crawl Types (Notes, PYQ,..)
                 const types = await getDriveChildren(sem.id, drive, true);
                 
                 for (const type of types) {
-                    // Crawl Subjects (CTBT-BSC-101...)
                     const subjects = await getDriveChildren(type.id, drive, true);
                     
                     for (const subj of subjects) {
-                        // Fetch all folder even in subfolder
                         const files = await fetchAllFilesRecursively(subj.id, drive);
                         
                         for (const file of files) {
-                            // Save to Firebase dynamically!
                             const docRef = db.collection("programs").doc(prog.name)
                                              .collection("semesters").doc(sem.name)
                                              .collection("subjects").doc(subj.name)
@@ -138,14 +130,14 @@ app.post("/api/sync-drive", async (req, res) => {
 });
 
 
-app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
+app.get("/api/notes/:programId/:semesterId/:subjects", async (req, res) => {
     try {
-        const { programId, semesterId, subjectId } = req.params;
+        const { programId, semesterId, subjects } = req.params;
         const type = req.query.type || 'Notes'; 
 
         const snapshot = await db.collection("programs").doc(programId)
                                  .collection("semesters").doc(semesterId)
-                                 .collection("subjects").doc(subjectId)
+                                 .collection("subjects").doc(subjects)
                                  .collection(type).get();
 
         if (snapshot.empty) return res.json({ files: [] });
@@ -162,7 +154,9 @@ app.get("/api/notes/:programId/:semesterId/:subjectId", async (req, res) => {
     }
 });
 
+// ==========================================
 // GLOBAL SEARCH ENDPOINT
+// ==========================================
 app.get('/api/search', async (req, res) => {
   try {
     const searchQuery = req.query.q;
@@ -171,7 +165,6 @@ app.get('/api/search', async (req, res) => {
     const q = searchQuery.toLowerCase();
     let searchResults = [];
 
-    // 1. SEARCH LOCAL STATIC SYLLABUS DATA
     if (syllabusData) {
       for (const [progId, progData] of Object.entries(syllabusData)) {
         if (progData.name && progData.name.toLowerCase().includes(q)) {
@@ -186,8 +179,6 @@ app.get('/api/search', async (req, res) => {
         if (progData.semesters) {
           for (const [semId, subjectsObj] of Object.entries(progData.semesters)) {
             for (const [subjId, subjData] of Object.entries(subjectsObj)) {
-              
-              // Safely extract the subject name depending on how your data is structured
               const subjectName = typeof subjData === 'string' ? subjData : (subjData.name || subjId);
 
               if (subjectName.toLowerCase().includes(q)) {
@@ -207,8 +198,6 @@ app.get('/api/search', async (req, res) => {
       }
     }
 
-    // 2. SEARCH FIREBASE: NOTES & PYQs
-    // CollectionGroup searches ALL collections named "Notes" anywhere in the database
     const notesSnapshot = await db.collectionGroup('Notes').get();
     notesSnapshot.forEach(doc => {
       const data = doc.data();
@@ -239,7 +228,6 @@ app.get('/api/search', async (req, res) => {
       }
     });
 
-    // 3. SEARCH FIREBASE: QUESTION BANK (Mock Tests)
     const qBankSnapshot = await db.collection('question_bank').get();
     qBankSnapshot.forEach(doc => {
       const data = doc.data();
@@ -259,19 +247,13 @@ app.get('/api/search', async (req, res) => {
       }
     });
 
-    // 4. SEARCH FIREBASE: SUBJECTS (Syllabus)
     const subjectsSnapshot = await db.collectionGroup('subjects').get();
     subjectsSnapshot.forEach(doc => {
       const data = doc.data();
-      // Sometimes the name is in the document data, sometimes it's the document ID itself
       const subjectName = data.name || doc.id; 
 
       if (subjectName.toLowerCase().includes(q)) {
-        // Extract the exact URL path from the Firebase Document Reference
-        // Firebase paths look like: programs/btech-mtech-cybersecurity/semesters/sem-1/subjects/network-security
         const pathParts = doc.ref.path.split('/');
-        
-        // Make sure it's a deeply nested subject before trying to route to it
         if (pathParts.length >= 6) {
           const progId = pathParts[1];
           const semId = pathParts[3];
@@ -290,7 +272,6 @@ app.get('/api/search', async (req, res) => {
       }
     });
 
-    // 5. SEARCH FIREBASE: UPCOMING EXAMS
     const examsSnapshot = await db.collectionGroup('exams').get();
     examsSnapshot.forEach(doc => {
       const data = doc.data();
@@ -315,30 +296,11 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// SYLLABUS ROUTES
-app.get("/api/programs/:programId/semesters", (req, res) => {
-    try {
-        const { programId } = req.params;
-        const program = syllabusData[programId];
-        if (!program) return res.status(404).json({ error: "Program not found." });
 
-        const formattedSemesters = Object.keys(program.semesters).map((key, index) => {
-            const subjectCount = Object.keys(program.semesters[key]).length;
-            return {
-                id: index + 1,
-                name: `Semester ${index + 1}`,
-                desc: subjectCount > 0 ? `${subjectCount} Subjects` : "Syllabus pending"
-            };
-        });
-        res.json(formattedSemesters);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch semesters." });
-    }
-});
+// ==========================================
+// SYLLABUS & EXAM ROUTES
+// ==========================================
 
-
-
-// GET ALL SUBJECTS FOR A SPECIFIC SEMESTER
 app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
   try {
     const { programId, semesterId } = req.params;
@@ -349,7 +311,6 @@ app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
                           
     const snapshot = await subjectsRef.get();
     
-    // If the semester exists but has no subjects yet, return an empty array
     if (snapshot.empty) {
       return res.json({ subjects: [] });
     }
@@ -366,18 +327,18 @@ app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
   }
 });
 
-app.get('/api/syllabus/:programId/:semesterId/:subjectId', async (req, res) => {
+app.get('/api/syllabus/:programId/:semesterId/:subjects', async (req, res) => {
   try {
-    const { programId, semesterId, subjectId } = req.params;
+    const { programId, semesterId, subjects } = req.params;
     
     const docRef = db.collection('programs').doc(programId)
                      .collection('semesters').doc(semesterId)
-                     .collection('subjects').doc(subjectId);
+                     .collection('subjects').doc(subjects);
                      
     const doc = await docRef.get();
     
     if (!doc.exists) {
-      return res.status(404).json({ error: `Subject ${subjectId} not found` });
+      return res.status(404).json({ error: `Subject ${subjects} not found` });
     }
     
     res.json(doc.data());
@@ -386,9 +347,51 @@ app.get('/api/syllabus/:programId/:semesterId/:subjectId', async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+// GET SEMESTER METADATA (Start & End Dates for Progress Circle)
+app.get('/api/semester-info/:programId/:semesterId', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    const docRef = db.collection('programs').doc(programId)
+                     .collection('semesters').doc(semesterId);
+                     
+    const doc = await docRef.get();
+    
+    // Ghost Document Fallback: If it doesn't exist or has no fields, return safe dummy dates
+    if (!doc.exists || !doc.data().startDate) {
+      return res.json({ 
+        startDate: "2026-01-01", 
+        endDate: "2026-06-01" 
+      });
+    }
+    
+    res.json(doc.data());
+  } catch (error) {
+    console.error("Error fetching semester dates:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get('/api/exams/:programId/:semesterId', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    const programExams = examData[programId];
+    
+    if (programExams && programExams[semesterId]) {
+      const sortedExams = programExams[semesterId].sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+      return res.status(200).json(sortedExams);
+    } 
+    
+    return res.status(200).json([]);
+  } catch (error) {
+    console.error("Error fetching exams from local file:", error);
+    res.status(500).json({ error: "Failed to fetch exams" });
+  }
+});
 
 
+// ==========================================
 // USER ROUTES
+// ==========================================
 app.get("/api/users/:username", async (req, res) => {
     try {
         const { username } = req.params;
@@ -402,62 +405,9 @@ app.get("/api/users/:username", async (req, res) => {
 });
 
 
-// Reejit'S Routes: Mock Test Engine
-async function processFileInBackground(fileBuffer, mimeType) {
-    try {
-        const uploadsDir = path.join(__dirname, "uploads");
-        try { await fs.access(uploadsDir); } catch { await fs.mkdir(uploadsDir); }
-
-        const fileName = `Exam_${Date.now()}.pdf`;
-        const filePath = path.join(uploadsDir, fileName);
-        await fs.writeFile(filePath, fileBuffer);
-        
-        const pdfDownloadUrl = `http://localhost:5001/uploads/${fileName}`;
-        const extractedData = await extractQuestions(fileBuffer, mimeType);
-        
-        const batch = db.batch(); 
-        extractedData.forEach((q) => {
-          const docRef = db.collection("question_bank").doc(); 
-          batch.set(docRef, {
-            question_text: q.question_text,
-            subject: q.subject,
-            type: q.type,
-            source_pdf_url: pdfDownloadUrl, 
-            added_at: admin.firestore.FieldValue.serverTimestamp()
-          });
-        });
-
-        await batch.commit();
-    } catch (error) {
-        console.error("🔥 Background Worker Failed:", error);
-    }
-}
-
-
-app.get('/api/exams/:programId/:semesterId', async (req, res) => {
-  try {
-    const { programId, semesterId } = req.params;
-    
-    // 1. Look inside our local examData.js file
-    const programExams = examData[programId];
-    
-    // 2. If the program and semester exist in our file, send them!
-    if (programExams && programExams[semesterId]) {
-      // Sort them by date before sending just to be safe
-      const sortedExams = programExams[semesterId].sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
-      return res.status(200).json(sortedExams);
-    } 
-    
-    // 3. If nothing is found, send an empty array so the frontend doesn't crash
-    return res.status(200).json([]);
-    
-  } catch (error) {
-    console.error("Error fetching exams from local file:", error);
-    res.status(500).json({ error: "Failed to fetch exams" });
-  }
-});
-
-// ADMIN: MINI DRIVE EXPLORER
+// ==========================================
+// ADMIN ROUTES (DRIVE SYNC & UPLOAD)
+// ==========================================
 app.get('/api/drive/folders', async (req, res) => {
     try {
         const parentId = req.query.parentId || '1bmI8_Bkn1airL4qznDJLWGc96wj76smp'; 
@@ -483,10 +433,8 @@ app.get('/api/drive/folders', async (req, res) => {
 
 app.post('/api/admin/sync', async (req, res) => {
     try {
-        const { programId, semesterId, subjectId, type } = req.body;
+        const { programId, semesterId, subjects, type } = req.body;
 
-
-        // 1. Authenticate with Google Drive
         const oauth2Client = new google.auth.OAuth2(
             process.env.GDRIVE_CLIENT_ID,
             process.env.GDRIVE_CLIENT_SECRET,
@@ -495,33 +443,28 @@ app.post('/api/admin/sync', async (req, res) => {
         oauth2Client.setCredentials({ refresh_token: process.env.GDRIVE_REFRESH_TOKEN });
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
-        // 2. Fetch all file records currently sitting in Firebase
         const collectionRef = db.collection("programs").doc(programId)
                                 .collection("semesters").doc(semesterId)
-                                .collection("subjects").doc(subjectId)
+                                .collection("subjects").doc(subjects)
                                 .collection(type);
                                 
         const snapshot = await collectionRef.get();
         let deletedCount = 0;
 
-        // 3. Cross-check each file with Google Drive simultaneously 
         const checkPromises = snapshot.docs.map(async (doc) => {
-            const fileId = doc.id; // Our Firebase Doc IDs are the Drive File IDs!
+            const fileId = doc.id; 
             
             try {
-                // Ask Drive about this specific file
                 const driveFile = await drive.files.get({
                     fileId: fileId,
                     fields: 'id, trashed'
                 });
 
-                // If it's in the Drive trash, delete the Firebase record
                 if (driveFile.data.trashed) {
                     await collectionRef.doc(fileId).delete();
                     deletedCount++;
                 }
             } catch (error) {
-                // Error 404 means the file was permanently deleted from Drive
                 if (error.code === 404 || error.status === 404) {
                     await collectionRef.doc(fileId).delete();
                     deletedCount++;
@@ -531,7 +474,6 @@ app.post('/api/admin/sync', async (req, res) => {
             }
         });
 
-        // Wait for all the checks to finish
         await Promise.all(checkPromises);
 
         res.status(200).json({ 
@@ -547,13 +489,11 @@ app.post('/api/admin/sync', async (req, res) => {
 
 app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     try {
-        const { targetDriveFolderId, programId, semesterId, subjectId, type, fileName } = req.body;
+        const { targetDriveFolderId, programId, semesterId, subjects, type, fileName } = req.body;
         const fileObject = req.file;
 
         if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
 
-
-        // 1. Authenticate with OAuth2 (Bypassing the Service Account entirely)
         const oauth2Client = new google.auth.OAuth2(
             process.env.GDRIVE_CLIENT_ID,
             process.env.GDRIVE_CLIENT_SECRET,
@@ -564,13 +504,11 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
             refresh_token: process.env.GDRIVE_REFRESH_TOKEN
         });
 
-        // 2. Initialize Drive with ONLY the OAuth client
         const uploadDrive = google.drive({ version: 'v3', auth: oauth2Client });
 
         const bufferStream = new stream.PassThrough();
         bufferStream.end(fileObject.buffer);
 
-        // 3. Upload the file
         const driveResponse = await uploadDrive.files.create({
             requestBody: {
                 name: fileName || fileObject.originalname,
@@ -585,16 +523,14 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         const fileId = driveResponse.data.id;
 
-        // 4. Make it readable by anyone
         await uploadDrive.permissions.create({
             fileId: fileId,
             requestBody: { role: 'reader', type: 'anyone' },
         });
 
-        // 5. Save metadata to Firebase
         const docRef = db.collection("programs").doc(programId)
                          .collection("semesters").doc(semesterId)
-                         .collection("subjects").doc(subjectId)
+                         .collection("subjects").doc(subjects)
                          .collection(type).doc(fileId); 
         
         await docRef.set({
@@ -613,27 +549,83 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     }
 });
 
-// GET SEMESTER METADATA (Start & End Dates)
-app.get('/api/semester-info/:programId/:semesterId', async (req, res) => {
-  try {
-    const { programId, semesterId } = req.params;
-    
-    const docRef = db.collection('programs').doc(programId)
-                     .collection('semesters').doc(semesterId);
-                     
-    const doc = await docRef.get();
-    
-    if (!doc.exists) {
-      return res.status(404).json({ error: "Semester not found" });
-    }
-    
-    res.json(doc.data());
-  } catch (error) {
-    console.error("Error fetching semester dates:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 
+// ==========================================
+// REEJIT'S MOCK TEST ENGINE
+// ==========================================
+
+// 🛠️ THE HYBRID BACKGROUND WORKER
+async function processFileInBackground(fileBuffer, mimeType) {
+    try {
+        console.log("Background: 1. Saving original PDF locally...");
+        const uploadsDir = path.join(__dirname, "uploads");
+        try { await fs.access(uploadsDir); } catch { await fs.mkdir(uploadsDir); }
+        const fileName = `Exam_${Date.now()}.pdf`;
+        const filePath = path.join(uploadsDir, fileName);
+        await fs.writeFile(filePath, fileBuffer);
+        const serverPort = process.env.PORT || 5001;
+        const pdfDownloadUrl = `http://localhost:${serverPort}/uploads/${fileName}`;
+
+        console.log("Background: 2. Extracting questions with Gemini...");
+        const extractedData = await extractQuestions(fileBuffer, mimeType);
+
+        console.log("Background: 3. Saving to Firebase Firestore...");
+        
+        // 🛡️ SAFETY NET FUNCTIONS
+        const formatSemester = (sem) => {
+            if (!sem) return "sem-unknown";
+            const s = sem.toLowerCase();
+            if (s.includes("sem-")) return s; 
+            
+            const numMatch = s.match(/\d+/); 
+            if (numMatch) return `sem-${numMatch[0]}`;
+            
+            if (s.includes("viii")) return "sem-8";
+            if (s.includes("vii")) return "sem-7";
+            if (s.includes("vi")) return "sem-6";
+            if (s.includes("iv")) return "sem-4";
+            if (s.includes("v")) return "sem-5";
+            if (s.includes("iii")) return "sem-3";
+            if (s.includes("ii")) return "sem-2";
+            if (s.includes("i")) return "sem-1";
+            return "sem-unknown";
+        };
+
+        const formatProgram = (prog) => {
+            if (!prog) return "btech-mtech-cybersecurity"; 
+            const p = prog.toLowerCase();
+            if (p.includes("btech") || p.includes("cyber")) return "btech-mtech-cybersecurity";
+            if (p.includes("bsc") || p.includes("forensic")) return "bsc-msc-forensic";
+            return "btech-mtech-cybersecurity";
+        };
+
+        const batch = db.batch(); 
+        
+        extractedData.forEach((q) => {
+          const docRef = db.collection("question_bank").doc(); 
+          batch.set(docRef, {
+            question_text: q.question_text,
+            program_name: formatProgram(q.program_name), 
+            semester: formatSemester(q.semester),       
+            subject_name: q.subject_name,
+            subject_code: q.subject_code,
+            type: q.type,
+            source_pdf_url: pdfDownloadUrl,
+            added_at: admin.firestore.FieldValue.serverTimestamp()
+          });
+        });
+
+        await batch.commit();
+        
+        console.log("\n✅ SUCCESS: EXAM PROCESSED AND SAVED!");
+        console.log(`🎓 Program ID:  ${formatProgram(extractedData[0]?.program_name)}`);
+        console.log(`📅 Semester ID: ${formatSemester(extractedData[0]?.semester)}`);
+        console.log(`🔢 Questions:   ${extractedData.length} saved\n`);
+
+    } catch (error) {
+        console.error("🔥 Background Worker Failed:", error);
+    }
+}
 
 app.post("/api/upload-pyq", upload.single("paper"), (req, res) => {
   try {
@@ -645,30 +637,33 @@ app.post("/api/upload-pyq", upload.single("paper"), (req, res) => {
   }
 });
 
-app.get("/api/get-subjects", async (req, res) => {
-  try {
-    const snapshot = await db.collection("question_bank").select("subject").get();
-    const subjects = new Set(); 
-    snapshot.forEach(doc => { if (doc.data().subject) subjects.add(doc.data().subject); });
-    res.status(200).json(Array.from(subjects));
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch subjects" });
-  }
-});
-
 app.get("/api/get-test", async (req, res) => {
   try {
-    const { subject } = req.query; 
+    const { program, semester, subject_code } = req.query; 
+    
     let query = db.collection("question_bank");
-    if (subject && subject !== "All") query = query.where("subject", "==", subject);
+    
+    if (program) query = query.where("program_name", "==", program);
+    if (semester) query = query.where("semester", "==", semester);
+    
+    if (subject_code && subject_code !== "All") {
+      query = query.where("subject_code", "==", subject_code);
+    }
     
     const snapshot = await query.limit(10).get(); 
-    if (snapshot.empty) return res.status(404).json({ error: "No questions found." });
+    
+    if (snapshot.empty) {
+      return res.status(404).json({ error: "No questions found for this curriculum yet. Try uploading a PYQ!" });
+    }
 
     const questions = [];
-    snapshot.forEach(doc => questions.push({ id: doc.id, ...doc.data() }));
+    snapshot.forEach((doc) => {
+      questions.push({ id: doc.id, ...doc.data() });
+    });
+
     res.status(200).json(questions);
   } catch (error) {
+    console.error("Error fetching questions:", error);
     res.status(500).json({ error: "Failed to generate test" });
   }
 });
@@ -680,6 +675,97 @@ app.post("/api/instant-test", upload.single("paper"), async (req, res) => {
     res.status(200).json(extractedData);
   } catch (error) {
     res.status(500).json({ error: "Failed to generate instant test." });
+  }
+});
+
+// 4. Fetch Subjects for PYQ Exams page
+app.get('/api/programs/:programId/semesters/:semesterId/exams/:examType/subjects', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    const snapshot = await db.collection('programs').doc(programId)
+                             .collection('semesters').doc(semesterId)
+                             .collection('subjects').get();
+    const subjects = [];
+    snapshot.forEach(doc => {
+      subjects.push({ 
+        id: doc.id, 
+        code: doc.data().code || doc.id, 
+        name: doc.data().name || "Unnamed Subject" 
+      });
+    });
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch subjects for exam" });
+  }
+});
+
+// ==========================================
+// 🗄️ DYNAMIC CURRICULUM FETCHING ROUTES
+// ==========================================
+
+// 1. Fetch all Programs
+app.get('/api/db/programs', async (req, res) => {
+  try {
+    const programs = Object.keys(syllabusData).map(key => ({
+      id: key,
+      name: syllabusData[key].programName || key
+    }));
+    res.json(programs);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch programs" });
+  }
+});
+
+// 2. Fetch Semesters for a specific Program
+app.get('/api/db/programs/:programId/semesters', async (req, res) => {
+  try {
+    const { programId } = req.params;
+    const programData = syllabusData[programId];
+    
+    if (!programData || !programData.semesters) {
+      return res.json([]);
+    }
+
+    const semesters = Object.keys(programData.semesters).map(key => {
+      // Attempt to prettify the semester ID (sem-1 -> Semester 1)
+      let prettyName = key;
+      if (key.startsWith('sem-')) {
+        prettyName = `Semester ${key.replace('sem-', '')}`;
+      }
+      return { id: key, name: prettyName };
+    });
+
+    // Sort semi-intelligently so Semester 10 is after Semester 9
+    semesters.sort((a, b) => {
+      const numA = parseInt(a.id.replace('sem-', ''), 10) || 0;
+      const numB = parseInt(b.id.replace('sem-', ''), 10) || 0;
+      return numA - numB;
+    });
+
+    res.json(semesters);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch semesters" });
+  }
+});
+
+// 3. Fetch Subjects for a specific Semester
+app.get('/api/db/programs/:programId/semesters/:semesterId/subjects', async (req, res) => {
+  try {
+    const { programId, semesterId } = req.params;
+    const snapshot = await db.collection('programs').doc(programId)
+                             .collection('semesters').doc(semesterId)
+                             .collection('subjects').get();
+    const subjects = [];
+    snapshot.forEach(doc => {
+      subjects.push({ 
+        id: doc.id, 
+        code: doc.data().code || doc.id, 
+        name: doc.data().name || "Unnamed Subject" 
+      });
+    });
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch subjects" });
   }
 });
 

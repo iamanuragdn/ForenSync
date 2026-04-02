@@ -76,7 +76,9 @@
   width: 100%; padding: 1rem; background-color: var(--accent-blue); color: #ffffff;
   border: none; border-radius: 8px; font-size: 1rem; font-weight: 600;
   cursor: pointer; transition: background-color 0.2s ease;
+  margin-top: 1.5rem; /* <--- ADD THIS LINE HERE */
 }
+
 .primary-btn:hover:not(:disabled) { background-color: var(--accent-blue); opacity: 0.9; }
 .primary-btn:disabled { background-color: var(--border-color); cursor: not-allowed; }
 

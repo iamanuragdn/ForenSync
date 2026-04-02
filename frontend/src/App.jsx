@@ -30,27 +30,39 @@ function ProtectedLayout({ children }) {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved) : null;
   });
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
 
   useEffect(() => {
-    if (!user || !user.uid) return;
+    if (!user || !user.uid) {
+      setIsAuthenticating(false);
+      return;
+    }
 
     const unsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
       if (docSnap.exists()) {
         const freshData = docSnap.data();
-        if (freshData.isVerifiedAdmin !== user.isVerifiedAdmin) {
-          setUser(freshData);
-          localStorage.setItem("forensync_user", JSON.stringify(freshData));
-        }
+        
+        const safeUser = { ...freshData };
+        delete safeUser.role;
+        delete safeUser.isVerifiedAdmin;
+        delete safeUser.adminType;
+        
+        localStorage.setItem("forensync_user", JSON.stringify(safeUser));
+        
+        setUser(freshData);
       }
       else {
         localStorage.removeItem("forensync_user");
         setUser(null);
         window.location.href = '/login'; 
       }
+      setIsAuthenticating(false);
     });
 
     return () => unsubscribe();
-  }, [user?.uid, user?.isVerifiedAdmin]);
+  }, [user?.uid]);
+
+
 
   if (!user) {
     return <Navigate to="/login" />;

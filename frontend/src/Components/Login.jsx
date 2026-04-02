@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider, db } from '../firebase'; 
 import { doc, getDoc } from 'firebase/firestore'; 
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from 'firebase/auth';
+import { Sun, Moon, Cloud, FileText, Calendar, Lock, Loader } from 'lucide-react';
 import './Login.css';
 
 import campusImage from '../assets/nfsu-campus.jpeg';
@@ -45,7 +46,11 @@ function Login() {
       const userSnap = await getDoc(userRef);
 
       if (userSnap.exists()) {
-        localStorage.setItem("forensync_user", JSON.stringify(userSnap.data()));
+        const safeUser = { ...userSnap.data() };
+        delete safeUser.role;
+        delete safeUser.isVerifiedAdmin;
+        delete safeUser.adminType;
+        localStorage.setItem("forensync_user", JSON.stringify(safeUser));
         navigate('/dashboard');
       } else {
         navigate('/onboarding');
@@ -79,7 +84,7 @@ function Login() {
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      setError("Success! 📩 We've sent a password reset link to your email.");
+      setError(<>Success! <b>We've sent a password reset link to your email.</b></>);
     } catch (err) {
       console.error(err);
       if (err.code === 'auth/invalid-email') {
@@ -124,7 +129,7 @@ function Login() {
         await signOut(auth);
         
         setIsLoginMode(true);
-        setError("Account created! 📩 We've sent a verification link to your email. Please click it before logging in.");
+        setError(<>Account created! <b>We've sent a verification link to your email.</b> Please click it before logging in.</>);
         setLoading(false);
         return; 
 
@@ -159,10 +164,10 @@ function Login() {
       
       <button 
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease' }}
+        style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '45px', height: '45px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s ease', color: 'var(--text-primary)' }}
         title="Toggle Theme"
       >
-        {theme === 'dark' ? '☀️' : '🌙'}
+        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
       <section className="hero-section">
@@ -222,8 +227,8 @@ function Login() {
                 </p>
               )}
               
-              <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? "⏳ Processing..." : (isLoginMode ? "Sign In" : "Sign Up")}
+              <button type="submit" className="btn-primary" disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                {loading ? <><Loader size={18} /> Processing...</> : (isLoginMode ? "Sign In" : "Sign Up")}
               </button>
             </form>
 
@@ -241,7 +246,7 @@ function Login() {
         <h2>Why ForenSync?</h2>
         <div className="features-grid">
   <div className="feature-card">
-    <div className="feature-icon icon-blue">☁️</div>
+    <div className="feature-icon icon-blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Cloud size={24} color="white" /></div>
     <h3>Drive Synced Notes</h3>
     <p>Faculty uploads sync directly to your personalized dashboard.</p>
     <ul className="feature-list">
@@ -251,7 +256,7 @@ function Login() {
   </div>
 
   <div className="feature-card">
-    <div className="feature-icon icon-purple">📝</div>
+    <div className="feature-icon icon-purple" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FileText size={24} color="white" /></div>
     <h3>PYQ & Mock Tests</h3>
     <p>Master your subjects with intelligent exam prep tools.</p>
     <ul className="feature-list">
@@ -261,7 +266,7 @@ function Login() {
   </div>
 
   <div className="feature-card">
-    <div className="feature-icon icon-orange">📅</div>
+    <div className="feature-icon icon-orange" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Calendar size={24} color="white" /></div>
     <h3>Smart Scheduling</h3>
     <p>Never miss a deadline with real-time academic tracking.</p>
     <ul className="feature-list">
@@ -271,7 +276,7 @@ function Login() {
   </div>
 
   <div className="feature-card">
-    <div className="feature-icon icon-green">🔒</div>
+    <div className="feature-icon icon-green" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Lock size={24} color="white" /></div>
     <h3>Role-Based Security</h3>
     <p>Enterprise-grade architecture for verified campus access.</p>
     <ul className="feature-list">

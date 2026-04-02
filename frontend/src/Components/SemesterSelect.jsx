@@ -1,13 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Home } from 'lucide-react';
 import './SemesterSelect.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 function SemesterSelect() {
   const navigate = useNavigate();
   const { programId } = useParams();
+  const [selectedCourse, setSelectedCourse] = useState(programId || 'btech-mtech-cybersecurity');
   const [semesters, setSemesters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (programId && programId !== selectedCourse) {
+      setSelectedCourse(programId);
+    }
+  }, [programId]);
 
   // Fetch data when component loads or programId changes
   useEffect(() => {
@@ -16,7 +26,7 @@ function SemesterSelect() {
       setError(null);
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/programs/${programId}/semesters`);
+        const response = await fetch(`${API_BASE_URL}/db/programs/${selectedCourse}/semesters`);
         
         if (!response.ok) {
           throw new Error("Failed to fetch semester data from the server.");
@@ -32,26 +42,31 @@ function SemesterSelect() {
     };
 
     fetchSemesters();
-  }, [programId]);
+  }, [selectedCourse]);
 
   const formatTitle = (id) => {
     if (id === 'btech-mtech-cybersecurity') return 'B.Tech - M.Tech (Cyber Security)';
-    if (id === 'bsc-msc-applied-sciences') return 'B.Sc - M.Sc (Applied Sciences)';
-    return 'B.Tech (Computer Science)';
+    if (id === 'bsc-msc-forensic') return 'B.Sc. - M.Sc. Forensic Science';
+    if (id === 'msc-fs') return 'M.Sc. Forensic Science';
+    return 'University Program';
   };
 
   return (
     <div className="semester-dashboard">
       
       
-      <div className="breadcrumb">
-        <span>🏠 Home</span> / <span>Courses</span> / <span className="current-page">Cyber Security</span>
+      <div className="breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => navigate('/dashboard')}><Home size={16} /> Home</span> 
+        <span>/</span> 
+        <span>Courses</span> 
+        <span>/</span> 
+        <span className="current-page">Cyber Security</span>
       </div>
 
       
       <div className="semester-hero-section">
         <div className="hero-content">
-          <h1>{formatTitle(programId)}</h1>
+          <h1>{formatTitle(selectedCourse)}</h1>
           <p>Select a semester below to access the complete syllabus, subject details.</p>
           
           <div className="stats-row">
@@ -82,9 +97,9 @@ function SemesterSelect() {
             <div 
               key={sem.id} 
               className="semester-card"
-              onClick={() => navigate(`/syllabus/${programId}/sem-${sem.id}`)} 
+              onClick={() => navigate(`/syllabus/${selectedCourse}/${sem.id}`)} 
             >
-              <div className="sem-number">{sem.id}</div>
+              <div className="sem-number">{sem.id.replace('sem-', '')}</div>
               <h3>{sem.name}</h3>
               <p>{sem.desc}</p>
             </div>

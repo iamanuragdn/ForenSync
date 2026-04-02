@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Clock, BarChart, TrendingUp, BookOpen, Sparkles } from 'lucide-react';
+import { subjectIconMap, FallbackIcon as Book } from '../utils/iconMap';
 import './subjects.css'; 
+
 
 function Subjects() {
   const navigate = useNavigate();
@@ -11,7 +14,15 @@ function Subjects() {
   const [showAttendance, setShowAttendance] = useState(false);
   const [nextExam, setNextExam] = useState(null); 
   const cardColors = ['purple', 'blue', 'green', 'pink', 'teal', 'orange'];
-  const cardIcons = ['∑', '🔬', '💻', '💬', '⚡', '📐'];
+  
+  const [selectedCourse, setSelectedCourse] = useState(() => {
+    const saved = localStorage.getItem("forensync_user");
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.programId || "btech-mtech-cybersecurity";
+    }
+    return "btech-mtech-cybersecurity";
+  });
   
   const [viewingSemester, setViewingSemester] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
@@ -32,9 +43,9 @@ function Subjects() {
     const parsedUser = JSON.parse(savedUser);
     setUser(parsedUser);
 
-    const activeProgramId = parsedUser.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : parsedUser.programId;
+    console.log('FIREBASE QUERY PATH:', selectedCourse, viewingSemester);
 
-    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${activeProgramId}/${viewingSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${selectedCourse}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {
@@ -49,15 +60,12 @@ function Subjects() {
         setSubjects([]);
         setLoading(false);
       });
-  }, [navigate, viewingSemester]); 
+  }, [navigate, selectedCourse, viewingSemester]); 
 
   useEffect(() => {
     if (!user) return; 
     
-    const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
-    const fetchSemester = user.semesterId || "sem-1"; 
-
-    fetch(`${import.meta.env.VITE_API_URL}/exams/${activeProgramId}/${fetchSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/exams/${selectedCourse}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
         const today = new Date();
@@ -81,13 +89,12 @@ function Subjects() {
         }
       })
       .catch(err => console.error("Error fetching next exam:", err));
-  }, [user]); 
+  }, [user, selectedCourse]); 
 
   useEffect(() => {
     if (!user) return; 
-    const activeProgramId = user.programId === "btech-mtech-cse" ? "btech-mtech-cybersecurity" : user.programId;
 
-    fetch(`${import.meta.env.VITE_API_URL}/semester-info/${activeProgramId}/${viewingSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/semester-info/${selectedCourse}/${viewingSemester}`)
       .then(res => res.json())
       .then(data => {
         if (data.startDate && data.endDate) {
@@ -97,7 +104,7 @@ function Subjects() {
         }
       })
       .catch(err => console.error("Error fetching dates:", err));
-  }, [user, viewingSemester]);
+  }, [user, viewingSemester, selectedCourse]);
 
   const getSemesterProgress = () => {
     if (!semesterDates) return 0; 
@@ -123,7 +130,7 @@ function Subjects() {
       <div className="dashboard-left">
         <div className="welcome-banner">
           <div className="welcome-content">
-            <span className="welcome-badge">✨ Welcome back</span>
+            <span className="welcome-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Sparkles size={14} /> Welcome back</span>
             <h1>Hello, {user.name.split(' ')[0]}</h1>
             <p>
               {isPureFaculty 
@@ -147,22 +154,33 @@ function Subjects() {
           )}
         </div>
 
-        <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '30px' }}>
+        <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '30px', flexWrap: 'wrap', gap: '15px' }}>
           <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span className="icon" style={{ fontSize: '1.5rem' }}>📚</span>
+            <span className="icon" style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-blue)' }}><BookOpen size={24} /></span>
             <h3 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--text-primary)' }}>Study Materials</h3>
           </div>
           
-          <select 
-            value={viewingSemester} 
-            onChange={(e) => setViewingSemester(e.target.value)}
-            style={{ padding: '8px 16px', borderRadius: '8px', border: '2px solid var(--border-color)', backgroundColor: 'var(--bg-card)', fontWeight: 'bold', color: 'var(--text-primary)', cursor: 'pointer', outline: 'none' }}
-          >
-            <option value="sem-1">Semester 1</option>
-            <option value="sem-2">Semester 2</option>
-            <option value="sem-3">Semester 3</option>
-            <option value="sem-4">Semester 4</option>
-          </select>
+          <div className="header-filters" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <select 
+              value={selectedCourse} 
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              style={{ padding: '8px 16px', borderRadius: '8px', border: '2px solid var(--border-color)', backgroundColor: 'var(--bg-card)', fontWeight: 'bold', color: 'var(--text-primary)', cursor: 'pointer', outline: 'none' }}
+            >
+              <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
+              <option value="bsc-msc-forensic">BSc-MSc Forensic Science</option>
+            </select>
+
+            <select 
+              value={viewingSemester} 
+              onChange={(e) => setViewingSemester(e.target.value)}
+              style={{ padding: '8px 16px', borderRadius: '8px', border: '2px solid var(--border-color)', backgroundColor: 'var(--bg-card)', fontWeight: 'bold', color: 'var(--text-primary)', cursor: 'pointer', outline: 'none' }}
+            >
+              <option value="sem-1">Semester 1</option>
+              <option value="sem-2">Semester 2</option>
+              <option value="sem-3">Semester 3</option>
+              <option value="sem-4">Semester 4</option>
+            </select>
+          </div>
         </div>
 
         <div className="subjects-grid">
@@ -171,24 +189,27 @@ function Subjects() {
               No subjects found for this semester yet.
             </div>
           ) : (
-            subjects.map((sub, index) => (
-            <div 
-                className="subject-card"
-                key={sub.id || index} 
-                style={{ cursor: 'pointer' }}
-                onClick={() => navigate(`/notes/${user.programId}/${viewingSemester}/${sub.id}`)} 
-            >
-                <div className={`card-accent accent-${cardColors[index % cardColors.length]}`}></div>
-                <div className="subject-icon-box">{cardIcons[index % cardIcons.length]}</div>
-                        
-                <h3>{sub.name}</h3>
-                <p>{sub.teacher}</p>
-                <div className="card-footer">
-                  <span className="subject-code-badge">{sub.id}</span> 
-                  <span className="arrow-icon">→</span>
-                </div>
-            </div>
-          ))
+            subjects.map((sub, index) => {
+              const IconComponent = subjectIconMap[sub.id] || Book;
+
+              return (
+              <div 
+                  className="subject-card"
+                  key={sub.id || index} 
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => navigate(`/notes/${selectedCourse}/${viewingSemester}/${sub.id}`)} 
+              >
+                  <div className={`card-accent accent-${cardColors[index % cardColors.length]}`}></div>
+                  <div className="subject-icon-box"><IconComponent size={20} /></div>
+                          
+                  <h3>{sub.name || sub.id || 'Untitled Subject'}</h3>
+                  <p>{sub.teacher || 'TBA'}</p>
+                  <div className="card-footer">
+                    <span className="subject-code-badge">{sub.id}</span> 
+                    <span className="arrow-icon">→</span>
+                  </div>
+              </div>
+            )})
           )}
         </div>
       </div>
@@ -198,7 +219,7 @@ function Subjects() {
         <div className="widget next-exam-widget">
           <div className="widget-header">
             <div className="header-left">
-              <span className="icon">⏱️</span>
+              <span className="icon" style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-blue)' }}><Clock size={20} /></span>
               <h3>Next Exam</h3>
             </div>
             {nextExam && nextExam.daysLeft <= 7 && <span className="urgent-badge">Urgent</span>}
@@ -234,7 +255,7 @@ function Subjects() {
               onMouseEnter={() => setShowAttendance(true)}
               onMouseLeave={() => setShowAttendance(false)}
             >
-              <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}>📊</div>
+              <div className="stat-icon green" style={{ background: '#dcfce7', color: '#166534' }}><BarChart size={18} /></div>
               
               <h2>{user?.attendance?.total || "--"}%</h2>
               <p>Attendance</p>
@@ -255,7 +276,7 @@ function Subjects() {
             </div>
 
             <div className="mini-stat-card">
-              <div className="stat-icon blue">📈</div>
+              <div className="stat-icon blue"><TrendingUp size={18} /></div>
               <h2>{user?.cgpa || "--"}</h2>
               <p>CGPA</p>
             </div>

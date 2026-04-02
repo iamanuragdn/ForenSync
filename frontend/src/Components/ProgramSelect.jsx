@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Shield, Microscope, Laptop, Folder } from 'lucide-react';
 import './ProgramSelect.css';
 
 function ProgramSelect() {
@@ -9,25 +10,25 @@ function ProgramSelect() {
       id: 'btech-mtech-cybersecurity',
       name: 'B.Tech - M.Tech. CSE (Cyber Security)',
       department: 'Department of Cyber Security and Digital Forensics',
-      icon: '🛡️' 
+      icon: <Shield size={24} />
     },
     {
-      id: 'bsc-msc-fs',
+      id: 'bsc-msc-forensic',
       name: 'B.Sc. - M.Sc. Forensic Science',
       department: 'Department of Forensic Sciences',
-      icon: '🔬'
+      icon: <Microscope size={24} />
     },
     {
       id: 'msc-fs',
       name: 'M.Sc. Forensic Science',
       department: 'Department of Forensic Sciences',
-      icon: '💻'
+      icon: <Laptop size={24} />
     },
     {
       id: 'pd-csm',
       name: 'Professional Diploma In Crime Scene Management',
       department: 'Department of Forensic Sciences',
-      icon: '📁'
+      icon: <Folder size={24} />
     }
   ];
 

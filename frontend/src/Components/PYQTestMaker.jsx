@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FileText, Loader, Rocket, Folder } from 'lucide-react';
 
 function PYQTestMaker() {
 
@@ -35,7 +36,7 @@ function PYQTestMaker() {
       const data = await response.json();
       setQuestions(data);
       setTestActive(true); 
-    } catch (err) {
+    } catch {
       setError("Error extracting questions. Ensure it's a valid PDF.");
     } finally {
       setLoading(false);
@@ -104,7 +105,7 @@ function PYQTestMaker() {
   //UPLOAD SCREEN
   return (
     <div className="page-content" style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '10px', color: 'var(--text-primary)' }}>📝 AI Test Maker</h1>
+      <h1 style={{ fontSize: '2rem', marginBottom: '10px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}><FileText size={32} /> AI Test Maker</h1>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>Upload a Past Year Paper (PYQ) or select one from Drive to instantly generate a practice test.</p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
@@ -120,9 +121,9 @@ function PYQTestMaker() {
           <button 
             onClick={handleFileUpload}
             disabled={loading}
-            style={{ width: '100%', padding: '12px', backgroundColor: 'var(--accent-blue)', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: loading ? 'wait' : 'pointer' }}
+            style={{ width: '100%', padding: '12px', backgroundColor: 'var(--accent-blue)', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: loading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >
-            {loading ? "⏳ Extracting Questions..." : "🚀 Generate Test"}
+            {loading ? <><Loader size={18} /> Extracting Questions...</> : <><Rocket size={18} /> Generate Test</>}
           </button>
           {error && <p style={{ color: '#ef4444', marginTop: '10px', fontSize: '0.9rem' }}>{error}</p>}
         </div>
@@ -134,9 +135,9 @@ function PYQTestMaker() {
           </p>
           <button 
             onClick={() => alert("Drive selection UI coming next! Let's test the upload feature first.")}
-            style={{ width: '100%', padding: '12px', backgroundColor: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+            style={{ width: '100%', padding: '12px', backgroundColor: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >
-            📁 Browse Drive PYQs
+            <Folder size={18} /> Browse Drive PYQs
           </button>
         </div>
 

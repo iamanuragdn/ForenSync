@@ -11,10 +11,13 @@ async function extractQuestions(fileBuffer, mimeType) {
     Output ONLY a valid JSON array. Do not include any conversational text.
     
     CRITICAL INSTRUCTIONS FOR JSON:
-    - Escape any double quotes inside the question text using a backslash (e.g., "What is \\"Virtual Memory\\"").
+    - Escape any double quotes inside the question text using a backslash.
     - Each object must have exactly these keys:
       - "question_text": The full question string.
-      - "subject": The subject name (e.g., Operating Systems, Cyber Security).
+      - "program_name": The exact database ID. MUST BE EXACTLY "btech-mtech-cybersecurity" or "bsc-msc-forensic". Guess based on context. Do not use full readable names.
+      - "semester": The exact semester ID format. MUST BE EXACTLY "sem-1", "sem-2", "sem-3", up to "sem-10". Convert any Roman numerals (I, II, IV) to numbers (sem-1, sem-2, sem-4). Do not output "Semester 1" or "Semester - I".
+      - "subject_name": The readable subject name (e.g., Operating Systems).
+      - "subject_code": The official university subject code (e.g., CS401). If missing, output "UNKNOWN".
       - "marks": Marks allocated (if visible, otherwise "N/A").
       - "type": "MCQ" or "Descriptive".
   `;

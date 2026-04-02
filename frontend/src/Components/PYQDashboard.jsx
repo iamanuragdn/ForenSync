@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { subjectIconMap, FallbackIcon } from '../utils/iconMap';
 import './PYQDashboard.css'; 
 
 function PYQDashboard() {
-  const navigate = useNavigate();
-
-  const [user, setUser] = useState(() => {
+  const [user] = useState(() => {
     const saved = localStorage.getItem("forensync_user");
     return saved ? JSON.parse(saved) : null;
   });
@@ -17,7 +16,7 @@ function PYQDashboard() {
     return "sem-1"; 
   });
 
-  const [programId, setProgramId] = useState(() => {
+  const [selectedCourse, setSelectedCourse] = useState(() => {
     if (user && user.programId) return user.programId;
     return "btech-mtech-cybersecurity";
   });
@@ -29,29 +28,27 @@ function PYQDashboard() {
   useEffect(() => {
     if (!user) return; 
 
-
-    fetch(`${import.meta.env.VITE_API_URL}/programs/${programId}/semesters`)
+    fetch(`${import.meta.env.VITE_API_URL}/db/programs/${selectedCourse}/semesters`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setSemesters(data);
         else setSemesters([]); 
       })
       .catch(err => console.error(err));
-  }, [programId, user]);
+  }, [selectedCourse, user]);
 
 
   useEffect(() => {
     if (!user || !selectedSemester) return; 
 
-
-    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${selectedSemester}`)
+    fetch(`${import.meta.env.VITE_API_URL}/syllabus/${selectedCourse}/${selectedSemester}`)
       .then(res => {
         if (!res.ok) throw new Error("Semester not found");
         return res.json();
       })
       .then(data => setSubjects(data.subjects || []))
-      .catch(err => setSubjects([]));
-  }, [programId, selectedSemester, user]);
+      .catch(() => setSubjects([]));
+  }, [selectedCourse, selectedSemester, user]);
 
   return (
     <div className="home-container">
@@ -62,6 +59,15 @@ function PYQDashboard() {
       </div>
       
       <div className="pyq-filters-row">
+        <select 
+          className="theme-dropdown"
+          value={selectedCourse} 
+          onChange={(e) => setSelectedCourse(e.target.value)}
+        >
+          <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
+          <option value="bsc-msc-forensics">BSc-MSc Forensic Science</option>
+        </select>
+
         <select 
           className="theme-dropdown"
           value={selectedSemester} 
@@ -88,20 +94,25 @@ function PYQDashboard() {
 
       <div className="subjects-grid">
         {subjects.length > 0 ? (
-          subjects.map(subject => (
-            <Link 
-              to={`/pyq/${programId}/${selectedSemester}/${subject.id}?exam=${selectedExam}`} 
-              key={subject.id} 
-              className="subject-card"
-            >
-              <div className="subject-icon">📝</div>
-              <div className="subject-info">
+          subjects.map(subject => {
+            const IconComponent = subjectIconMap[subject.id] || FallbackIcon;
+            return (
+              <Link 
+                to={`/pyq/${selectedCourse}/${selectedSemester}/${subject.id}?exam=${selectedExam}`} 
+                key={subject.id} 
+                className="subject-card"
+              >
+                <div className="subject-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <IconComponent size={20} />
+                </div>
+                <div className="subject-info">
                 <h3>{subject.name}</h3>
                 <p>{subject.teacher || "NFSU"}</p>
                 <span className="subject-code">{subject.id}</span>
               </div>
-            </Link>
-          ))
+              </Link>
+            );
+          })
         ) : (
           <div className="empty-state">
              <p>No subjects found for {selectedSemester ? selectedSemester.replace('-', ' ') : 'this semester'} yet.</p>
