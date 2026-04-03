@@ -25,13 +25,12 @@ function Exams() {
     try {
       // 1. Create a unique ID for this specific reflection
       // E.g., "rupanshu@email.com_CTBT-BSC-102_CA2"
-      const userEmail = userContext.email || "guest_user";
       const reflectionId = `${userEmail}_${reviewModal.exam.code}_${reviewModal.exam.type}`.replace(/\s+/g, '-');
 
       const reflectionData = {
         userEmail: userEmail,
-        programId: userContext.programId,
-        semesterId: userContext.semesterId,
+        programId: selectedProgram,
+        semesterId: selectedSemester,
         examCode: reviewModal.exam.code,
         examName: reviewModal.exam.name,
         examType: reviewModal.exam.type,
@@ -63,7 +62,6 @@ function Exams() {
     setReflection({ expectedMarks: '', lostMarksNotes: '', isExisting: false }); 
 
     try {
-      const userEmail = userContext.email || "guest_user";
       const reflectionId = `${userEmail}_${exam.code}_${exam.type}`.replace(/\s+/g, '-');
 
       const docRef = doc(db, "reflections", reflectionId);
@@ -84,21 +82,25 @@ function Exams() {
     }
   };
   
-  const [userContext] = useState(() => {
-    const user = JSON.parse(localStorage.getItem('forensync_user')) || {};
-    return {
-      programId: user.programId || "btech-mtech-cybersecurity",
-      semesterId: user.semesterId || "sem-1",
-      email: user.email || "guest_user",
-      role: user.role || "Student"
-    };
-  });
+  const [user] = useState(() => JSON.parse(localStorage.getItem('forensync_user')) || {});
+  const [selectedProgram, setSelectedProgram] = useState(user.programId || "btech-mtech-cybersecurity");
+  const [selectedSemester, setSelectedSemester] = useState(user.semesterId || "sem-1");
+  const userEmail = user.email || "guest_user";
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/exams/${userContext.programId}/${userContext.semesterId}`)
-      .then(res => res.json())
-      .then(data => {
-        const processedExams = data.map(exam => {
+    const fetchExams = async () => {
+      setLoading(true);
+      try {
+        // Explicitly matches the database structure using modular Firebase v9
+        const examsRef = collection(db, 'programs', selectedProgram, 'semesters', selectedSemester, 'exams');
+        const querySnapshot = await getDocs(examsRef);
+        
+        const examsData = [];
+        querySnapshot.forEach((doc) => {
+          examsData.push({ id: doc.id, ...doc.data() });
+        });
+
+        const processedExams = examsData.map(exam => {
           const eDate = new Date(exam.examDate);
           const today = new Date();
           eDate.setHours(0,0,0,0);
@@ -111,17 +113,18 @@ function Exams() {
         });
         
         setAllExams(processedExams);
+      } catch (err) {
+        console.error("Failed to load exams from Firestore:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to load exams:", err);
-        setLoading(false);
-      });
-  }, [userContext.programId, userContext.semesterId]);
+      }
+    };
+
+    fetchExams();
+  }, [selectedProgram, selectedSemester]);
 
   useEffect(() => {
     const fetchUserReflections = async () => {
-      const userEmail = userContext.email || "guest_user";
       try {
         const q = query(collection(db, "reflections"), where("userEmail", "==", userEmail));
         const querySnapshot = await getDocs(q);
@@ -138,7 +141,7 @@ function Exams() {
     };
 
     fetchUserReflections();
-  }, [userContext.email]);
+  }, [userEmail]);
 
   const today = new Date();
   const isSelectedDateToday = 
@@ -243,10 +246,10 @@ function Exams() {
                     <p className="exam-meta">{exam.time}</p>
                   </div>
                   <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-view-details" onClick={() => navigate(`/syllabus/${userContext.programId}/${userContext.semesterId}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                    <button className="btn-view-details" onClick={() => navigate(`/syllabus/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
                       <FileText size={16} /> Syllabus
                     </button>
-                    <button className="btn-prepare" onClick={() => navigate(`/notes/${userContext.programId}/${userContext.semesterId}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                    <button className="btn-prepare" onClick={() => navigate(`/notes/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
                       <Rocket size={16} /> Prepare
                     </button>
                   </div>
