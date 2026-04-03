@@ -85,7 +85,7 @@ const examData = {
       {
         code: 'CTBT-ESC-201',
         name: 'Digital Logic Design',
-        examDate: '2026-04-29', // 1 day gap
+        examDate: '2026-04-28', // 1 day gap
         type: 'CA4 (End Semester)',
         fullMarks: 100,
         time: '10:00 AM - 1:00 PM',
@@ -95,7 +95,7 @@ const examData = {
       {
         code: 'CTBT-PCC-201',
         name: 'Object Oriented Programming with C++',
-        examDate: '2026-05-01', // 1 day gap
+        examDate: '2026-04-29', // 1 day gap
         type: 'CA4 (End Semester)',
         fullMarks: 100,
         time: '10:00 AM - 1:00 PM',
@@ -105,23 +105,13 @@ const examData = {
       {
         code: 'CTВТ-HSM-201',
         name: 'Professional Ethics',
-        examDate: '2026-05-02', // Back-to-back (common for minor subjects)
+        examDate: '2026-04-30', // Back-to-back (common for minor subjects)
         type: 'CA4 (End Semester)',
         fullMarks: 100,
         time: '10:00 AM - 1:00 PM',
         colorClass: 'exam-blue',
         dotColor: '#3b82f6'
       },
-      {
-        code: 'CTBT-EMC-202',
-        name: 'Environment Science',
-        examDate: '2026-05-04', // Final day
-        type: 'CA4 (End Semester)',
-        fullMarks: 100,
-        time: '10:00 AM - 1:00 PM',
-        colorClass: 'exam-green',
-        dotColor: '#22c55e'
-      }
     ]
   }
 };
