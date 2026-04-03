@@ -90,17 +90,17 @@ const examData = {
         examDate: '2026-04-24', // Starting day
         type: 'CA4 (End Semester)',
         fullMarks: 100,
-        time: '10:00 AM - 1:00 PM', // 3 hours for End Sem
+        time: '02:30 PM - 05:30 PM', // 3 hours for End Sem
         colorClass: 'exam-red',
         dotColor: '#ef4444'
       },
       {
         code: 'CTBT-EMC-201',
         name: 'Fundamentals of Forensic Science',
-        examDate: '2026-04-27', // Monday after the weekend
+        examDate: '2026-04-27', 
         type: 'CA4 (End Semester)',
         fullMarks: 100,
-        time: '10:00 AM - 1:00 PM',
+        time: '02:30 PM - 05:30 PM',
         colorClass: 'exam-blue',
         dotColor: '#3b82f6'
       },
@@ -110,7 +110,7 @@ const examData = {
         examDate: '2026-04-28', // 1 day gap
         type: 'CA4 (End Semester)',
         fullMarks: 100,
-        time: '10:00 AM - 1:00 PM',
+        time: '02:30 PM - 05:30 PM',
         colorClass: 'exam-green',
         dotColor: '#22c55e'
       },
@@ -120,7 +120,7 @@ const examData = {
         examDate: '2026-04-29', // 1 day gap
         type: 'CA4 (End Semester)',
         fullMarks: 100,
-        time: '10:00 AM - 1:00 PM',
+        time: '02:30 PM - 05:30 PM',
         colorClass: 'exam-yellow',
         dotColor: '#eab308'
       },
@@ -130,7 +130,7 @@ const examData = {
         examDate: '2026-04-30', // Back-to-back (common for minor subjects)
         type: 'CA4 (End Semester)',
         fullMarks: 100,
-        time: '10:00 AM - 1:00 PM',
+        time: '02:30 PM - 05:30 PM',
         colorClass: 'exam-blue',
         dotColor: '#3b82f6'
       }
@@ -161,8 +161,8 @@ const examData = {
         dotColor: '#22c55e'
       },
       {
-        code: 'BSC-MN-204',
-        name: 'General Physics-II',
+        code: 'BSC-MN-203',
+        name: 'GENERAL BIOLOGY-I',
         examDate: '2026-04-28', 
         type: 'CA4 (End Semester)',
         fullMarks: 100,
@@ -171,8 +171,8 @@ const examData = {
         dotColor: '#eab308'
       },
       {
-        code: 'BSC-AE-205',
-        name: 'English Language Skills-II',
+        code: 'BSC-MN-204',
+        name: 'GENERAL PHYSICS-II',
         examDate: '2026-04-29', 
         type: 'CA4 (End Semester)',
         fullMarks: 100,
@@ -181,8 +181,8 @@ const examData = {
         dotColor: '#ef4444'
       },
       {
-        code: 'BSC-SE-206',
-        name: 'Financial Literacy',
+        code: 'BSC-AE-205',
+        name: 'ENGLISH LANGUAGE SKILLS -II',
         examDate: '2026-04-30', 
         type: 'CA4 (End Semester)',
         fullMarks: 100,
@@ -191,9 +191,19 @@ const examData = {
         dotColor: '#3b82f6'
       },
       {
+        code: 'BSC-SE-206',
+        name: 'FINANCIAL LITERACY',
+        examDate: '2026-05-04', 
+        type: 'CA4 (End Semester)',
+        fullMarks: 100,
+        time: '02:30 PM - 05:30 PM',
+        colorClass: 'exam-green',
+        dotColor: '#22c55e'
+      },
+      {
         code: 'BSC-VA-207',
-        name: 'Indian Knowledge System',
-        examDate: '2026-05-01', 
+        name: 'INDIAN KNOWLEDGE SYSTEM',
+        examDate: '2026-05-05', 
         type: 'CA4 (End Semester)',
         fullMarks: 100,
         time: '02:30 PM - 05:30 PM',

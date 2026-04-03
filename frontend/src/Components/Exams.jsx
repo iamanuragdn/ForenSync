@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { GraduationCap, CalendarDays, FileText, Rocket, CheckCircle, Lock } from 'lucide-react';
+import { GraduationCap, CalendarDays, FileText, Rocket, CheckCircle, Lock, ChevronDown, ChevronUp } from 'lucide-react';
 import './Exams.css';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
@@ -11,6 +11,7 @@ function Exams() {
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date()); 
   const [viewedMonth, setViewedMonth] = useState(new Date());
+  const [showAllExams, setShowAllExams] = useState(false);
   
   const [allExams, setAllExams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -150,11 +151,12 @@ function Exams() {
     date.getFullYear() === today.getFullYear();
 
   
-  // 1. Upcoming Exams: Filter daysLeft >= 0, sort by closest date, take top 3
-  const upcomingExams = allExams
+  // 1. Upcoming Exams: Filter daysLeft >= 0, sort by closest date
+  const allUpcomingExams = allExams
     .filter(exam => exam.daysLeft >= 0)
-    .sort((a, b) => new Date(a.examDate) - new Date(b.examDate))
-    .slice(0, 3);
+    .sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+
+  const upcomingExams = showAllExams ? allUpcomingExams : allUpcomingExams.slice(0, 3);
 
   // 2. Past Exams: Filter daysLeft < 0, sort by most recent past date, take top 3
   const pastExams = allExams
@@ -225,36 +227,55 @@ function Exams() {
             {loading ? (
               <p className="loading-text">Syncing schedule...</p>
             ) : displayExams.length > 0 ? (
-              displayExams.map((exam, index) => (
-                <div className="exam-card" key={`upcoming-${exam.id || index}`}>
-                  <div className={`days-box ${exam.colorClass || 'exam-blue'}`}>
-                    {/* We ensure it never shows a negative number in the "Upcoming" view */}
-                    <h2>{Math.max(0, exam.daysLeft)}</h2>
-                    <p>days left</p>
-                  </div>
-                  <div className="exam-details">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <span className="exam-code">{exam.code}</span>
-                      
-                      <span className={`exam-type-badge ${getBadgeClass(exam.type)}`}>
-                        {exam.type}
-                      </span>
+              <>
+                {displayExams.map((exam, index) => (
+                  <div 
+                    className={`exam-card ${showAllExams && index >= 3 ? 'animate-fade-in' : ''}`} 
+                    key={`upcoming-${exam.id || index}`}
+                    style={showAllExams && index >= 3 ? { animationDelay: `${(index - 3) * 0.08}s` } : {}}
+                  >
+                    <div className={`days-box ${exam.colorClass || 'exam-blue'}`}>
+                      {/* We ensure it never shows a negative number in the "Upcoming" view */}
+                      <h2>{Math.max(0, exam.daysLeft)}</h2>
+                      <p>days left</p>
                     </div>
-                    
-                    <h4>{exam.name}</h4>
-                    <p className="exam-date">{new Date(exam.examDate).toDateString()}</p>
-                    <p className="exam-meta">{exam.time}</p>
+                    <div className="exam-details">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span className="exam-code">{exam.code}</span>
+                        
+                        <span className={`exam-type-badge ${getBadgeClass(exam.type)}`}>
+                          {exam.type}
+                        </span>
+                      </div>
+                      
+                      <h4>{exam.name}</h4>
+                      <p className="exam-date">{new Date(exam.examDate).toDateString()}</p>
+                      <p className="exam-meta">{exam.time}</p>
+                    </div>
+                    <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
+                      <button className="btn-view-details" onClick={() => navigate(`/syllabus/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                        <FileText size={16} /> Syllabus
+                      </button>
+                      <button className="btn-prepare" onClick={() => navigate(`/notes/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                        <Rocket size={16} /> Prepare
+                      </button>
+                    </div>
                   </div>
-                  <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-view-details" onClick={() => navigate(`/syllabus/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
-                      <FileText size={16} /> Syllabus
-                    </button>
-                    <button className="btn-prepare" onClick={() => navigate(`/notes/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
-                      <Rocket size={16} /> Prepare
-                    </button>
-                  </div>
-                </div>
-              ))
+                ))}
+                
+                {isSelectedDateToday && allUpcomingExams.length > 3 && (
+                  <button 
+                    onClick={() => setShowAllExams(!showAllExams)}
+                    className="btn-view-all-exams"
+                  >
+                    {showAllExams ? (
+                      <>Show Less <ChevronUp size={18} /></>
+                    ) : (
+                      <>View All {allUpcomingExams.length} Exams <ChevronDown size={18} /></>
+                    )}
+                  </button>
+                )}
+              </>
             ) : (
               <div className="empty-state">
                 <p className="empty-title">No exams scheduled.</p>
