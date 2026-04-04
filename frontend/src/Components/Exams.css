@@ -239,6 +239,12 @@
   transition: all 0.2s ease;
 }
 
+/* Dull out the dates from the previous and next months */
+.react-calendar__month-view__days__day--neighboringMonth {
+  opacity: 0.3 !important;
+  pointer-events: none; /* Optional: stops users from clicking previous/next month dates */
+}
+
 .react-calendar__tile:hover { background: var(--bg-hover) !important; color: var(--text-primary); }
 .react-calendar__tile--now { background: var(--bg-hover) !important; font-weight: 700; color: var(--accent-blue); }
 .react-calendar__tile--active { background: #2563eb !important; color: white !important; font-weight: 700; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); }
