@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/__/(.*)",
+      "destination": "https://forensync-98f32.firebaseapp.com/__/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
