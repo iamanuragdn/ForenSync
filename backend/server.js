@@ -30,6 +30,12 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const upload = multer({ storage: multer.memoryStorage() });
 
+// ==========================================
+// HEALTH CHECK
+// ==========================================
+app.get("/", (req, res) => {
+    res.status(200).send("ForenSync Backend is awake and running!");
+});
 
 // ==========================================
 // GOOGLE DRIVE SYNC
