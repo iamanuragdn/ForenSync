@@ -14,10 +14,13 @@ const { extractQuestions } = require("./extractor");
 
 const stream = require("stream");
 
+// We use a unique name here so it doesn't conflict with your database!
+const nodeFileSystem = require('fs'); 
+
 let serviceAccount;
 
 // Check if we are running on Render's secure server
-if (fs.existsSync('/etc/secrets/serviceAccountKey.json')) {
+if (nodeFileSystem.existsSync('/etc/secrets/serviceAccountKey.json')) {
   serviceAccount = require('/etc/secrets/serviceAccountKey.json');
 } 
 // Otherwise, we must be testing locally on your MacBook
