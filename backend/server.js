@@ -14,8 +14,6 @@ const { extractQuestions } = require("./extractor");
 
 const stream = require("stream");
 
-const fs = require('fs');
-
 let serviceAccount;
 
 // Check if we are running on Render's secure server
