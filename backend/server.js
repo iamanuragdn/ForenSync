@@ -54,14 +54,27 @@ const app = express();
 // }));
 
 // ==========================================
-// THE ULTIMATE CORS SETUP
+// MANUAL CORS OVERRIDE (NUCLEAR OPTION)
 // ==========================================
-app.use(cors({
-  origin: true, 
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'] 
-}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowed = ['https://www.forensync.me', 'https://forensync.me', 'http://localhost:5173', 'https://forensync.vercel.app'];
+  
+  if (allowed.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  // Instantly answer the browser's preflight security ghost-knock
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
 app.use(express.json());
 
