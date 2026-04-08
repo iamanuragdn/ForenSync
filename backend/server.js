@@ -57,15 +57,11 @@ const app = express();
 // THE ULTIMATE CORS SETUP
 // ==========================================
 app.use(cors({
-  origin: true, // Dynamically mirrors the incoming origin (Bulletproof)
+  origin: true, 
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow all actions
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'] // Allow Firebase auth headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'] 
 }));
-
-// Explicitly answer the browser's preflight security knocks
-app.options('*', cors());
-
 
 app.use(express.json());
 
