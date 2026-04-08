@@ -23,7 +23,20 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 const app = express();
-app.use(cors({ origin: "*" }));
+
+// Strict CORS whitelist
+const allowedOrigins = [
+  'http://localhost:5173',         // Keeps your local VS Code testing working
+  'http://localhost:3000',         // (Just in case you use port 3000)
+  'https://forensync.vercel.app',  // Your original Vercel link
+  'https://forensync.me',          // Your new custom domain
+  'https://www.forensync.me'       // Your new custom domain (with www)
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 app.use(express.json());
 
