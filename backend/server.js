@@ -39,19 +39,33 @@ const db = admin.firestore();
 
 const app = express();
 
-// Strict CORS whitelist
-const allowedOrigins = [
-  'http://localhost:5173',         // Keeps your local VS Code testing working
-  'http://localhost:3000',         // (Just in case you use port 3000)
-  'https://forensync.vercel.app',  // Your original Vercel link
-  'https://forensync.me',          // Your new custom domain
-  'https://www.forensync.me'       // Your new custom domain (with www)
-];
+// // Strict CORS whitelist
+// const allowedOrigins = [
+//   'http://localhost:5173',         // Keeps your local VS Code testing working
+//   'http://localhost:3000',         // (Just in case you use port 3000)
+//   'https://forensync.vercel.app',  // Your original Vercel link
+//   'https://forensync.me',          // Your new custom domain
+//   'https://www.forensync.me'       // Your new custom domain (with www)
+// ];
 
+// app.use(cors({
+//   origin: allowedOrigins,
+//   credentials: true
+// }));
+
+// ==========================================
+// THE ULTIMATE CORS SETUP
+// ==========================================
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
+  origin: true, // Dynamically mirrors the incoming origin (Bulletproof)
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow all actions
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'] // Allow Firebase auth headers
 }));
+
+// Explicitly answer the browser's preflight security knocks
+app.options('*', cors());
+
 
 app.use(express.json());
 
