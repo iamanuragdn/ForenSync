@@ -14,12 +14,26 @@ const { extractQuestions } = require("./extractor");
 
 const stream = require("stream");
 
-const serviceAccount = require("./serviceAccountKey.json");
+const fs = require('fs');
+
+let serviceAccount;
+
+// Check if we are running on Render's secure server
+if (fs.existsSync('/etc/secrets/serviceAccountKey.json')) {
+  serviceAccount = require('/etc/secrets/serviceAccountKey.json');
+} 
+// Otherwise, we must be testing locally on your MacBook
+else {
+  serviceAccount = require('./serviceAccountKey.json');
+}
+
+// Initialize Firebase with the correct account
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)
     });
 }
+
 const db = admin.firestore();
 
 const app = express();
