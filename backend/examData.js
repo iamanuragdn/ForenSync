@@ -85,6 +85,16 @@ const examData = {
 
       // ----------------- END SEMESTERS -----------------
       {
+        code: 'CTВТ-PCС-201L',
+        name: 'Object Oriented Programming with C++ Laboratory',
+        examDate: '2026-04-16', // Starting day
+        type: 'CA4 (End Semester)',
+        fullMarks: 100,
+        time: '10:30 AM - 01:30 PM', 
+        colorClass: 'exam-red',
+        dotColor: '#ef4444'
+      },
+      {
         code: 'CTBT-BSC-201',
         name: 'Mathematics-II',
         examDate: '2026-04-24', // Starting day
