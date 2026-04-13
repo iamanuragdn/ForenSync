@@ -1121,6 +1121,66 @@ app.post('/api/sso/verify-code', async (req, res) => {
     }
 });
 
+// ==========================================
+// 3. Catch users coming FROM Grievance to ForenSync
+// ==========================================
+app.post('/api/auth/grievance', async (req, res) => {
+    const { code } = req.body;
+
+    if (!code) {
+        return res.status(400).json({ error: "No SSO code provided" });
+    }
+
+    try {
+        // 1. Ask the live Grievance server if this code is real
+        const grievanceVerifyUrl = 'https://nfsu-student-grievance-portal.vercel.app/api/sso/verify-code'; 
+
+        const grievanceRes = await fetch(grievanceVerifyUrl, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-sso-secret': process.env.SSO_SHARED_SECRET 
+            },
+            body: JSON.stringify({ code: code })
+        });
+
+        if (!grievanceRes.ok) {
+            return res.status(401).json({ error: "Invalid or expired SSO code from Grievance" });
+        }
+
+        const userData = await grievanceRes.json();
+        const { email, name } = userData;
+
+        // 2. Find this user in Firebase, or create them if they are brand new
+        let uid;
+        try {
+            const userRecord = await admin.auth().getUserByEmail(email);
+            uid = userRecord.uid;
+        } catch (error) {
+            // If the user doesn't exist, create a new Firebase profile for them
+            if (error.code === 'auth/user-not-found') {
+                const newUser = await admin.auth().createUser({
+                    email: email,
+                    displayName: name || "Grievance User"
+                });
+                uid = newUser.uid;
+            } else {
+                throw error;
+            }
+        }
+
+        // 3. Mint the Custom Token using Firebase Admin
+        const customToken = await admin.auth().createCustomToken(uid);
+
+        // 4. Send the token back to your React frontend to finish the login
+        res.json({ token: customToken });
+
+    } catch (error) {
+        console.error("ForenSync SSO Catch Error:", error);
+        res.status(500).json({ error: "Failed to authenticate Grievance user" });
+    }
+});
+
 const PORT = process.env.PORT || 5001; 
 
 app.listen(PORT, () => console.log(`🚀 ForenSync Master Server running on port ${PORT}`));

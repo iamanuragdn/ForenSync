@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield } from 'lucide-react';
+import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield, ExternalLink } from 'lucide-react';
 import './sidebarStyle.css';
 import side_bar_logo from '../assets/sidebar-logo.png';
+import { getAuth } from "firebase/auth";
 
 function Sidebar() {
   const [theme, setTheme] = useState(() => {
@@ -17,6 +18,38 @@ function Sidebar() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
+
+  const handleGoToGrievance = async () => {
+    try {
+        // Grab the current logged-in user directly from Firebase
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            console.error("No user is logged in!");
+            return;
+        }
+
+        // Show a loading state if you want, or just redirect instantly
+        const response = await fetch('https://forensync-backend.onrender.com/api/sso/generate-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email: user.email, 
+                name: user.displayName || "ForenSync User" // Fallback just in case
+            })
+        });
+        
+        const data = await response.json();
+
+        // Redirect to their portal with the secure ticket!
+        if (data.code) {
+            window.location.href = `https://nfsu-student-grievance-portal.vercel.app/sso-login?code=${data.code}`;
+        }
+    } catch (error) {
+        console.error("SSO failed", error);
+    }
+};
 
   return (
     <aside className="app-sidebar">
@@ -53,6 +86,25 @@ function Sidebar() {
       </nav>
       
       <div className="sidebar-bottom-actions" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+
+        <button 
+          onClick={handleGoToGrievance} 
+          className="nav-item" 
+          style={{ 
+            background: 'transparent', 
+            border: 'none', 
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            width: '100%',
+            textAlign: 'left',
+            padding: '0.85rem 1rem'
+          }}
+        >
+          <span className="nav-icon"><ExternalLink size={20} /></span>
+          <span className="nav-text" style={{ fontWeight: '500' }}>Grievance Portal</span>
+        </button>
+
         <button onClick={toggleTheme} className="nav-item theme-toggle-btn" style={{ 
           background: 'transparent', 
           border: 'none', 
