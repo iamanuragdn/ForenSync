@@ -156,8 +156,16 @@ app.post("/api/sync-drive", async (req, res) => {
                 
                 for (const type of types) {
                     const subjects = await getDriveChildren(type.id, drive, true);
-                    
                     for (const subj of subjects) {
+                        // FIX: Ensure subject parent document is not a ghost document, so it can be listed!
+                        const subjectRef = db.collection("programs").doc(prog.name)
+                                             .collection("semesters").doc(sem.name)
+                                             .collection("subjects").doc(subj.name);
+                        await subjectRef.set({
+                            name: subj.name,
+                            lastSynced: admin.firestore.FieldValue.serverTimestamp()
+                        }, { merge: true });
+
                         const files = await fetchAllFilesRecursively(subj.id, drive);
                         
                         for (const file of files) {
@@ -528,6 +536,12 @@ app.post('/api/admin/sync', async (req, res) => {
         const subjFolder = driveSubjects.find(s => s.name === finalSubjectId);
         if (!subjFolder) throw new Error(`Subject folder '${finalSubjectId}' not found in Drive`);
 
+        // FIX: Create parent subject metadata to prevent Ghost Documents
+        const subjectDocRef = db.collection("programs").doc(programId)
+                                .collection("semesters").doc(semesterId)
+                                .collection("subjects").doc(finalSubjectId);
+        await subjectDocRef.set({ name: subjFolder.name, lastSynced: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+
         // First, fetch the current list of files from the Google Drive subject folder
         const driveFiles = await fetchAllFilesRecursively(subjFolder.id, drive);
 
@@ -627,6 +641,15 @@ app.post('/api/admin/sync-global', async (req, res) => {
                                 for (const subj of subjects) {
                                     console.log(`\n[SYNC] Scanning: ${prog.name} -> ${sem.name} -> ${type.name} -> ${subj.name}`);
                                     try {
+                                        // FIX: Ensure subject isn't a ghost document
+                                        const subjectDocRef = db.collection("programs").doc(progId)
+                                                                .collection("semesters").doc(sem.name)
+                                                                .collection("subjects").doc(subj.name);
+                                        await subjectDocRef.set({
+                                            name: subj.name,
+                                            lastSynced: admin.firestore.FieldValue.serverTimestamp()
+                                        }, { merge: true });
+
                                         const driveFiles = await fetchAllFilesRecursively(subj.id, drive);
 
                                         const collectionRef = db.collection("programs").doc(progId)
@@ -1030,6 +1053,72 @@ app.get('/api/db/programs/:programId/semesters/:semesterId/subjects', async (req
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch subjects" });
   }
+});
+
+// ==========================================
+// ForenSync → Grievance SSO Bridge
+// ==========================================
+
+// Route 1: Generate the "Claim Ticket"
+const crypto = require('crypto'); // Built into Node.js
+
+app.post('/api/sso/generate-code', async (req, res) => {
+    // Note: Assuming you have middleware that checks if the user is currently logged into ForenSync
+    // For this example, let's say the frontend passes the user's email and name
+    const { email, name } = req.body; 
+
+    // Generate a random 32-character string
+    const authCode = crypto.randomBytes(16).toString('hex');
+
+    try {
+        // Save to a new Firestore collection called 'sso_codes'
+        await db.collection('sso_codes').doc(authCode).set({
+            email: email,
+            name: name,
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        res.json({ code: authCode });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to generate SSO code" });
+    }
+});
+
+// Route 2: The Verification & Burn (Server-to-Server)
+app.post('/api/sso/verify-code', async (req, res) => {
+    const { code } = req.body;
+    const clientSecret = req.headers['x-sso-secret'];
+
+    // 1. Verify it's actually the Grievance server asking
+    if (clientSecret !== process.env.SSO_SHARED_SECRET) {
+        return res.status(403).json({ error: "Unauthorized server" });
+    }
+
+    try {
+        const codeDoc = await db.collection('sso_codes').doc(code).get();
+
+        // 2. Check if the code exists
+        if (!codeDoc.exists) {
+            return res.status(404).json({ error: "Invalid or expired code" });
+        }
+
+        const userData = codeDoc.data();
+
+        // 3. Optional but highly recommended: Check if it's older than 60 seconds
+        // (You can add timestamp logic here)
+
+        // 4. BURN THE TICKET! Delete it instantly so it can never be reused.
+        await db.collection('sso_codes').doc(code).delete();
+
+        // 5. Send the real user data to the Grievance server
+        res.json({ 
+            email: userData.email, 
+            name: userData.name 
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: "Server error during verification" });
+    }
 });
 
 const PORT = process.env.PORT || 5001; 

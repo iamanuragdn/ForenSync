@@ -40,8 +40,7 @@ function Subjects() {
       .then(res => res.json())
       .then(data => {
         if (data.subjects && !data.error) {
-          const theorySubjects = data.subjects.filter(sub => sub.type !== "Lab");
-          setSubjects(theorySubjects);
+          setSubjects(data.subjects);
         } else {
           setSubjects([]); 
         }
