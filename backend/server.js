@@ -543,51 +543,46 @@ app.post('/api/admin/sync', async (req, res) => {
         let addedCount = 0;
         let deletedCount = 0;
 
-        // Check for Additions: If Drive has a file Firestore doesn't, add it.
+        let updatedCount = 0;
+
+        // Check for Additions & Updates: If Drive has a new file, add it. If it exists, update it to catch renames.
         for (const file of driveFiles) {
+            const fileData = {
+                name: file.displayName || file.name,
+                webViewLink: file.webViewLink || "#",
+                webContentLink: file.webContentLink || "#",
+                mimeType: file.mimeType,
+                type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
+                lastSynced: admin.firestore.FieldValue.serverTimestamp()
+            };
+
             if (!existingDocIds.includes(file.id)) {
-                await collectionRef.doc(file.id).set({
-                    name: file.displayName || file.name,
-                    webViewLink: file.webViewLink || "#",
-                    webContentLink: file.webContentLink || "#",
-                    mimeType: file.mimeType,
-                    type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
-                    lastSynced: admin.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
+                await collectionRef.doc(file.id).set(fileData, { merge: true });
                 addedCount++;
+            } else {
+                // Update the existing document with fresh metadata from Drive
+                await collectionRef.doc(file.id).set(fileData, { merge: true });
+                updatedCount++;
             }
         }
 
-        // Check for Removals: Old logic that wipes Firestore records if no longer on Drive
+        // Check for Removals: Compare Firestore against current Drive files
+        const driveFileIds = driveFiles.map(file => file.id);
         const checkPromises = snapshot.docs.map(async (doc) => {
-            const fileId = doc.id; 
-            
-            try {
-                const driveFile = await drive.files.get({
-                    fileId: fileId,
-                    fields: 'id, trashed'
-                });
-
-                if (driveFile.data.trashed) {
-                    await collectionRef.doc(fileId).delete();
-                    deletedCount++;
-                }
-            } catch (error) {
-                if (error.code === 404 || error.status === 404) {
-                    await collectionRef.doc(fileId).delete();
-                    deletedCount++;
-                } else {
-                    console.error(`Warning: Couldn't check file ${fileId}`, error.message);
-                }
+            if (!driveFileIds.includes(doc.id)) {
+                await collectionRef.doc(doc.id).delete();
+                deletedCount++;
             }
         });
 
         await Promise.all(checkPromises);
 
         res.status(200).json({ 
-            message: `Sync complete! Added ${addedCount}, Removed ${deletedCount} files.`,
+            message: `Sync complete! Added ${addedCount}, Removed ${deletedCount}, Updated ${updatedCount} files.`,
             addedCount: addedCount,
-            deletedCount: deletedCount 
+            deletedCount: deletedCount,
+            removedCount: deletedCount,
+            updatedCount: updatedCount
         });
 
     } catch (error) {
@@ -640,49 +635,51 @@ app.post('/api/admin/sync-global', async (req, res) => {
                                                                 .collection(type.name);
                                                                 
                                         const snapshot = await collectionRef.get();
-                                        const existingDocIds = snapshot.docs.map(doc => doc.id);
+                                        const existingDocs = {};
+                                        snapshot.docs.forEach(doc => { existingDocs[doc.id] = doc.data(); });
+                                        const existingDocIds = Object.keys(existingDocs);
 
                                         for (const file of driveFiles) {
+                                            const finalName = file.displayName || file.name;
+                                            const fileData = {
+                                                name: finalName,
+                                                webViewLink: file.webViewLink || "#",
+                                                webContentLink: file.webContentLink || "#",
+                                                mimeType: file.mimeType,
+                                                type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
+                                                lastSynced: admin.firestore.FieldValue.serverTimestamp()
+                                            };
+
                                             if (!existingDocIds.includes(file.id)) {
-                                                const finalName = file.displayName || file.name;
-                                                await collectionRef.doc(file.id).set({
-                                                    name: finalName,
-                                                    webViewLink: file.webViewLink || "#",
-                                                    webContentLink: file.webContentLink || "#",
-                                                    mimeType: file.mimeType,
-                                                    type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
-                                                    lastSynced: admin.firestore.FieldValue.serverTimestamp()
-                                                }, { merge: true });
+                                                await collectionRef.doc(file.id).set(fileData, { merge: true });
                                                 console.log(`[+] Added to Firestore: ${finalName}`);
                                                 addedFiles.push(finalName);
                                                 totalAdded++;
+                                            } else {
+                                                // Check for rename so we can log it clearly
+                                                const oldName = existingDocs[file.id].name;
+                                                if (oldName !== finalName) {
+                                                    await collectionRef.doc(file.id).set(fileData, { merge: true });
+                                                    console.log(`[*] Updated rename in Firestore: ${oldName} -> ${finalName}`);
+                                                } else {
+                                                    // Just refresh links and timestamp silently
+                                                    await collectionRef.doc(file.id).set(fileData, { merge: true });
+                                                }
                                             }
                                         }
 
+                                        // Check for Removals: Compare Firestore against current Drive files
+                                        const driveFileIds = driveFiles.map(file => file.id);
                                         const checkPromises = snapshot.docs.map(async (doc) => {
                                             const fileId = doc.id; 
                                             const docData = doc.data();
                                             const docName = docData.name || fileId;
-                                            try {
-                                                const driveFile = await drive.files.get({
-                                                    fileId: fileId,
-                                                    fields: 'id, trashed'
-                                                });
-                                                if (driveFile.data.trashed) {
-                                                    await collectionRef.doc(fileId).delete();
-                                                    console.log(`[-] Removed from Firestore: ${docName}`);
-                                                    removedFiles.push(docName);
-                                                    totalRemoved++;
-                                                }
-                                            } catch (error) {
-                                                if (error.code === 404 || error.status === 404) {
-                                                    await collectionRef.doc(fileId).delete();
-                                                    console.log(`[-] Removed from Firestore: ${docName}`);
-                                                    removedFiles.push(docName);
-                                                    totalRemoved++;
-                                                } else {
-                                                    console.error(`Warning: Couldn't check file ${fileId}`, error.message);
-                                                }
+                                            
+                                            if (!driveFileIds.includes(fileId)) {
+                                                await collectionRef.doc(fileId).delete();
+                                                console.log(`[-] Removed from Firestore: ${docName}`);
+                                                removedFiles.push(docName);
+                                                totalRemoved++;
                                             }
                                         });
 
