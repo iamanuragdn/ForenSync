@@ -39,42 +39,20 @@ const db = admin.firestore();
 
 const app = express();
 
-// // Strict CORS whitelist
-// const allowedOrigins = [
-//   'http://localhost:5173',         // Keeps your local VS Code testing working
-//   'http://localhost:3000',         // (Just in case you use port 3000)
-//   'https://forensync.vercel.app',  // Your original Vercel link
-//   'https://forensync.me',          // Your new custom domain
-//   'https://www.forensync.me'       // Your new custom domain (with www)
-// ];
-
-// app.use(cors({
-//   origin: allowedOrigins,
-//   credentials: true
-// }));
-
 // ==========================================
-// MANUAL CORS OVERRIDE (NUCLEAR OPTION)
+// CORS CONFIGURATION
 // ==========================================
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowed = ['https://www.forensync.me', 'https://forensync.me', 'http://localhost:5173', 'https://forensync.vercel.app'];
-  
-  if (allowed.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'https://www.forensync.me',
+    'https://forensync.me',
+    /vercel\.app$/
+  ],
+  credentials: true
+};
 
-  // Instantly answer the browser's preflight security ghost-knock
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-  
-  next();
-});
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
