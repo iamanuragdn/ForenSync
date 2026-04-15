@@ -167,8 +167,19 @@ const syllabusData = {
                     { unitNumber: "V", title: "Biodiversity and Its Conservation", topics: ["Definition of genetic, species and ecosystem diversity","Biogeographical classification of India","Values of biodiversity: consumptive, productive, social, ethical, aesthetic and option values","Biodiversity at global, national and local levels","India as a mega-diversity nation","Hotspots of biodiversity","Threats to biodiversity: habitat loss, poaching, man-wildlife conflicts","Endangered and endemic species of India","In-situ and ex-situ conservation of biodiversity"] }
                 ]
             },
-            "CTВТ-PCС-201L": { name: "Object Oriented Programming with C++ Laboratory", credits: 1, teacher: "Dr. Sourav Dey Roy", type: "Lab", units: [] },
-            "CTBT-ESC-201L": { name: "Digital Logic Design Laboratory", credits: 1, teacher: "Dr. Mampi Devi", type: "Lab", units: [
+            "CTВТ-PCС-201L": { 
+              name: "Object Oriented Programming with C++ Laboratory", 
+              credits: 1, 
+              teacher: "Dr. Sourav Dey Roy", 
+              type: "Lab", 
+              units: [] 
+            },
+            "CTBT-ESC-201L": 
+            { name: "Digital Logic Design Laboratory", 
+              credits: 1, 
+              teacher: "Dr. Mampi Devi", 
+              type: "Lab", 
+              units: [
                     { experimentNumber: 1, title: "Digital Logic Gates", topics: ["Verify AND, OR, NAND, NOR, EX-OR, EX-NOR gates","Investigate Inverter and Buffer gates","Implementation using Universal NAND gate"] },
                     { experimentNumber: 2, title: "Gate-Level Minimization", topics: ["Two-level implementation of Boolean functions","Multi-level implementation of Boolean functions"] },
                     { experimentNumber: 3, title: "Combinational Circuits", topics: ["Design and test adders (Half and Full)","Design and test subtractors","Design and test comparators"] },

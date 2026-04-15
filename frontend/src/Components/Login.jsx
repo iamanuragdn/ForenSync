@@ -124,7 +124,12 @@ function Login() {
       } else {
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        await sendEmailVerification(userCredential.user);
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        await fetch(`${API_URL}/api/auth/send-verification-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userCredential.user.email })
+        });
         
         await signOut(auth);
         
