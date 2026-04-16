@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth'; 
 import { Sun, Moon, Rocket, Loader } from 'lucide-react';
 import './Onboarding.css';
 
+import imageCompression from 'browser-image-compression';
+
 import logoImage from '../assets/logo_muted_blue.png'; 
+
 
 function Onboarding() {
   const navigate = useNavigate();
@@ -26,6 +28,9 @@ function Onboarding() {
   const [semester, setSemester] = useState('sem-1');
   const [loading, setLoading] = useState(false);
 
+  const [apiError, setApiError] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+
   const needsStudentFields = role === 'Student' || (role === 'Admin' && (adminType === 'CR' || adminType === 'ActiveStudent'));
 
   useEffect(() => {
@@ -40,9 +45,35 @@ function Onboarding() {
   const handleCompleteSetup = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setApiError('');
 
     try {
       const user = auth.currentUser;
+      let profilePictureUrl = null;
+
+      if (profilePicture) {
+        setApiError('Compressing and uploading image...');
+        try {
+          const options = {
+            maxSizeMB: 0.05,
+            maxWidthOrHeight: 400,
+            useWebWorker: true,
+          };
+          const compressedFile = await imageCompression(profilePicture, options);
+          
+          profilePictureUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(compressedFile);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+          });
+        } catch (uploadError) {
+          console.error("Image upload failed:", uploadError);
+          setApiError("Failed to upload profile picture. Continuing setup...");
+        }
+      }
+
+      setApiError('');
       
       const userProfile = {
         uid: user.uid,
@@ -50,11 +81,22 @@ function Onboarding() {
         name: fullName,
         role: role,
         programId: programId, 
+        ...(profilePictureUrl ? { profilePictureUrl } : {}),
         ...(role === 'Admin' ? { adminType, isVerifiedAdmin: false } : {}), 
-        ...(needsStudentFields ? { rollNumber, semesterId: semester } : {}) 
+        ...(needsStudentFields ? { enrollmentNumber: rollNumber, semesterId: semester } : {}) 
       };
 
-      await setDoc(doc(db, 'users', user.uid), userProfile);
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL.replace(/\/api\/?$/, '')}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userProfile)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to register profile.');
+      }
       
       const safeProfile = { ...userProfile };
       delete safeProfile.role;
@@ -66,7 +108,7 @@ function Onboarding() {
 
     } catch (err) {
       console.error("Setup failed:", err);
-      alert("Failed to save profile. Please try again.");
+      setApiError(err.message || "Failed to save profile. Please try again.");
     }
     setLoading(false);
   };
@@ -125,6 +167,16 @@ function Onboarding() {
           </div>
 
           <div className="input-group">
+            <label>Profile Picture (Optional)</label>
+            <input 
+              type="file" 
+              accept="image/*"
+              onChange={(e) => setProfilePicture(e.target.files[0])} 
+              className="onboarding-input"
+            />
+          </div>
+
+          <div className="input-group">
             <label>Select Course</label>
             <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="onboarding-select">
               <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
@@ -133,18 +185,19 @@ function Onboarding() {
           </div>
 
           {needsStudentFields && (
-            <div className="student-fields-row">
-              <div className="input-group">
-                <label>Roll Number</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g. 2024CS001" 
-                  value={rollNumber} 
-                  onChange={(e) => setRollNumber(e.target.value)} 
-                  required 
-                  className="onboarding-input"
-                />
-              </div>
+            <>
+              <div className="student-fields-row">
+                <div className="input-group">
+                  <label>Enrollment Number</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. 2024CS001" 
+                    value={rollNumber} 
+                    onChange={(e) => setRollNumber(e.target.value)} 
+                    required 
+                    className="onboarding-input"
+                  />
+                </div>
               
               <div className="input-group">
                 <label>Semester</label>
@@ -156,6 +209,8 @@ function Onboarding() {
                 </select>
               </div>
             </div>
+
+            </>
           )}
 
           {role === 'Admin' && (
@@ -164,8 +219,14 @@ function Onboarding() {
             </div>
           )}
 
+          {apiError && (
+             <div style={{ color: 'var(--danger-color, #ef4444)', marginTop: '10px', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}>
+               {apiError}
+             </div>
+          )}
+
           <button type="submit" className="btn-onboarding-submit" disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            {loading ? <><Loader size={18} /> Setting up workspace...</> : <>Launch Dashboard <Rocket size={18} /></>}
+            {loading ? <><Loader size={18} className="spin"/> Setting up workspace...</> : <>Launch Dashboard <Rocket size={18} /></>}
           </button>
         </form>
 

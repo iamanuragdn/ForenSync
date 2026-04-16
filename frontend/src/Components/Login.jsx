@@ -83,7 +83,13 @@ function Login() {
 
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, email);
+      const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/api\/?$/, '');
+      const response = await fetch(`${API_URL}/api/auth/send-password-reset-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (!response.ok) throw new Error("Failed to send reset email");
       setError(<>Success! <b>We've sent a password reset link to your email.</b></>);
     } catch (err) {
       console.error(err);
@@ -125,7 +131,7 @@ function Login() {
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
         const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        await fetch(`${API_URL}/api/auth/send-verification-email`, {
+        await fetch(`${API_URL.replace(/\/api\/?$/, '')}/api/auth/send-verification-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: userCredential.user.email })

@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase'; 
-import { Search, Zap, Eye } from 'lucide-react';
+import { Search, Zap, Eye, Camera, Lock, Mail } from 'lucide-react';
+import imageCompression from 'browser-image-compression';
+import { db } from '../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import './nav.css';
 
 function Navbar() {
@@ -64,6 +67,73 @@ function Navbar() {
     setDropdownOpen(false);
     navigate('/login'); 
     window.location.reload(); 
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/api\/?$/, '');
+      const response = await fetch(`${API_URL}/api/auth/send-password-reset-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      });
+      if (!response.ok) throw new Error("Failed to send reset email");
+      alert("Password reset email sent! Please check your inbox.");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send password reset email.");
+    }
+  };
+
+  const handleChangeEmail = async () => {
+    const newEmail = window.prompt("Enter your new email address:");
+    if (!newEmail || newEmail.trim() === '') return;
+    
+    try {
+      const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/api\/?$/, '');
+      const response = await fetch(`${API_URL}/api/auth/send-email-change-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, newEmail: newEmail.trim() })
+      });
+      if (!response.ok) throw new Error("Failed to send email change verification");
+      alert("Email change confirmation sent to your new email address! Please check your inbox to confirm.");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send email change verification.");
+    }
+  };
+
+  const handleProfilePictureChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !user) return;
+
+    try {
+      console.log("1. File selected:", file);
+      const options = { maxSizeMB: 0.05, maxWidthOrHeight: 400, useWebWorker: true };
+      const compressedFile = await imageCompression(file, options);
+      console.log("2. Compression finished");
+
+      const url = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(compressedFile);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+      console.log("3. FileReader Base64 conversion finished");
+
+      if (user.uid) {
+        await updateDoc(doc(db, "users", user.uid), { profilePictureUrl: url });
+        console.log("5. Firestore update successful");
+      }
+
+      const updatedUser = { ...user, profilePictureUrl: url };
+      setUser(updatedUser);
+      localStorage.setItem("forensync_user", JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error("UPLOAD FAILED:", error);
+      alert("Failed to upload profile picture. Check console for details.");
+    }
   };
 
   const handleSearchSubmit = (e) => {
@@ -178,15 +248,35 @@ function Navbar() {
                 <span className="user-id">{user ? user.email : "Login"}</span> 
               </div>
               <div className="user-avatar">
-                {user && user.name ? user.name.charAt(0).toUpperCase() : "?"}
+                {user && user.profilePictureUrl ? (
+                  <img src={user.profilePictureUrl} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  user && user.name ? user.name.charAt(0).toUpperCase() : "?"
+                )}
               </div>
             </div>
 
             {dropdownOpen && user && (
               <div className="profile-dropdown">
                 <div className="dropdown-header">
-                  <div className="dropdown-avatar-large">
-                    {user.name.charAt(0).toUpperCase()}
+                  <div className="avatar-edit-wrapper">
+                    <div className="dropdown-avatar-large">
+                      {user && user.profilePictureUrl ? (
+                        <img src={user.profilePictureUrl} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                      ) : (
+                        user.name.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    <label className="avatar-edit-label" title="Change Profile Picture">
+                      <Camera size={14} />
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: 'none' }} 
+                        onChange={handleProfilePictureChange}
+                        title="Change Profile Picture"
+                      />
+                    </label>
                   </div>
                   <h3>Hi, {user.name.split(' ')[0]}!</h3>
                   <p className="dropdown-email">{user.email}</p> 
@@ -207,7 +297,16 @@ function Navbar() {
                     </div>
                 </div>
 
-                <div className="dropdown-footer">
+                <div className="dropdown-footer" style={{ borderTop: 'none', paddingBottom: '20px', paddingTop: '10px' }}>
+                  <div className="dropdown-settings-row">
+                    <button className="btn-setting-minimal" onClick={handleChangePassword}>
+                      <Lock size={16} /> Password
+                    </button>
+                    <button className="btn-setting-minimal" onClick={handleChangeEmail}>
+                      <Mail size={16} /> Email
+                    </button>
+                  </div>
+                  <div style={{ height: '1px', backgroundColor: 'var(--border-color)', margin: '8px 0 16px 0' }}></div>
                   <button className="btn-logout" onClick={handleLogout}>
                     Sign out of ForenSync
                   </button>

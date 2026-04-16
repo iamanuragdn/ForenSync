@@ -137,7 +137,38 @@
   align-items: center;
   font-weight: bold;
   font-size: 2rem;
+  font-size: 2rem;
+}
+
+.avatar-edit-wrapper {
+  position: relative;
+  display: inline-block;
   margin: 0 auto 12px;
+}
+
+.avatar-edit-label {
+  position: absolute;
+  bottom: 0px;
+  right: -5px;
+  width: 26px;
+  height: 26px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  z-index: 10;
+}
+
+.avatar-edit-label:hover {
+  background-color: var(--bg-hover);
+  transform: scale(1.1);
+  color: var(--accent-blue);
 }
 
 .dropdown-header h3 {
@@ -204,6 +235,35 @@
   background-color: var(--bg-hover);
   color: #ef4444;
   border-color: var(--border-color);
+}
+
+.dropdown-settings-row {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.btn-setting-minimal {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: none;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-setting-minimal:hover {
+  background-color: var(--border-color);
+  color: #6366f1;
 }
 
 /* SEARCH SUGGESTIONS DROPDOWN STYLES */

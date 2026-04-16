@@ -492,11 +492,11 @@ app.post("/api/auth/send-verification-email", async (req, res) => {
         <div class="content">
             <h2>Welcome to the Hub!</h2>
             <p>You're almost there. To ensure the security of your new ForenSync account, please verify your university or personal email address by clicking the button below.</p>
-            <a href="\${link}" class="button">Verify Email Address</a>
+            <a href="${link}" class="button">Verify Email Address</a>
             <p style="font-size: 14px; color: #94a3b8;">If you did not request this, you can safely ignore this email.</p>
         </div>
         <div class="footer">
-            <p>&copy; \${new Date().getFullYear()} ForenSync. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} ForenSync. All rights reserved.</p>
             <p><a href="https://www.forensync.me">forensync.me</a></p>
         </div>
     </div>
@@ -520,9 +520,143 @@ app.post("/api/auth/send-verification-email", async (req, res) => {
     }
 });
 // ==========================================
+app.post("/api/auth/send-password-reset-email", async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ error: "Email is required" });
+
+        const actionCodeSettings = {
+            url: 'https://www.forensync.me/login',
+            handleCodeInApp: true
+        };
+        const link = await admin.auth().generatePasswordResetLink(email, actionCodeSettings);
+
+        const htmlTemplate = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your ForenSync Password</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 40px 30px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+        .content { padding: 40px 30px; text-align: center; }
+        .content h2 { color: #0f172a; font-size: 24px; margin-top: 0; margin-bottom: 16px; }
+        .content p { color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
+        .button { display: inline-block; background-color: #2563eb; color: #ffffff !important; font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 32px; border-radius: 8px; transition: background-color 0.2s ease; margin-bottom: 24px; }
+        .button:hover { background-color: #1d4ed8; }
+        .footer { background-color: #f1f5f9; padding: 24px 30px; text-align: center; font-size: 14px; color: #64748b; }
+        .footer a { color: #3b82f6; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ForenSync</h1>
+        </div>
+        <div class="content">
+            <h2>Reset Your Password</h2>
+            <p>We received a request to reset the password for your ForenSync account. If you made this request, please click the button below to securely set a new password.</p>
+            <a href="${link}" class="button">Reset Password</a>
+            <p style="font-size: 14px; color: #94a3b8;">If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ForenSync. All rights reserved.</p>
+            <p><a href="https://www.forensync.me">forensync.me</a></p>
+        </div>
+    </div>
+</body>
+</html>
+        `;
+
+        const mailOptions = {
+            from: process.env.EMAIL_FROM || 'ForenSync <noreply@forensync.me>',
+            to: email,
+            subject: 'Reset Your ForenSync Password',
+            html: htmlTemplate
+        };
+
+        await transporter.sendMail(mailOptions);
+        return res.status(200).json({ message: "Password reset email sent." });
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+        res.status(500).json({ error: "Failed to send password reset email" });
+    }
+});
+
+app.post("/api/auth/send-email-change-verification", async (req, res) => {
+    try {
+        const { email, newEmail } = req.body;
+        if (!email || !newEmail) return res.status(400).json({ error: "Current email and new email are required" });
+
+        const actionCodeSettings = {
+            url: 'https://www.forensync.me/dashboard',
+            handleCodeInApp: true
+        };
+        const link = await admin.auth().generateVerifyAndChangeEmailLink(email, newEmail, actionCodeSettings);
+
+        const htmlTemplate = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your New Email Address</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 40px 30px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+        .content { padding: 40px 30px; text-align: center; }
+        .content h2 { color: #0f172a; font-size: 24px; margin-top: 0; margin-bottom: 16px; }
+        .content p { color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
+        .button { display: inline-block; background-color: #2563eb; color: #ffffff !important; font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 32px; border-radius: 8px; transition: background-color 0.2s ease; margin-bottom: 24px; }
+        .button:hover { background-color: #1d4ed8; }
+        .footer { background-color: #f1f5f9; padding: 24px 30px; text-align: center; font-size: 14px; color: #64748b; }
+        .footer a { color: #3b82f6; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ForenSync</h1>
+        </div>
+        <div class="content">
+            <h2>Update Your Email Address</h2>
+            <p>You requested to change the email address associated with your ForenSync account to <strong>${newEmail}</strong>. Please confirm this change by clicking the button below.</p>
+            <a href="${link}" class="button">Confirm New Email</a>
+            <p style="font-size: 14px; color: #94a3b8;">If you did not request this change, please ignore this email and your account will remain tied to your original address.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ForenSync. All rights reserved.</p>
+            <p><a href="https://www.forensync.me">forensync.me</a></p>
+        </div>
+    </div>
+</body>
+</html>
+        `;
+
+        const mailOptions = {
+            from: process.env.EMAIL_FROM || 'ForenSync <noreply@forensync.me>',
+            to: newEmail,
+            subject: 'Confirm Your New Email Address - ForenSync',
+            html: htmlTemplate
+        };
+
+        await transporter.sendMail(mailOptions);
+        return res.status(200).json({ message: "Email change verification sent." });
+    } catch (error) {
+        console.error("Error sending email change verification:", error);
+        res.status(500).json({ error: "Failed to send email change verification" });
+    }
+});
+
 app.post("/api/auth/register", async (req, res) => {
     try {
-        const { uid, email, name, role, programId, adminType, isVerifiedAdmin, enrollmentNumber, semesterId, isVerifiedID } = req.body;
+        const { uid, email, name, role, programId, adminType, isVerifiedAdmin, enrollmentNumber, semesterId, isVerifiedID, profilePictureUrl } = req.body;
         
         if (!uid || !email || !name) {
             return res.status(400).json({ error: "Missing required fields" });
@@ -555,6 +689,7 @@ app.post("/api/auth/register", async (req, res) => {
             name, 
             role, 
             programId, 
+            ...(profilePictureUrl ? { profilePictureUrl } : {}),
             ...(role === 'Admin' ? { adminType, isVerifiedAdmin: isVerifiedAdmin || false } : {}), 
             ...(enrollmentNumber ? { enrollmentNumber, semesterId, isVerifiedID: Boolean(isVerifiedID) } : {})
         };

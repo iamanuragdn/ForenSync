@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider } from "firebase/auth"; 
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // You get this from your Firebase Console > Project Settings > General > Your Apps
 const firebaseConfig = {
@@ -18,6 +18,5 @@ const app = initializeApp(firebaseConfig);
 // Export Firestore database
 export const db = getFirestore(app);
 
-// Initialize and export Auth and Google Provider
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
