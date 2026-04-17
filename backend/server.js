@@ -1402,16 +1402,16 @@ app.post('/api/auth/grievance', async (req, res) => {
             return res.status(401).json({ error: "Invalid or expired SSO code from Grievance" });
         }
 
+        // 1. Extract the enriched data from the Grievance server's response
         const userData = await grievanceRes.json();
-        const { email, name } = userData;
+        const { email, name, role, rollNumber, programId, semesterId } = userData;
 
-        // 2. Find this user in Firebase, or create them if they are brand new
+        // 2. Find this user in Firebase Auth, or create them if they are brand new
         let uid;
         try {
             const userRecord = await admin.auth().getUserByEmail(email);
             uid = userRecord.uid;
         } catch (error) {
-            // If the user doesn't exist, create a new Firebase profile for them
             if (error.code === 'auth/user-not-found') {
                 const newUser = await admin.auth().createUser({
                     email: email,
@@ -1423,7 +1423,18 @@ app.post('/api/auth/grievance', async (req, res) => {
             }
         }
 
-        // 3. Mint the Custom Token using Firebase Admin
+        // 🔥 3. Save/Update their full profile in the Firestore database
+        await db.collection('users').doc(uid).set({
+            email: email,
+            name: name,
+            role: role || "Student",
+            rollNumber: rollNumber || "",
+            programId: programId || "",
+            semesterId: semesterId || "",
+            uid: uid
+        }, { merge: true }); 
+
+        // 4. Mint the Custom Token using Firebase Admin
         const customToken = await admin.auth().createCustomToken(uid);
 
         // 4. Send the token back to your React frontend to finish the login

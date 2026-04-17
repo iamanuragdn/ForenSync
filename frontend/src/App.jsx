@@ -15,6 +15,7 @@ import Exams from './Components/Exams';
 import AdminConsole from './Components/AdminConsole';
 import Login from './Components/Login.jsx'; 
 import Onboarding from './Components/Onboarding.jsx';
+import SSOVerifyPage from './Components/SSOVerifyPage.jsx';
 import './App.css';
 import React, { useState, useEffect } from 'react'; 
 import { doc, onSnapshot } from 'firebase/firestore'; 
@@ -119,6 +120,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/sso-verify" element={<SSOVerifyPage />} />
 
         <Route path="/*" element={
           <ProtectedLayout>
