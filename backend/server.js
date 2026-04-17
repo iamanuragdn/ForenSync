@@ -1360,10 +1360,14 @@ app.post('/api/sso/verify-code', async (req, res) => {
         // 4. BURN THE TICKET! Delete it instantly so it can never be reused.
         await db.collection('sso_codes').doc(code).delete();
 
-        // 5. Send the real user data to the Grievance server
+        // 5. Send the ENRICHED user data to the Grievance server
         res.json({ 
             email: userData.email, 
-            name: userData.name 
+            name: userData.name,
+            role: userData.role,               // e.g., "Student"
+            rollNumber: userData.rollNumber,   // e.g., "250324004018"
+            programId: userData.programId,     // e.g., "bsc-msc-forensic"
+            semesterId: userData.semesterId    // e.g., "sem-2"
         });
 
     } catch (error) {
