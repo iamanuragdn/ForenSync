@@ -3,12 +3,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase'; 
 import { signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'; 
+import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function SSOVerifyPage() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState("Verifying your Grievance account...");
-    const [isError, setIsError] = useState(false);
+    const [authStage, setAuthStage] = useState('loading'); // 'loading', 'success', 'error'
 
     useEffect(() => {
         const verifyCode = async () => {
@@ -16,7 +17,7 @@ export default function SSOVerifyPage() {
 
             if (!code) {
                 setStatus("Error: No SSO code found in URL.");
-                setIsError(true);
+                setAuthStage('error');
                 return;
             }
 
@@ -38,7 +39,8 @@ export default function SSOVerifyPage() {
                     throw new Error(data.error || "Verification failed");
                 }
 
-                setStatus("Verification successful! Logging you in...");
+                setStatus("Verification successful!");
+                setAuthStage('success');
 
                 // 1. Sign into Firebase
                 await signInWithCustomToken(auth, data.token);
@@ -76,8 +78,8 @@ export default function SSOVerifyPage() {
 
             } catch (error) {
                 console.error("SSO Login Error:", error);
-                setStatus(`SSO Failed: ${error.message}. Please try logging in manually.`);
-                setIsError(true);
+                setStatus(`SSO Failed: ${error.message}`);
+                setAuthStage('error');
             }
         };
 
@@ -92,53 +94,59 @@ export default function SSOVerifyPage() {
             justifyContent: 'center', 
             backgroundColor: '#1a1a2e', 
             backgroundImage: 'radial-gradient(circle at 50% 50%, #2a2a4a 0%, #1a1a2e 100%)',
-            fontFamily: 'sans-serif'
+            fontFamily: 'Inter, system-ui, sans-serif',
+            padding: '20px'
         }}>
             <div style={{
-                backgroundColor: 'white',
-                padding: '40px 30px',
+                backgroundColor: '#ffffff',
+                padding: '40px', // Clean, generous padding (p-10)
                 borderRadius: '16px',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
                 textAlign: 'center',
-                maxWidth: '400px',
-                width: '90%',
+                maxWidth: '420px',
+                width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center'
             }}>
-                {/* Spinner or Error Icon */}
-                {!isError ? (
-                    <div style={{
-                        width: '40px',
-                        height: '40px',
-                        border: '4px solid #f3f3f3',
-                        borderTop: '4px solid #3b5998',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite',
-                        marginBottom: '20px'
-                    }} />
-                ) : (
-                    <div style={{ fontSize: '40px', marginBottom: '10px' }}>❌</div>
-                )}
+                {/* Dynamically Rendered Lucide Icons */}
+                <div style={{ marginBottom: '24px' }}>
+                    {authStage === 'loading' && (
+                        <Loader2 
+                            size={48} 
+                            color="#3b5998" 
+                            style={{ animation: 'spin 1s linear infinite' }} 
+                        />
+                    )}
+                    {authStage === 'success' && (
+                        <CheckCircle2 size={48} color="#22c55e" />
+                    )}
+                    {authStage === 'error' && (
+                        <XCircle size={48} color="#ef4444" />
+                    )}
+                </div>
                 
                 <h2 style={{ 
-                    color: '#333', 
-                    fontSize: '1.25rem', 
-                    fontWeight: 'bold', 
-                    marginBottom: '10px' 
+                    color: '#1f2937', 
+                    fontSize: '1.5rem', 
+                    fontWeight: '700', 
+                    marginBottom: '12px',
+                    lineHeight: '1.2'
                 }}>
                     {status}
                 </h2>
                 
-                <p style={{ color: '#666', fontSize: '0.9rem' }}>
-                    {isError ? "You can safely close this window." : "Please do not close this window."}
+                <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: '1.5' }}>
+                    {authStage === 'error' 
+                        ? "You can safely close this window or try logging in manually." 
+                        : "Logging you in. Please do not close this window."}
                 </p>
 
-                {/* Inline CSS for the spinner animation */}
+                {/* Inline CSS for the spinner animation fallback */}
                 <style>{`
                     @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
                     }
                 `}</style>
             </div>
