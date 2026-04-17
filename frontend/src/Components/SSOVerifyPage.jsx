@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom'; 
-import { auth } from '../firebase'; 
-import { signInWithCustomToken } from 'firebase/auth';
+import { auth, db } from '../firebase'; 
+import { signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore'; 
 
 export default function SSOVerifyPage() {
     const [searchParams] = useSearchParams();
@@ -39,14 +40,39 @@ export default function SSOVerifyPage() {
 
                 setStatus("Verification successful! Logging you in...");
 
-                // 2. Sign into Firebase
+                // 1. Sign into Firebase
                 await signInWithCustomToken(auth, data.token);
 
-                // 3. THE FIX: Wait 1.5 seconds for Firebase auth state to update globally 
-                // before pushing to the protected route so it doesn't kick you to /login
-                setTimeout(() => {
-                    navigate('/dashboard'); 
-                }, 1500);
+                // 2. THE BULLETPROOF FIX: Wait for Firebase to globally confirm the login
+                let validUser = null;
+                await new Promise((resolve) => {
+                    const unsubscribe = onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            validUser = user;
+                            unsubscribe(); // Stop listening once we confirm
+                            resolve();     // Allow the code to continue
+                        }
+                    });
+                });
+
+                // 3. VITE/REACT ROUTER FIX: ProtectedLayout reads from localStorage synchronously. 
+                // We MUST populate forensync_user manually here just like Login.jsx does.
+                try {
+                    const userRef = doc(db, 'users', validUser.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        const safeUser = { ...userSnap.data() };
+                        delete safeUser.role;
+                        delete safeUser.isVerifiedAdmin;
+                        delete safeUser.adminType;
+                        localStorage.setItem("forensync_user", JSON.stringify(safeUser));
+                    }
+                } catch (err) {
+                    console.error("SSO verification local-storage failure: ", err);
+                }
+
+                // 4. NOW it is 100% safe to redirect. The dashboard will see the user.
+                navigate('/dashboard'); 
 
             } catch (error) {
                 console.error("SSO Login Error:", error);
