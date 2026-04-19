@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Search as SearchIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
 import './Search.css';
 
 function Search() {
@@ -59,22 +60,51 @@ useEffect(() => {
           ))}
         </div>
       ) : results.length > 0 ? (
-        <div className="results-grid">
-          {results.map((item, index) => (
-            <div 
-              key={index} 
-              className="result-card"
-              onClick={() => navigate(item.link)}
-            >
-              <div className="result-card-header">
-                <h3>{item.title}</h3>
-                <span className={`result-badge badge-${item.type.toLowerCase()}`}>
-                  {item.type}
-                </span>
+        <div className="categorized-search-page">
+          {(() => {
+            const subjects = results.filter(i => ['Subject', 'Topic', 'Program'].includes(i.type));
+            const notes = results.filter(i => i.type === 'Notes');
+            const pyqs = results.filter(i => i.type === 'PYQ');
+            const practice = results.filter(i => i.type === 'Practice');
+
+            const activeCategories = [
+              { title: "Subjects & Syllabus", items: subjects },
+              { title: "Notes & Materials", items: notes },
+              { title: "PYQs (Past Papers)", items: pyqs },
+              { title: "Mock Tests", items: practice }
+            ].filter(cat => cat.items.length > 0);
+
+            return activeCategories.map((cat, catIdx) => (
+              <div key={catIdx} className="search-page-section">
+                <h3 className="search-section-title">{cat.title}</h3>
+                <div className="results-grid">
+                  {cat.items.map((item, index) => (
+                    <motion.div 
+                      key={index} 
+                      className="result-card"
+                      onClick={() => navigate(item.link)}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+                    >
+                      <div className="result-card-header">
+                        <h3>{item.title}</h3>
+                        <span className={`result-badge badge-${item.type.toLowerCase()}`}>
+                          {item.type}
+                        </span>
+                      </div>
+                      {item.breadcrumbs && (
+                        <div className="result-breadcrumbs">
+                          {item.breadcrumbs}
+                        </div>
+                      )}
+                      <p>{item.description}</p>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-              <p>{item.description}</p>
-            </div>
-          ))}
+            ));
+          })()}
         </div>
       ) : (
         <div className="empty-search-state">

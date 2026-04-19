@@ -263,9 +263,12 @@
   font-weight: 500;
   color: var(--text-primary); 
   outline: none; 
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 .login-form input::placeholder { color: var(--text-secondary); }
+.login-form input:hover {
+  transform: translateY(-2px);
+}
 .login-form input:focus { 
   border-color: var(--accent-blue); 
   box-shadow: 0 0 0 3px rgba(226, 232, 240, 0.5); 
@@ -283,7 +286,7 @@
   font-weight: 700; 
   cursor: pointer; 
   margin-top: 5px; 
-  transition: all 0.2s ease; 
+  transition: all 0.3s ease; 
   box-shadow: 0 2px 8px rgba(51, 65, 85, 0.15);
 }
 .btn-primary:hover { 
@@ -378,13 +381,13 @@
   flex-direction: column;
   align-items: flex-start; 
   text-align: left; 
-  transition: all 0.3s ease; 
+  transition: all 0.15s ease !important; 
 }
 
 .feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0,0,0,0.06);
-  border-color: var(--border-color);
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border);
 }
 
 .feature-icon { 
@@ -396,7 +399,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px; 
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 .icon-blue { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; }
 .icon-purple { background: linear-gradient(135deg, #faf5ff, #f3e8ff); border: 1px solid #e9d5ff; }
@@ -516,13 +519,13 @@
   border-radius: 24px;
   overflow: hidden; 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  transition: all 0.15s ease !important; 
   border: 1px solid var(--border-color); 
 }
 
 .dev-card:hover {
-  transform: translateY(-12px); 
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15); 
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: var(--hover-shadow) ;
 }
 
 @media (max-width: 1300px) {

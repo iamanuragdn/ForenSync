@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
+import LoadingState from './LoadingState.jsx';
+import { motion } from 'framer-motion';
 import './SyllabusDetail.css';
 
 function SyllabusDetail() {
@@ -59,7 +61,7 @@ function SyllabusDetail() {
       </div>
 
       {isLoading ? (
-        <div className="status-message loading">Loading syllabus details...</div>
+        <LoadingState text="Loading syllabus details..." />
       ) : error ? (
         <div className="status-message error">Error: {error}</div>
       ) : !subject ? (
@@ -105,7 +107,12 @@ function SyllabusDetail() {
             <tbody>
               {subject.units && subject.units.length > 0 ? (
                 subject.units.map((unit, index) => (
-                  <tr key={index}>
+                  <motion.tr 
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+                  >
                     <td className="unit-col-data">
                       <strong>{unit.unitNumber}</strong>
                     </td>
@@ -115,7 +122,7 @@ function SyllabusDetail() {
                         <div className="content-desc">{unit.topics.join(', ')}</div>
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))
               ) : (
                 <tr>

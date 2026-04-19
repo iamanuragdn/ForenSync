@@ -9,6 +9,18 @@ button, input, select, textarea {
   margin: 0; 
 }
 
+/* Global Select Reset for Perfect Arrow Alignment */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 1.25rem center;
+  padding-right: 3rem !important; /* Ensure safe breathing room */
+  cursor: pointer;
+}
+
 :root {
   font-family: "Montserrat", sans-serif;
   line-height: 1.5;
@@ -21,6 +33,9 @@ button, input, select, textarea {
   --border-color: #e2e8f0;
   --bg-hover: #f8fafc;
   --accent-blue: #4a6583;
+
+  --hover-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  --hover-border: var(--border-color);
 
   color: var(--text-primary);
   background-color: var(--bg-app);
@@ -43,6 +58,9 @@ button, input, select, textarea {
   --border-color: #334155;
   --bg-hover: #334155;
   --accent-blue: #60a5fa;
+  
+  --hover-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.9);
+  --hover-border: rgba(255, 255, 255, 0.08);
   
   color: var(--text-primary);
   background-color: var(--bg-app);

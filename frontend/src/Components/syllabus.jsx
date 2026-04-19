@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import LoadingState from './LoadingState.jsx';
+import { motion } from 'framer-motion';
 import './syllabus.css';
 
 function Syllabus() {
   const { programId, semesterId, subjectId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
-  const [openUnitIndex, setOpenUnitIndex] = useState(null);
+  const unitParam = searchParams.get('unit');
+  
+  const [openUnitIndex, setOpenUnitIndex] = useState(unitParam !== null ? parseInt(unitParam, 10) : null);
   const [subjectData, setSubjectData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (unitParam !== null && !loading) {
+       setOpenUnitIndex(parseInt(unitParam, 10));
+    }
+  }, [unitParam, loading]);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/syllabus/${programId}/${semesterId}`)
@@ -30,7 +41,7 @@ function Syllabus() {
     setOpenUnitIndex(openUnitIndex === index ? null : index);
   };
 
-  if (loading) return <div className="syllabus-page">Loading Syllabus...</div>;
+  if (loading) return <div className="syllabus-page"><LoadingState text="Loading Syllabus..." /></div>;
 
   if (!subjectData) return (
     <div className="syllabus-page" style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -63,7 +74,13 @@ function Syllabus() {
       <div className="units-container">
         {subjectData.units && subjectData.units.length > 0 ? (
           subjectData.units.map((unit, index) => (
-            <div key={index} className="unit-card">
+            <motion.div 
+              key={index} 
+              className="unit-card"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+            >
               
               <div className="unit-header" onClick={() => toggleUnit(index)}>
                 <div className="unit-title-group">
@@ -89,7 +106,7 @@ function Syllabus() {
                 </div>
               )}
               
-            </div>
+            </motion.div>
           ))
         ) : (
           <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>

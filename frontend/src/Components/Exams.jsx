@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { GraduationCap, CalendarDays, FileText, Rocket, CheckCircle, Lock, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 import './Exams.css';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
@@ -229,10 +230,12 @@ function Exams() {
             ) : displayExams.length > 0 ? (
               <>
                 {displayExams.map((exam, index) => (
-                  <div 
-                    className={`exam-card ${showAllExams && index >= 3 ? 'animate-fade-in' : ''}`} 
+                  <motion.div 
+                    className="exam-card" 
                     key={`upcoming-${exam.id || index}`}
-                    style={showAllExams && index >= 3 ? { animationDelay: `${(index - 3) * 0.08}s` } : {}}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
                   >
                     <div className={`days-box ${exam.colorClass || 'exam-blue'}`}>
                       {/* We ensure it never shows a negative number in the "Upcoming" view */}
@@ -253,14 +256,14 @@ function Exams() {
                       <p className="exam-meta">{exam.time}</p>
                     </div>
                     <div className="exam-action" style={{ display: 'flex', gap: '10px' }}>
-                      <button className="btn-view-details" onClick={() => navigate(`/syllabus/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                      <button className="btn-view-details" onClick={() => navigate(`/syllabus/${selectedProgram}/${selectedSemester}/${encodeURIComponent(exam.code)}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
                         <FileText size={16} /> Syllabus
                       </button>
-                      <button className="btn-prepare" onClick={() => navigate(`/notes/${selectedProgram}/${selectedSemester}/${exam.code}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                      <button className="btn-prepare" onClick={() => navigate(`/notes/${selectedProgram}/${selectedSemester}/${encodeURIComponent(exam.code)}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
                         <Rocket size={16} /> Prepare
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
                 
                 {isSelectedDateToday && allUpcomingExams.length > 3 && (
@@ -292,7 +295,13 @@ function Exams() {
               
               <div>
                 {pastExams.map((exam, index) => (
-                  <div className="exam-card-past" key={`past-${exam.id || index}`}>
+                  <motion.div 
+                    className="exam-card-past" 
+                    key={`past-${exam.id || index}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+                  >
                     
                     <div className="past-icon-box">
                       ✓
@@ -317,7 +326,7 @@ function Exams() {
                       {completedReflections.has(exam.code) ? 'View Reflection' : '+ Add Reflection'}
                     </button>
                     
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </>

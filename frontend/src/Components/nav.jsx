@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase'; 
-import { Search, Zap, Eye, Camera, Lock, Mail } from 'lucide-react';
+import { Search, Zap, Eye, Camera, Lock, Mail, Book, FileText, Clock, PenTool } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 import { db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -52,7 +52,7 @@ function Navbar() {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/search?q=${encodeURIComponent(searchQuery.trim())}`);
         const data = await res.json();
-        setLiveSuggestions(data.slice(0, 4)); 
+        setLiveSuggestions(data); 
       } catch (error) {
         console.error("Live search failed:", error);
       }
@@ -209,30 +209,69 @@ function Navbar() {
                 </>
               ) : (
                 <>
-                  <div className="suggestions-header">Live Suggestions</div>
-                  {liveSuggestions.length > 0 ? (
-                    liveSuggestions.map((item, index) => (
-                      <div 
-                        key={index} 
-                        className="suggestion-item"
-                        onMouseDown={() => handleLiveSuggestionClick(item)}
-                        style={{ alignItems: 'flex-start' }}
-                      >
-                        <span className="suggestion-icon" style={{ marginTop: '2px' }}><Zap size={16} /></span>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{item.title}</span>
-                          <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                            {item.type} • {item.description.substring(0, 40)}...
-                          </span>
+                  {(() => {
+                    if (liveSuggestions.length === 0) {
+                      return (
+                        <>
+                          <div className="suggestions-header">Live Suggestions</div>
+                          <div className="suggestion-item" style={{ cursor: 'default', color: '#94a3b8' }}>
+                            <span className="suggestion-icon"><Eye size={16} /></span>
+                            Keep typing or hit Enter to deep search...
+                          </div>
+                        </>
+                      );
+                    }
+
+                    const subjects = liveSuggestions.filter(i => ['Subject', 'Topic', 'Program'].includes(i.type));
+                    const notes = liveSuggestions.filter(i => i.type === 'Notes');
+                    const pyqs = liveSuggestions.filter(i => i.type === 'PYQ');
+                    const practice = liveSuggestions.filter(i => i.type === 'Practice');
+
+                    const renderCategory = (title, icon, items, limit = 3) => {
+                      if (items.length === 0) return null;
+                      return (
+                        <div className="suggestion-category">
+                          <div className="category-header">
+                            {icon} <span>{title}</span>
+                          </div>
+                          {items.slice(0, limit).map((item, idx) => (
+                            <div 
+                              key={`${title.replace(/\s+/g, '-')}-${idx}`} 
+                              className="suggestion-item"
+                              onMouseDown={() => handleLiveSuggestionClick(item)}
+                              style={{ alignItems: 'flex-start' }}
+                            >
+                              <span className="suggestion-icon" style={{ marginTop: '2px' }}><Zap size={16} /></span>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{item.title}</span>
+                                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                                  {item.type} • {item.description.substring(0, 40)}...
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
+                      );
+                    };
+
+                    const activeCategories = [
+                      { title: "Subjects & Syllabus", icon: <Book size={14} />, items: subjects },
+                      { title: "Notes & Materials", icon: <FileText size={14} />, items: notes },
+                      { title: "PYQs (Past Papers)", icon: <Clock size={14} />, items: pyqs },
+                      { title: "Mock Tests", icon: <PenTool size={14} />, items: practice }
+                    ].filter(cat => cat.items.length > 0);
+
+                    return (
+                      <div className="categorized-search-results">
+                        {activeCategories.map((cat, index) => (
+                          <React.Fragment key={cat.title}>
+                            {renderCategory(cat.title, cat.icon, cat.items)}
+                            {index < activeCategories.length - 1 && <div className="category-divider"></div>}
+                          </React.Fragment>
+                        ))}
                       </div>
-                    ))
-                  ) : (
-                    <div className="suggestion-item" style={{ cursor: 'default', color: '#94a3b8' }}>
-                      <span className="suggestion-icon"><Eye size={16} /></span>
-                      Keep typing or hit Enter to deep search...
-                    </div>
-                  )}
+                    );
+                  })()}
                 </>
               )}
             </div>

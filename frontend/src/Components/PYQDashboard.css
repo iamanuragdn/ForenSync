@@ -102,12 +102,12 @@
   flex-direction: column;
   box-shadow: 0 4px 6px rgba(0,0,0,0.03);
   border: 1px solid var(--border-color);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.15s ease !important;
 }
 
 .subject-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: var(--hover-shadow) ;
 }
 
 .subject-icon {

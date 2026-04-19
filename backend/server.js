@@ -226,7 +226,7 @@ app.get('/api/search', async (req, res) => {
               const subjectName = typeof subjData === 'string' ? subjData : (subjData.name || subjId);
 
               if (subjectName.toLowerCase().includes(q)) {
-                const exists = searchResults.find(res => res.title === subjectName);
+                const exists = searchResults.find(res => res.title === subjectName && res.type === "Subject");
                 if (!exists) {
                   searchResults.push({
                     title: subjectName,
@@ -235,6 +235,45 @@ app.get('/api/search', async (req, res) => {
                     link: `/syllabus/${progId}/${semId}/${subjId}`
                   });
                 }
+              }
+
+              // Deep Search: Traverse Units and Topics
+              if (typeof subjData === 'object' && subjData.units && Array.isArray(subjData.units)) {
+                subjData.units.forEach((unit, index) => {
+                  
+                  // Check unit title
+                  if (unit.title && unit.title.toLowerCase().includes(q)) {
+                     const exists = searchResults.find(res => res.title === unit.title && res.type === "Topic");
+                     if (!exists) {
+                       searchResults.push({
+                         title: unit.title,
+                         description: unit.topics ? unit.topics.join(', ').substring(0, 80) + '...' : 'Sub-topic elements',
+                         type: "Topic",
+                         breadcrumbs: `Semester ${semId.replace('sem-', '')} • ${subjectName} • Unit ${unit.unitNumber || index + 1}`,
+                         link: `/syllabus/${progId}/${semId}/${subjId}?unit=${index}`
+                       });
+                     }
+                  }
+                  
+                  // Check individual topics within the unit
+                  if (unit.topics && Array.isArray(unit.topics)) {
+                    unit.topics.forEach(topic => {
+                      if (topic.toLowerCase().includes(q)) {
+                         const exists = searchResults.find(res => res.title === topic && res.type === "Topic");
+                         if (!exists) {
+                           searchResults.push({
+                             title: topic,
+                             description: `Featured in: ${unit.title}`,
+                             type: "Topic",
+                             breadcrumbs: `Semester ${semId.replace('sem-', '')} • ${subjectName} • Unit ${unit.unitNumber || index + 1}`,
+                             link: `/syllabus/${progId}/${semId}/${subjId}?unit=${index}`
+                           });
+                         }
+                      }
+                    });
+                  }
+
+                });
               }
             }
           }

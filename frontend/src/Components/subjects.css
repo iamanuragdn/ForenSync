@@ -126,16 +126,16 @@
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); 
   border: 1px solid var(--border-color); 
-  transition: all 0.2s ease;
+  transition: all 0.15s ease !important;
   display: flex;
   flex-direction: column;
   min-height: 175px; 
 }
 
 .subject-card:hover { 
-  transform: translateY(-4px); 
-  box-shadow: 0 12px 20px rgba(0,0,0,0.04); 
-  border-color: var(--border-color);
+  transform: scale(1.02) translateY(-4px) !important;
+  box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border);
 }
 
 .card-accent, .accent-purple, .accent-blue, .accent-green, 
@@ -280,15 +280,15 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease !important;
   min-height: 140px;
   position: relative;
 }
 
 .mini-stat-card:hover {
-  transform: translateY(-4px); 
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04); 
-  border-color: var(--border-color);
+  transform: scale(1.02) translateY(-4px); 
+  box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border);
 }
 
 .attendance-details {
@@ -551,8 +551,8 @@
 
   .subject-card:active {
     transform: translateY(-4px) !important;
-    box-shadow: 0 12px 20px rgba(0,0,0,0.04) !important;
-    border-color: var(--border-color) !important;
+    box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border) !important;
   }
 
   .subject-card:active .arrow-icon {
@@ -562,8 +562,8 @@
 
   .mini-stat-card:active {
     transform: translateY(-4px) !important;
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04) !important;
-    border-color: var(--border-color) !important;
+    box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border) !important;
   }
 
   .widget-btn-outline:active {

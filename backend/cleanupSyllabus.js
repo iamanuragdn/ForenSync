@@ -11,18 +11,20 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 async function cleanupSyllabus() {
-  const programId = "bsc-msc-forensic";
-
   try {
-    const programSemesters = syllabusData[programId]?.semesters;
-    if (!programSemesters) {
-      console.error(`❌ No semesters found for ${programId} in syllabusData.js`);
-      process.exit(1);
-    }
-    
     let totalDeleted = 0;
 
-    // Loop through each semester dynamically
+    for (const programId of Object.keys(syllabusData)) {
+      console.log(`\n========================================`);
+      console.log(`🚀 Checking Program: ${programId}`);
+      
+      const programSemesters = syllabusData[programId]?.semesters;
+      if (!programSemesters) {
+        console.error(`❌ No semesters found for ${programId}`);
+        continue;
+      }
+      
+      // Loop through each semester dynamically
     for (const semesterId of Object.keys(programSemesters)) {
       console.log(`\n========================================`);
       console.log(`🧹 Scanning Semester: ${semesterId}`);
@@ -59,7 +61,8 @@ async function cleanupSyllabus() {
         }
       }
       
-      console.log(`✨ Finished ${semesterId}. Removed ${semesterDeletedCount} orphans.`);
+      console.log(`✨ Finished ${semesterId} for ${programId}. Removed ${semesterDeletedCount} orphans.`);
+    }
     }
     
     console.log(`\n🎉 Global Cleanup complete! Successfully removed a total of ${totalDeleted} orphaned subjects.`);

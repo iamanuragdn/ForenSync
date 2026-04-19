@@ -84,12 +84,12 @@ const syllabusData = {
                     { unitNumber: "V", title: "Pointers and User Defined Functions", topics: ["Introduction and advantages of pointers","Declaration of pointers","Chain of pointers","Scale factor","Pointers and arrays","Pointers and structures","Advantages of functions","Elements of functions","Categories of functions","Recursion","Functions and arrays","Functions and structures","Functions and pointers"] }
                 ]
             },
-            "CTВT-BSC-102L": { name: "Engineering Physics Laboratory", credits: 1, teacher: "Dr. Bapi Dey", type: "Lab", units: [] },
+            "CTBT-BSC-102L": { name: "Engineering Physics Laboratory", credits: 1, teacher: "Dr. Bapi Dey", type: "Lab", units: [] },
             "CTBT-ESC-103L": { name: "Engineering Graphics Laboratory", credits: 1, teacher: "Dr. Sandipan Debnath", type: "Lab", units: [] },
             "CTBT-ESC-102L": { name: "Programming for Problem Solving Laboratory", credits: 1, teacher: "Dr. Priya Saha", type: "Lab", units: [] }
         },
         "sem-2": {
-            "CTВT-BSC-201": {
+            "CTBT-BSC-201": {
                 name: "Engineering Mathematics-II",
                 credits: 4,
                 teacher: "Dr. Suman Debnath",
@@ -102,7 +102,7 @@ const syllabusData = {
                     { unitNumber: "V", title: "Finite Differences & Numerical Integration", topics: ["Finite differences","Interpolation","Newton’s formulae","Lagrange’s formula","Divided difference formula for unequal intervals","Newton-Cotes integration formulae","Trapezoidal rule","Simpson’s rules","Gaussian quadrature formulae (one, two and three point)"] }
                 ]
             },
-            "CTВТ-HSM-201": {
+            "CTBT-HSM-201": {
                 name: "Professional Ethics",
                 credits: 3,
                 teacher: "Keshu Ahlawat",
@@ -167,7 +167,7 @@ const syllabusData = {
                     { unitNumber: "V", title: "Biodiversity and Its Conservation", topics: ["Definition of genetic, species and ecosystem diversity","Biogeographical classification of India","Values of biodiversity: consumptive, productive, social, ethical, aesthetic and option values","Biodiversity at global, national and local levels","India as a mega-diversity nation","Hotspots of biodiversity","Threats to biodiversity: habitat loss, poaching, man-wildlife conflicts","Endangered and endemic species of India","In-situ and ex-situ conservation of biodiversity"] }
                 ]
             },
-            "CTВТ-PCС-201L": { 
+            "CTBT-PCC-201L": { 
               name: "Object Oriented Programming with C++ Laboratory", 
               credits: 1, 
               teacher: "Dr. Sourav Dey Roy", 

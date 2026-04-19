@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Clock, BarChart, TrendingUp, BookOpen, Sparkles } from 'lucide-react';
 import { subjectIconMap, FallbackIcon as Book } from '../utils/iconMap';
+import LoadingState from './LoadingState.jsx';
+import { motion } from 'framer-motion';
 import './subjects.css'; 
 
 
@@ -106,7 +108,7 @@ function Subjects() {
   
   const progressPercentage = getSemesterProgress();
 
-  if (loading || !user) return <div className="home-dashboard">Loading your dashboard...</div>;
+  if (loading || !user) return <div className="home-dashboard" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}><LoadingState text="Loading your dashboard..." /></div>;
 
   const isPureFaculty = user.role === 'Admin' && (!user.adminType || user.adminType === 'Teacher' || user.adminType === 'Administrator');
 
@@ -179,11 +181,14 @@ function Subjects() {
               const IconComponent = subjectIconMap[sub.id] || Book;
 
               return (
-              <div 
+              <motion.div 
                   className="subject-card"
                   key={sub.id || index} 
                   style={{ cursor: 'pointer' }}
-                  onClick={() => navigate(`/notes/${selectedCourse}/${viewingSemester}/${sub.id}`)} 
+                  onClick={() => navigate(`/notes/${selectedCourse}/${viewingSemester}/${encodeURIComponent(sub.id)}`)} 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
               >
                   <div className={`card-accent accent-${cardColors[index % cardColors.length]}`}></div>
                   <div className="subject-icon-box"><IconComponent size={20} /></div>
@@ -194,7 +199,7 @@ function Subjects() {
                     <span className="subject-code-badge">{sub.id}</span> 
                     <span className="arrow-icon">→</span>
                   </div>
-              </div>
+              </motion.div>
             )})
           )}
         </div>
@@ -204,11 +209,13 @@ function Subjects() {
         
         <div className="widget next-exam-widget">
           <div className="widget-header">
-            <div className="header-left">
-              <span className="icon" style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-blue)' }}><Clock size={20} /></span>
-              <h3>Next Exam</h3>
+            <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-blue)' }}>
+                <Clock size={20} />
+              </span>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', lineHeight: 1 }}>Next Exam</h3>
+              {nextExam && nextExam.daysLeft <= 7 && <span className="urgent-badge" style={{ marginLeft: '4px' }}>Urgent</span>}
             </div>
-            {nextExam && nextExam.daysLeft <= 7 && <span className="urgent-badge">Urgent</span>}
           </div>
           
           <div className="countdown">

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './Components/sidebar.jsx';
 import Nav from './Components/nav.jsx'; 
 import Subjects from './Components/subjects.jsx';
@@ -22,6 +22,8 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 
 import Search from './Components/Search';
+import { AnimatePresence } from 'framer-motion';
+import PageTransition from './Components/PageTransition.jsx';
 import './index.css';
 
 function ProtectedLayout({ children }) {
@@ -112,37 +114,49 @@ function ProtectedLayout({ children }) {
 
 
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/sso-verify" element={<SSOVerifyPage />} />
+        <Route path="/" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+        <Route path="/sso-verify" element={<PageTransition><SSOVerifyPage /></PageTransition>} />
 
         <Route path="/*" element={
           <ProtectedLayout>
-            <Routes>
-              <Route path="/dashboard" element={<Subjects />} />
-              <Route path="/subjects" element={<Subjects />} />
-              <Route path="/notes/:programId/:semesterId/:subjectId" element={<SubjectNotes />} />
-              <Route path="/practice" element={<MockTest />} />
-              <Route path="/syllabus" element={<ProgramSelect />} />
-              <Route path="/syllabus/:programId" element={<SemesterSelect />} />
-              <Route path="/syllabus/:programId/:semesterId" element={<SubjectSelect />} />
-              <Route path="/syllabus/:programId/:semesterId/:subjectId" element={<SyllabusDetail />} />
-              <Route path="/pyq" element={<PYQDashboard />} />
-              <Route path="/pyq/:programId/:semesterId/:subjectId" element={<PYQNotes />} />
-              <Route path="/exams" element={<Exams />} />
-              <Route path="/admin" element={<AdminConsole />} />
-              <Route path="/search" element={<Search />} />
-            </Routes>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/dashboard" element={<PageTransition><Subjects /></PageTransition>} />
+                <Route path="/subjects" element={<PageTransition><Subjects /></PageTransition>} />
+                <Route path="/notes/:programId/:semesterId/:subjectId" element={<PageTransition><SubjectNotes /></PageTransition>} />
+                <Route path="/practice" element={<PageTransition><MockTest /></PageTransition>} />
+                <Route path="/syllabus" element={<PageTransition><ProgramSelect /></PageTransition>} />
+                <Route path="/syllabus/:programId" element={<PageTransition><SemesterSelect /></PageTransition>} />
+                <Route path="/syllabus/:programId/:semesterId" element={<PageTransition><SubjectSelect /></PageTransition>} />
+                <Route path="/syllabus/:programId/:semesterId/:subjectId" element={<PageTransition><SyllabusDetail /></PageTransition>} />
+                <Route path="/pyq" element={<PageTransition><PYQDashboard /></PageTransition>} />
+                <Route path="/pyq/:programId/:semesterId/:subjectId" element={<PageTransition><PYQNotes /></PageTransition>} />
+                <Route path="/exams" element={<PageTransition><Exams /></PageTransition>} />
+                <Route path="/admin" element={<PageTransition><AdminConsole /></PageTransition>} />
+                <Route path="/search" element={<PageTransition><Search /></PageTransition>} />
+              </Routes>
+            </AnimatePresence>
           </ProtectedLayout>
         } />
 
       </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
     </BrowserRouter>
   );
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
+import LoadingState from './LoadingState.jsx';
+import { motion } from 'framer-motion';
 import './SubjectSelect.css';
 
 function SubjectSelect() {
@@ -77,7 +79,7 @@ function SubjectSelect() {
 
 
       {isLoading ? (
-        <div className="status-message loading">Loading subjects...</div>
+        <LoadingState text="Loading subjects..." />
       ) : error ? (
         <div className="status-message error">Error: {error}</div>
       ) : subjects.length === 0 ? (
@@ -128,10 +130,13 @@ function SubjectSelect() {
               </thead>
               <tbody>
                 {subjects.map((subject, index) => (
-                  <tr 
+                  <motion.tr 
                     key={subject.id} 
                     className="subject-row"
-                    onClick={() => navigate(`/syllabus/${programId}/${semesterId}/${subject.id}`)}
+                    onClick={() => navigate(`/syllabus/${programId}/${semesterId}/${encodeURIComponent(subject.id)}`)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
                   >
                     <td className="serial-col">{index + 1}</td>
                     <td className="code-col">{subject.id}</td>
@@ -148,7 +153,7 @@ function SubjectSelect() {
                         {subject.type || 'Core'}
                       </span>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>

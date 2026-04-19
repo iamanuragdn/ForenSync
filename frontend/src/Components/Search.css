@@ -39,6 +39,27 @@
   font-weight: 500;
 }
 
+.categorized-search-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.search-page-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
 /* GRID */
 .results-grid {
   display: grid;
@@ -57,14 +78,14 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease !important;
 }
 
 /* THE HIGHER HOVER FIX */
 .result-card:hover {
-  transform: translateY(-4px); /* Pushes it exactly as high as the subject cards */
-  box-shadow: 0 12px 20px rgba(0,0,0,0.04); 
-  border-color: var(--border-color);
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border);
 }
 
 .result-card-header {
@@ -95,6 +116,19 @@
   flex-grow: 1;
 }
 
+.result-breadcrumbs {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-blue);
+  background: var(--bg-hover);
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  display: inline-block;
+  align-self: flex-start;
+  border: 1px solid var(--border-color);
+}
+
 /* BADGES */
 .result-badge {
   padding: 4px 10px;
@@ -115,6 +149,7 @@
 .badge-pyq { background: #fffbeb; color: #d97706; border-color: #fef3c7; }
 .badge-notes { background: var(--bg-hover); color: var(--text-secondary); border-color: var(--border-color); }
 .badge-practice { background: #f0f9ff; color: #0284c7; border-color: #e0f2fe; }
+.badge-topic { background: #faf5ff; color: #9333ea; border-color: #f3e8ff; }
 
 /* LOADING & EMPTY STATES */
 .search-loading-state, .empty-search-state {

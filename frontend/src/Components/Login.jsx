@@ -4,6 +4,7 @@ import { auth, googleProvider, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore'; 
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from 'firebase/auth';
 import { Sun, Moon, Cloud, FileText, Calendar, Lock, Loader } from 'lucide-react';
+import { motion } from 'framer-motion';
 import './Login.css';
 
 import campusImage from '../assets/nfsu-campus.jpeg';
@@ -186,17 +187,17 @@ function Login() {
         <div className="hero-background" style={{ backgroundImage: `url(${campusImage})` }}>
           <div className="hero-overlay"></div>
           
-          <div className="hero-branding">
+          <motion.div className="hero-branding" initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}>
             <div className="branding-row">
               <img src={logoImage} alt="ForenSync Logo" className="hero-logo-img" />
               <h1 className="hero-title">ForenSync.</h1>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <h2 className="hero-subtitle">
+        <motion.h2 className="hero-subtitle" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           “Your entire academic world,<br />perfectly synced in one place.”
-        </h2>
+        </motion.h2>
 
         <div className="scroll-indicator" onClick={scrollToAbout}>
           <p>Learn more about ForenSync</p>
@@ -204,7 +205,7 @@ function Login() {
         </div>
 
         <div className="hero-auth-container">
-          <div className="auth-glass-card">
+          <motion.div className="auth-glass-card" initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}>
             <h3 className="auth-title">{isLoginMode ? "Welcome Back" : "Create Account"}</h3>
             
             {error && <div className="auth-error">{error}</div>}
@@ -249,14 +250,14 @@ function Login() {
                 {isLoginMode ? "Sign up here" : "Log in here"}
               </span>
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       <section id="about-section" className="about-section">
         <h2>Why ForenSync?</h2>
         <div className="features-grid">
-  <div className="feature-card">
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.1 }}>
     <div className="feature-icon icon-blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Cloud size={24} color="white" /></div>
     <h3>Drive Synced Notes</h3>
     <p>Faculty uploads sync directly to your personalized dashboard.</p>
@@ -264,9 +265,9 @@ function Login() {
       <li>Centralized PDF storage</li>
       <li>Auto-categorized by subject</li>
     </ul>
-  </div>
+  </motion.div>
 
-  <div className="feature-card">
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.2 }}>
     <div className="feature-icon icon-purple" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FileText size={24} color="white" /></div>
     <h3>PYQ & Mock Tests</h3>
     <p>Master your subjects with intelligent exam prep tools.</p>
@@ -274,9 +275,9 @@ function Login() {
       <li>5+ years of past papers</li>
       <li>AI-generated practice exams</li>
     </ul>
-  </div>
+  </motion.div>
 
-  <div className="feature-card">
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.3 }}>
     <div className="feature-icon icon-orange" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Calendar size={24} color="white" /></div>
     <h3>Smart Scheduling</h3>
     <p>Never miss a deadline with real-time academic tracking.</p>
@@ -284,9 +285,9 @@ function Login() {
       <li>Live exam countdowns</li>
       <li>Syllabus progress bars</li>
     </ul>
-  </div>
+  </motion.div>
 
-  <div className="feature-card">
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.4 }}>
     <div className="feature-icon icon-green" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Lock size={24} color="white" /></div>
     <h3>Role-Based Security</h3>
     <p>Enterprise-grade architecture for verified campus access.</p>
@@ -294,7 +295,7 @@ function Login() {
       <li>Faculty-only upload portals</li>
       <li>Admin-verified clearance</li>
     </ul>
-  </div>
+  </motion.div>
 </div>
       </section>
 
@@ -305,6 +306,7 @@ function Login() {
         <div className="team-grid">
           
           <DevCard
+            delay={0.1}
             name="Anurag Debnath"
             role="Backend & UI"
             handle="iamanuragdn"
@@ -316,6 +318,7 @@ function Login() {
           />
 
           <DevCard
+            delay={0.2}
             name="Reejit Maji"
             role="Test Engine & DB"
             handle="reejit"
@@ -327,6 +330,7 @@ function Login() {
           />
 
           <DevCard
+            delay={0.3}
             name="Anindya Bhar"
             role="Frontend"
             handle="anindya"
@@ -338,6 +342,7 @@ function Login() {
           />
 
           <DevCard
+            delay={0.4}
             name="Priyangsha Paul"
             role="Contributor"
             handle="priyangsha"
@@ -349,6 +354,7 @@ function Login() {
           />
 
           <DevCard
+            delay={0.5}
             name="Rounak Kundu"
             role="Contributor"
             handle="rounak"

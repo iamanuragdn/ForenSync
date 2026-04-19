@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Home, Loader, Cloud, Book } from 'lucide-react';
+import LoadingState from './LoadingState.jsx';
+import { motion } from 'framer-motion';
 import './PYQNotes.css'; 
 
 function PYQNotes() {
@@ -117,11 +119,18 @@ function PYQNotes() {
 
 
       {loading ? (
-        <p className="loading-text">Loading {selectedExam} papers...</p>
+        <LoadingState text={`Loading ${selectedExam} papers...`} />
       ) : files.length > 0 ? (
         <div className="files-list">
-          {files.map(file => (
-            <div key={file.id} className="file-item" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          {files.map((file, index) => (
+            <motion.div 
+              key={file.id} 
+              className="file-item" 
+              style={{ display: 'flex', alignItems: 'center', gap: '15px' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+            >
               
               <div className="file-icon" style={{ fontSize: '1.5rem', background: 'var(--bg-hover)', padding: '10px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-blue)' }}>
                 <Book size={24} />
@@ -142,7 +151,7 @@ function PYQNotes() {
                 </a>
               </div>
 
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (

@@ -174,8 +174,8 @@
   }
 
   .unit-header {
-    align-items: flex-start;
-    padding: 16px;
+    align-items: center;
+    padding: 16px 20px;
   }
 
   .unit-title-group {

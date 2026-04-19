@@ -24,13 +24,12 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.15s ease !important;
 }
 
 .practice-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04);
-  border-color: var(--border-color);
+  box-shadow: var(--hover-shadow);
+  border-color: var(--hover-border);
 }
 
 .card-icon-wrapper {

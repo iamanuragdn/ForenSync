@@ -85,7 +85,7 @@ const examData = {
 
       // ----------------- END SEMESTERS -----------------
       {
-        code: 'CTВТ-PCС-201L',
+        code: 'CTBT-PCC-201L',
         name: 'Object Oriented Programming with C++ Laboratory',
         examDate: '2026-04-16', // Starting day
         type: 'CA4 (End Semester)',

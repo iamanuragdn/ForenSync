@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Home } from 'lucide-react';
+import { motion } from 'framer-motion';
 import './SemesterSelect.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -93,16 +94,19 @@ function SemesterSelect() {
         </div>
       ) : (
         <div className="semester-grid">
-          {semesters.map((sem) => (
-            <div 
+          {semesters.map((sem, index) => (
+            <motion.div 
               key={sem.id} 
               className="semester-card"
               onClick={() => navigate(`/syllabus/${selectedCourse}/${sem.id}`)} 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
             >
               <div className="sem-number">{sem.id.replace('sem-', '')}</div>
               <h3>{sem.name}</h3>
               <p>{sem.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}

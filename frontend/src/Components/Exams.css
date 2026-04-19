@@ -112,12 +112,12 @@
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 6px rgba(0,0,0,0.01);
   gap: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.15s ease !important;
 }
 
 .exam-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.03);
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: var(--hover-shadow) ;
 }
 
 /* EXAM TYPE BADGE */
@@ -297,13 +297,14 @@
   border-radius: 12px;
   border: 1px solid var(--border-color);
   gap: 16px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease !important;
   margin-bottom: 8px;
 }
 
 .exam-card-past:hover {
-  background: var(--bg-app);
-  border-color: var(--border-color);
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: var(--hover-shadow);
+    border-color: var(--hover-border);
 }
 
 /* The tiny checkmark circle */
