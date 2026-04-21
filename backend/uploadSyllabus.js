@@ -10,16 +10,33 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
+function sanitizeSubjectCode(text) {
+    if (typeof text !== 'string') return '';
+    const homoglyphs = {
+        'А': 'A', 'В': 'B', 'С': 'C', 'Е': 'E', 'Н': 'H',
+        'К': 'K', 'М': 'M', 'О': 'O', 'Р': 'P', 'Т': 'T',
+        'Х': 'X', 'У': 'Y', 'а': 'a', 'в': 'b', 'с': 'c',
+        'е': 'e', 'н': 'h', 'к': 'k', 'м': 'm', 'о': 'o',
+        'р': 'p', 'т': 't', 'х': 'x', 'у': 'y'
+    };
+    let clean = Array.from(text).map(char => homoglyphs[char] || char).join('');
+    return clean.replace(/[^A-Za-z0-9\-]/g, '');
+}
+
 async function uploadToFirestore() {
 
   try {
+    console.log("🔍 Starting syllabus upload to Firebase...");
+    let overallSubjects = 0;
+
     for (const [programId, programData] of Object.entries(syllabusData)) {
-      
+      console.log(`📂 Processing program: ${programData.programName}...`);
       const programRef = db.collection("programs").doc(programId);
       await programRef.set({ name: programData.programName }, { merge: true });
 
       if (programData.semesters) {
         for (const [semesterId, subjectsObj] of Object.entries(programData.semesters)) {
+          console.log(`  🔄 Processing semester: ${semesterId}...`);
           
           const semesterRef = programRef.collection("semesters").doc(semesterId);
           const batch = db.batch(); 
@@ -28,12 +45,17 @@ async function uploadToFirestore() {
           let totalSubjects = 0;
           let labCount = 0;
 
-          for (const [subjectCode, subjectDetails] of Object.entries(subjectsObj)) {
+          for (const [subjectCodeStr, subjectDetails] of Object.entries(subjectsObj)) {
             totalSubjects++;
+            overallSubjects++;
             totalCredits += subjectDetails.credits || 0;
             if (subjectDetails.type === "Lab") labCount++;
 
-            const subjectRef = semesterRef.collection("subjects").doc(subjectCode);
+            // Force the Document ID to be the Subject Code
+            const subjectCode = sanitizeSubjectCode(subjectCodeStr); // e.g., "CTBT-BSC-201"
+            console.log(`    🔄 Uploading details for: ${subjectCode}...`);
+
+            const subjectRef = db.collection('subjects').doc(subjectCode);
             
             batch.set(subjectRef, {
               code: subjectCode,
@@ -43,6 +65,8 @@ async function uploadToFirestore() {
               type: subjectDetails.type || "Core",
               units: subjectDetails.units || []
             }, { merge: true });
+
+            console.log(`    💾 Merging Syllabus data into Firebase for ${subjectCode}... Success!`);
           }
 
           batch.set(semesterRef, {
@@ -54,9 +78,11 @@ async function uploadToFirestore() {
           }, { merge: true });
 
           await batch.commit();
+          console.log(`  ➡️ Batch commit successful for ${semesterId}. Moving to next document...`);
         }
       }
     }
+    console.log(`🎉 Syllabus upload process is 100% complete! Total subjects matched: ${overallSubjects}`);
     process.exit(0);
 
   } catch (error) {

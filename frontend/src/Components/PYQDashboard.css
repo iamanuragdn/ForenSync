@@ -146,6 +146,29 @@
   align-self: flex-start;
 }
 
+.pyq-status-dot {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.pyq-status-dot.available {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.pyq-status-dot.unavailable {
+  background-color: var(--bg-hover);
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
 .empty-state {
   text-align: center;
   padding: 40px;

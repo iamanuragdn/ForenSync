@@ -37,6 +37,8 @@ select {
   --hover-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
   --hover-border: var(--border-color);
 
+  --bg-mesh: none;
+
   color: var(--text-primary);
   background-color: var(--bg-app);
 
@@ -51,17 +53,23 @@ select {
 }
 
 [data-theme='dark'] {
-  --bg-app: #0f172a;
-  --bg-card: #1e293b;
+  --bg-app: #0b1121;
+  --bg-card: #151e32;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --border-color: #334155;
-  --bg-hover: #334155;
+  --border-color: #27354f;
+  --bg-hover: #1e293b;
   --accent-blue: #60a5fa;
   
   --hover-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.9);
-  --hover-border: rgba(255, 255, 255, 0.08);
+  --hover-border: rgba(255, 255, 255, 0.1);
   
+  --bg-mesh: 
+      radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(168, 85, 247, 0.07) 0%, transparent 40%),
+      radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 10% 90%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+
   color: var(--text-primary);
   background-color: var(--bg-app);
 }
@@ -69,12 +77,30 @@ select {
 body {
   margin: 0;
   padding: 0;
-  display: block !important; /* Overrides Vite's default 'display: flex' on the body */
+  display: block !important;
   min-height: 100vh;
   place-items: unset !important;
   transition: background-color 0.3s ease, color 0.3s ease;
   background-color: var(--bg-app);
+  background-image: var(--bg-mesh);
+  background-attachment: fixed;
+  background-size: cover;
   color: var(--text-primary);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 150px;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
 }
 
 #root {

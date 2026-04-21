@@ -15,6 +15,9 @@ const { extractQuestions } = require("./extractor");
 
 const stream = require("stream");
 
+// Load the generated dictionary!
+const subjectDictionary = require("./src/data/subjectDictionary.json");
+
 // We use a unique name here so it doesn't conflict with your database!
 const nodeFileSystem = require('fs'); 
 
@@ -87,7 +90,38 @@ async function getDriveChildren(parentId, drive, isFolder = true) {
     }
 }
 
-async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
+function normalizeFolderName(folderName) {
+    if (typeof folderName !== 'string') return null;
+    const normalized = folderName.replace(/\s+/g, ' ').trim();
+    return normalized || null;
+}
+
+function deriveCategoryFromStoredName(fileName) {
+    if (typeof fileName !== 'string' || !fileName.includes('/')) return null;
+
+    const pathSegments = fileName
+        .split('/')
+        .map(segment => segment.trim())
+        .filter(Boolean);
+
+    if (pathSegments.length < 2) return null;
+    return normalizeFolderName(pathSegments[pathSegments.length - 2]);
+}
+
+function sanitizeSubjectCode(text) {
+    if (typeof text !== 'string') return '';
+    const homoglyphs = {
+        'А': 'A', 'В': 'B', 'С': 'C', 'Е': 'E', 'Н': 'H',
+        'К': 'K', 'М': 'M', 'О': 'O', 'Р': 'P', 'Т': 'T',
+        'Х': 'X', 'У': 'Y', 'а': 'a', 'в': 'b', 'с': 'c',
+        'е': 'e', 'н': 'h', 'к': 'k', 'м': 'm', 'о': 'o',
+        'р': 'p', 'т': 't', 'х': 'x', 'у': 'y'
+    };
+    let clean = Array.from(text).map(char => homoglyphs[char] || char).join('');
+    return clean.replace(/[^A-Za-z0-9\-]/g, '');
+}
+
+async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "", parentFolderName = null) {
     let allFiles = [];
     try {
         const res = await drive.files.list({
@@ -100,12 +134,18 @@ async function fetchAllFilesRecursively(folderId, drive, pathPrefix = "") {
 
         for (const item of items) {
             if (item.mimeType === 'application/vnd.google-apps.folder') {
-                const subFiles = await fetchAllFilesRecursively(item.id, drive, `${pathPrefix}${item.name} / `);
+                const subFiles = await fetchAllFilesRecursively(
+                    item.id,
+                    drive,
+                    `${pathPrefix}${item.name} / `,
+                    item.name
+                );
                 allFiles = allFiles.concat(subFiles);
             } else {             
                 allFiles.push({
                     ...item,                   
-                    displayName: `${pathPrefix}${item.name}` 
+                    displayName: `${pathPrefix}${item.name}`,
+                    category: normalizeFolderName(parentFolderName)
                 });
             }
         }
@@ -136,25 +176,32 @@ app.post("/api/sync-drive", async (req, res) => {
                 for (const type of types) {
                     const subjects = await getDriveChildren(type.id, drive, true);
                     for (const subj of subjects) {
+                        const sanitizedSubjectName = sanitizeSubjectCode(subj.name);
+                        
+                        let mappedName = subjectDictionary[sanitizedSubjectName];
+                        if (!mappedName) {
+                            console.warn(`⚠️ Warning: Dictionary is missing a mapping for subject code: ${sanitizedSubjectName}. Falling back to default.`);
+                            mappedName = sanitizedSubjectName;
+                        }
+
                         // FIX: Ensure subject parent document is not a ghost document, so it can be listed!
-                        const subjectRef = db.collection("programs").doc(prog.name)
-                                             .collection("semesters").doc(sem.name)
-                                             .collection("subjects").doc(subj.name);
+                        const subjectRef = db.collection("subjects").doc(sanitizedSubjectName);
                         await subjectRef.set({
-                            name: subj.name,
+                            name: mappedName,
+                            course: prog.name,
+                            semester: sem.name,
                             lastSynced: admin.firestore.FieldValue.serverTimestamp()
                         }, { merge: true });
 
                         const files = await fetchAllFilesRecursively(subj.id, drive);
                         
                         for (const file of files) {
-                            const docRef = db.collection("programs").doc(prog.name)
-                                             .collection("semesters").doc(sem.name)
-                                             .collection("subjects").doc(subj.name)
+                            const docRef = db.collection("subjects").doc(sanitizedSubjectName)
                                              .collection(type.name).doc(file.id);
                             
                             await docRef.set({
                                 name: file.displayName || file.name, 
+                                category: file.category || null,
                                 webViewLink: file.webViewLink || "#",
                                 webContentLink: file.webContentLink || "#",
                                 mimeType: file.mimeType,
@@ -177,19 +224,22 @@ app.post("/api/sync-drive", async (req, res) => {
 app.get("/api/notes/:programId/:semesterId/:subjects", async (req, res) => {
     try {
         const { programId, semesterId, subjects } = req.params;
+        const sanitizedSubject = sanitizeSubjectCode(subjects);
         const type = req.query.type || 'Notes'; 
 
-        const snapshot = await db.collection("programs").doc(programId)
-                                 .collection("semesters").doc(semesterId)
-                                 .collection("subjects").doc(subjects)
+        const snapshot = await db.collection("subjects").doc(sanitizedSubject)
                                  .collection(type).get();
 
         if (snapshot.empty) return res.json({ files: [] });
 
-        const filesList = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+        const filesList = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                category: data.category || deriveCategoryFromStoredName(data.name)
+            };
+        });
 
         res.json({ files: filesList });
     } catch (error) {
@@ -398,10 +448,11 @@ app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
       return res.json({ subjects: [] });
     }
     
-    const subjects = [];
-    snapshot.forEach(doc => {
-      subjects.push({ id: doc.id, ...doc.data() });
-    });
+    // Check Notes subcollection for each subject in parallel
+    const subjects = await Promise.all(snapshot.docs.map(async (doc) => {
+      const notesSnapshot = await db.collection('subjects').doc(doc.id).collection('Notes').limit(1).get();
+      return { id: doc.id, ...doc.data(), hasNotes: !notesSnapshot.empty };
+    }));
     
     res.json({ subjects });
   } catch (error) {
@@ -413,10 +464,11 @@ app.get('/api/syllabus/:programId/:semesterId', async (req, res) => {
 app.get('/api/syllabus/:programId/:semesterId/:subjects', async (req, res) => {
   try {
     const { programId, semesterId, subjects } = req.params;
+    const sanitizedSubject = sanitizeSubjectCode(subjects);
     
     const docRef = db.collection('programs').doc(programId)
                      .collection('semesters').doc(semesterId)
-                     .collection('subjects').doc(subjects);
+                     .collection('subjects').doc(sanitizedSubject);
                      
     const doc = await docRef.get();
     
@@ -790,7 +842,7 @@ app.post('/api/admin/sync', async (req, res) => {
         const { programId, semesterId, subjectId, subjects, type } = req.body;
         
         // Match what the frontend sends (subjectId) but fallback to subjects if older frontend code hits it
-        const finalSubjectId = subjectId || subjects;
+        const finalSubjectId = sanitizeSubjectCode(subjectId || subjects);
 
         // Strict Safety Verification (Prevent Firestore native crashes entirely)
         if (!programId || !semesterId || !finalSubjectId) {
@@ -826,18 +878,14 @@ app.post('/api/admin/sync', async (req, res) => {
         if (!subjFolder) throw new Error(`Subject folder '${finalSubjectId}' not found in Drive`);
 
         // FIX: Create parent subject metadata to prevent Ghost Documents
-        const subjectDocRef = db.collection("programs").doc(programId)
-                                .collection("semesters").doc(semesterId)
-                                .collection("subjects").doc(finalSubjectId);
+        const subjectDocRef = db.collection("subjects").doc(finalSubjectId);
         await subjectDocRef.set({ name: subjFolder.name, lastSynced: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
 
         // First, fetch the current list of files from the Google Drive subject folder
         const driveFiles = await fetchAllFilesRecursively(subjFolder.id, drive);
 
         // Second, fetch the current list of documents from the Firestore collection
-        const collectionRef = db.collection("programs").doc(programId)
-                                .collection("semesters").doc(semesterId)
-                                .collection("subjects").doc(finalSubjectId)
+        const collectionRef = db.collection("subjects").doc(finalSubjectId)
                                 .collection(targetType);
                                 
         const snapshot = await collectionRef.get();
@@ -852,6 +900,7 @@ app.post('/api/admin/sync', async (req, res) => {
         for (const file of driveFiles) {
             const fileData = {
                 name: file.displayName || file.name,
+                category: file.category || null,
                 webViewLink: file.webViewLink || "#",
                 webContentLink: file.webContentLink || "#",
                 mimeType: file.mimeType,
@@ -928,22 +977,28 @@ app.post('/api/admin/sync-global', async (req, res) => {
                             try {
                                 const subjects = await getDriveChildren(type.id, drive, true);
                                 for (const subj of subjects) {
-                                    console.log(`\n[SYNC] Scanning: ${prog.name} -> ${sem.name} -> ${type.name} -> ${subj.name}`);
+                                    const sanitizedSubjectName = sanitizeSubjectCode(subj.name);
+
+                                    let mappedName = subjectDictionary[sanitizedSubjectName];
+                                    if (!mappedName) {
+                                        console.warn(`⚠️ Warning: Dictionary is missing a mapping for subject code: ${sanitizedSubjectName}. Falling back to default.`);
+                                        mappedName = sanitizedSubjectName;
+                                    }
+
+                                    console.log(`\n[SYNC] Scanning: ${prog.name} -> ${sem.name} -> ${type.name} -> ${sanitizedSubjectName}`);
                                     try {
                                         // FIX: Ensure subject isn't a ghost document
-                                        const subjectDocRef = db.collection("programs").doc(progId)
-                                                                .collection("semesters").doc(sem.name)
-                                                                .collection("subjects").doc(subj.name);
+                                        const subjectDocRef = db.collection("subjects").doc(sanitizedSubjectName);
                                         await subjectDocRef.set({
-                                            name: subj.name,
+                                            name: mappedName,
+                                            course: prog.name,
+                                            semester: sem.name,
                                             lastSynced: admin.firestore.FieldValue.serverTimestamp()
                                         }, { merge: true });
 
                                         const driveFiles = await fetchAllFilesRecursively(subj.id, drive);
 
-                                        const collectionRef = db.collection("programs").doc(progId)
-                                                                .collection("semesters").doc(sem.name)
-                                                                .collection("subjects").doc(subj.name)
+                                        const collectionRef = db.collection("subjects").doc(sanitizedSubjectName)
                                                                 .collection(type.name);
                                                                 
                                         const snapshot = await collectionRef.get();
@@ -955,6 +1010,7 @@ app.post('/api/admin/sync-global', async (req, res) => {
                                             const finalName = file.displayName || file.name;
                                             const fileData = {
                                                 name: finalName,
+                                                category: file.category || null,
                                                 webViewLink: file.webViewLink || "#",
                                                 webContentLink: file.webContentLink || "#",
                                                 mimeType: file.mimeType,
@@ -1051,7 +1107,7 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         }
 
         // Robust handling of missing subjects that don't match the standard Program -> Semester -> Subject -> Type structure
-        let actualSubject = subjects || subjectId;
+        let actualSubject = sanitizeSubjectCode(subjects || subjectId);
         const hasValidSubject = actualSubject && actualSubject !== 'Global' && actualSubject !== 'undefined' && actualSubject !== 'null' && actualSubject.trim() !== '';
 
         const oauth2Client = new google.auth.OAuth2(
@@ -1082,6 +1138,19 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         });
 
         const fileId = driveResponse.data.id;
+        let parentFolderName = null;
+
+        if (targetDriveFolderId) {
+            try {
+                const folderResponse = await uploadDrive.files.get({
+                    fileId: targetDriveFolderId,
+                    fields: 'name'
+                });
+                parentFolderName = normalizeFolderName(folderResponse.data?.name);
+            } catch (folderError) {
+                console.warn("Unable to read parent Drive folder name during upload sync:", folderError.message);
+            }
+        }
 
         await uploadDrive.permissions.create({
             fileId: fileId,
@@ -1091,9 +1160,7 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         try {
             let docRef;
             if (hasValidSubject) {
-                docRef = db.collection("programs").doc(programId || 'unknown-program')
-                           .collection("semesters").doc(semesterId || 'unknown-semester')
-                           .collection("subjects").doc(actualSubject)
+                docRef = db.collection("subjects").doc(actualSubject)
                            .collection(type || 'Unknown').doc(fileId); 
             } else {
                 // Conditional Database Saving: If no subject, attach directly to the semester level without crashing
@@ -1104,6 +1171,7 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
             
             await docRef.set({
                 name: fileName || fileObject.originalname,
+                category: parentFolderName,
                 webViewLink: driveResponse.data.webViewLink,
                 webContentLink: driveResponse.data.webContentLink,
                 mimeType: driveResponse.data.mimeType,
@@ -1260,14 +1328,17 @@ app.get('/api/programs/:programId/semesters/:semesterId/exams/:examType/subjects
     const snapshot = await db.collection('programs').doc(programId)
                              .collection('semesters').doc(semesterId)
                              .collection('subjects').get();
-    const subjects = [];
-    snapshot.forEach(doc => {
-      subjects.push({ 
+    // Check PYQ subcollection for each subject in parallel
+    const subjects = await Promise.all(snapshot.docs.map(async (doc) => {
+      const pyqSnapshot = await db.collection('subjects').doc(doc.id).collection('PYQ').limit(1).get();
+      return { 
         id: doc.id, 
         code: doc.data().code || doc.id, 
-        name: doc.data().name || "Unnamed Subject" 
-      });
-    });
+        name: doc.data().name || "Unnamed Subject",
+        teacher: doc.data().teacher || null,
+        hasPYQs: !pyqSnapshot.empty
+      };
+    }));
     res.json(subjects);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch subjects for exam" });
@@ -1340,6 +1411,7 @@ app.get('/api/db/programs/:programId/semesters/:semesterId/subjects', async (req
     });
     res.json(subjects);
   } catch (error) {
+    console.error("Subject fetch error:", error);
     res.status(500).json({ error: "Failed to fetch subjects" });
   }
 });

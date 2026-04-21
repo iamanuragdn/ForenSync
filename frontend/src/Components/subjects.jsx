@@ -191,6 +191,13 @@ function Subjects() {
                   transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
               >
                   <div className={`card-accent accent-${cardColors[index % cardColors.length]}`}></div>
+                  
+                  {sub.hasNotes ? (
+                    <span className="status-dot available">✓ Available</span>
+                  ) : (
+                    <span className="status-dot unavailable">Empty</span>
+                  )}
+
                   <div className="subject-icon-box"><IconComponent size={20} /></div>
                           
                   <h3>{sub.name || sub.id || 'Untitled Subject'}</h3>

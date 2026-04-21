@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import LoadingState from './LoadingState.jsx';
-import { motion } from 'framer-motion';
 import './syllabus.css';
 
 function Syllabus() {
@@ -74,12 +73,9 @@ function Syllabus() {
       <div className="units-container">
         {subjectData.units && subjectData.units.length > 0 ? (
           subjectData.units.map((unit, index) => (
-            <motion.div 
+            <div 
               key={index} 
               className="unit-card"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
             >
               
               <div className="unit-header" onClick={() => toggleUnit(index)}>
@@ -106,7 +102,7 @@ function Syllabus() {
                 </div>
               )}
               
-            </motion.div>
+            </div>
           ))
         ) : (
           <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>

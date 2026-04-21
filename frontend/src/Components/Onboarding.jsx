@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth'; 
-import { Sun, Moon, Rocket, Loader } from 'lucide-react';
+import { Sun, Moon, Rocket, Loader, Camera } from 'lucide-react';
 import './Onboarding.css';
 
 import imageCompression from 'browser-image-compression';
@@ -30,6 +30,21 @@ function Onboarding() {
 
   const [apiError, setApiError] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleAvatarClick = () => {
+    if(fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePicture(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
+  };
 
   const needsStudentFields = role === 'Student' || (role === 'Admin' && (adminType === 'CR' || adminType === 'ActiveStudent'));
 
@@ -134,59 +149,66 @@ function Onboarding() {
 
         <form onSubmit={handleCompleteSetup} className="onboarding-form">
           
-          <div className="input-group">
-            <label>Account Type</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className="onboarding-select">
-              <option value="Student">I am a Student</option>
-              <option value="Admin">I need Upload Access (Admin)</option>
-            </select>
-          </div>
-
-          {role === 'Admin' && (
-            <div className="input-group">
-              <label>My Role is...</label>
-              <select value={adminType} onChange={(e) => setAdminType(e.target.value)} className="onboarding-select">
-                <option value="Teacher">Teacher / Faculty</option>
-                <option value="Administrator">Administrative Staff</option>
-                <option value="CR">Class Representative (CR)</option>
-                <option value="ActiveStudent">Active Contributor (Student)</option>
-              </select>
+          <div className="avatar-upload-container">
+            <div className="avatar-preview-circle" onClick={handleAvatarClick} title="Upload Profile Picture">
+              {previewUrl ? (
+                <img src={previewUrl} alt="Preview" />
+              ) : (
+                <Camera size={32} className="avatar-placeholder" />
+              )}
             </div>
-          )}
-
-          <div className="input-group">
-            <label>Full Name</label>
-            <input 
-              type="text" 
-              placeholder="e.g. Anurag Debnath" 
-              value={fullName} 
-              onChange={(e) => setFullName(e.target.value)} 
-              required 
-              className="onboarding-input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label>Profile Picture (Optional)</label>
             <input 
               type="file" 
               accept="image/*"
-              onChange={(e) => setProfilePicture(e.target.files[0])} 
-              className="onboarding-input"
+              onChange={handleFileChange} 
+              ref={fileInputRef}
+              style={{ display: 'none' }}
             />
           </div>
 
-          <div className="input-group">
-            <label>Select Course</label>
-            <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="onboarding-select">
-              <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
-              <option value="bsc-msc-forensic">BSc-MSc Forensic Science</option>
-            </select>
-          </div>
+          <div className="onboarding-grid">
+            <div className="input-group full-width">
+              <label>Full Name</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Anurag Debnath" 
+                value={fullName} 
+                onChange={(e) => setFullName(e.target.value)} 
+                required 
+                className="onboarding-input"
+              />
+            </div>
 
-          {needsStudentFields && (
-            <>
-              <div className="student-fields-row">
+            <div className="input-group">
+              <label>Account Type</label>
+              <select value={role} onChange={(e) => setRole(e.target.value)} className="onboarding-select">
+                <option value="Student">I am a Student</option>
+                <option value="Admin">I need Upload Access (Admin)</option>
+              </select>
+            </div>
+
+            {role === 'Admin' && (
+              <div className="input-group">
+                <label>My Role is...</label>
+                <select value={adminType} onChange={(e) => setAdminType(e.target.value)} className="onboarding-select">
+                  <option value="Teacher">Teacher / Faculty</option>
+                  <option value="Administrator">Administrative Staff</option>
+                  <option value="CR">Class Representative (CR)</option>
+                  <option value="ActiveStudent">Active Contributor (Student)</option>
+                </select>
+              </div>
+            )}
+
+            <div className="input-group">
+              <label>Select Course</label>
+              <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="onboarding-select">
+                <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
+                <option value="bsc-msc-forensic">BSc-MSc Forensic Science</option>
+              </select>
+            </div>
+
+            {needsStudentFields && (
+              <>
                 <div className="input-group">
                   <label>Enrollment Number</label>
                   <input 
@@ -199,19 +221,18 @@ function Onboarding() {
                   />
                 </div>
               
-              <div className="input-group">
-                <label>Semester</label>
-                <select value={semester} onChange={(e) => setSemester(e.target.value)} className="onboarding-select">
-                  <option value="sem-1">Semester 1</option>
-                  <option value="sem-2">Semester 2</option>
-                  <option value="sem-3">Semester 3</option>
-                  <option value="sem-4">Semester 4</option>
-                </select>
-              </div>
-            </div>
-
-            </>
-          )}
+                <div className="input-group">
+                  <label>Semester</label>
+                  <select value={semester} onChange={(e) => setSemester(e.target.value)} className="onboarding-select">
+                    <option value="sem-1">Semester 1</option>
+                    <option value="sem-2">Semester 2</option>
+                    <option value="sem-3">Semester 3</option>
+                    <option value="sem-4">Semester 4</option>
+                  </select>
+                </div>
+              </>
+            )}
+          </div>
 
           {role === 'Admin' && (
             <div className="admin-warning-banner">

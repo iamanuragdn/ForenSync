@@ -23,6 +23,7 @@ import { db } from './firebase';
 
 import Search from './Components/Search';
 import { AnimatePresence } from 'framer-motion';
+import { Loader } from 'lucide-react';
 import PageTransition from './Components/PageTransition.jsx';
 import './index.css';
 
@@ -64,6 +65,14 @@ function ProtectedLayout({ children }) {
   }, [user?.uid]);
 
 
+
+  if (isAuthenticating) {
+    return (
+      <div style={{ display: 'flex', height: '100vh', width: '100vw', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)' }}>
+        <Loader size={36} style={{ animation: 'spin 1s linear infinite' }} />
+      </div>
+    );
+  }
 
   if (!user) {
     return <Navigate to="/login" />;

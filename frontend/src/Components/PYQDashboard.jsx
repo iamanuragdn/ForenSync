@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { subjectIconMap, FallbackIcon } from '../utils/iconMap';
+import LoadingState from './LoadingState.jsx';
+import { motion } from 'framer-motion';
 import './PYQDashboard.css'; 
 
 function PYQDashboard() {
@@ -15,8 +17,9 @@ function PYQDashboard() {
     return user.programId || "btech-mtech-cybersecurity";
   });
 
-  const [selectedExam, setSelectedExam] = useState('CA2'); 
+  // const [selectedExam, setSelectedExam] = useState('CA2'); 
   const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
@@ -32,24 +35,41 @@ function PYQDashboard() {
   }, [selectedCourse]);
 
 
-  useEffect(() => {
-    if (!selectedCourse || !selectedSemester || !selectedExam) return; 
+useEffect(() => {
+    // Removed !selectedExam from the check
+    if (!selectedCourse || !selectedSemester) return; 
 
-    fetch(`${import.meta.env.VITE_API_URL}/programs/${selectedCourse}/semesters/${selectedSemester}/exams/${selectedExam}/subjects`)
+    setLoading(true);
+
+    // Updated URL: We are now hitting a more general endpoint 
+    // You will need to ensure your backend supports this route:
+    // /api/programs/:programId/semesters/:semesterId/subjects
+    fetch(`${import.meta.env.VITE_API_URL}/programs/${selectedCourse}/semesters/${selectedSemester}/exams/all/subjects`)
       .then(res => {
         if (!res.ok) throw new Error("Semester not found");
         return res.json();
       })
-      .then(data => setSubjects(data || []))
-      .catch(() => setSubjects([]));
-  }, [selectedCourse, selectedSemester, selectedExam]);
+      .then(data => {
+          setSubjects(data || []);
+          setLoading(false);
+      })
+      .catch(() => {
+          setSubjects([]);
+          setLoading(false);
+      });
+  }, [selectedCourse, selectedSemester]); // Removed selectedExam from dependencies
 
   return (
-    <div className="home-container">
+    <motion.div 
+      className="home-container"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
       
       <div className="pyq-header">
         <h2>Past Year Questions</h2>
-        <p>Select your semester, exam type, and subject.</p>
+        <p>Select your semester and subject.</p>
       </div>
       
       <div className="pyq-filters-row">
@@ -68,12 +88,12 @@ function PYQDashboard() {
           onChange={(e) => setSelectedSemester(e.target.value)}
         >
           {semesters.map(sem => (
-            <option key={sem.id} value={`sem-${sem.id}`}>{sem.name}</option>
+            <option key={sem.id} value={sem.id}>{sem.name}</option>
           ))}
-          {semesters.length === 0 && <option value="sem-1">Semester 1</option>}
+          {semesters.length === 0 && <option value={selectedSemester}>{selectedSemester.replace('sem-', 'Semester ')}</option>}
         </select>
         
-        <div className="exam-tabs">
+        {/* <div className="exam-tabs">
           {['CA1', 'CA2', 'CA3', 'CA4'].map(exam => (
             <button 
               key={exam}
@@ -83,37 +103,51 @@ function PYQDashboard() {
               {exam === 'CA2' ? 'CA2 (Mid-Sem)' : exam === 'CA4' ? 'CA4 (End-Sem)' : exam}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
 
-      <div className="subjects-grid">
-        {subjects.length > 0 ? (
-          subjects.map(subject => {
+      {loading ? (
+        <LoadingState text="Loading subjects..." />
+      ) : subjects.length > 0 ? (
+        <div className="subjects-grid">
+          {subjects.map((subject, index) => {
             const IconComponent = subjectIconMap[subject.id] || FallbackIcon;
             return (
-              <Link 
-                to={`/pyq/${selectedCourse}/${selectedSemester}/${subject.id}?exam=${selectedExam}`} 
-                key={subject.id} 
-                className="subject-card"
+              <motion.div 
+                key={subject.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.05, ease: 'easeOut' }}
               >
-                <div className="subject-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <IconComponent size={20} />
+                <Link 
+                  to={`/pyq/${selectedCourse}/${selectedSemester}/${subject.id}`} 
+                  className="subject-card"
+                  style={{ position: 'relative' }}
+                >
+                  {subject.hasPYQs ? (
+                    <span className="pyq-status-dot available">✓ Available</span>
+                  ) : (
+                    <span className="pyq-status-dot unavailable">Empty</span>
+                  )}
+                  <div className="subject-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconComponent size={20} />
+                  </div>
+                  <div className="subject-info">
+                  <h3>{subject.name}</h3>
+                  <p>{subject.teacher || "NFSU"}</p>
+                  <span className="subject-code">{subject.id}</span>
                 </div>
-                <div className="subject-info">
-                <h3>{subject.name}</h3>
-                <p>{subject.teacher || "NFSU"}</p>
-                <span className="subject-code">{subject.id}</span>
-              </div>
-              </Link>
+                </Link>
+              </motion.div>
             );
-          })
-        ) : (
-          <div className="empty-state">
-             <p>No subjects found for {selectedSemester} yet.</p>
-          </div>
-        )}
-      </div>
-    </div>
+          })}
+        </div>
+      ) : (
+        <div className="empty-state">
+           <p>No subjects found for {selectedSemester} yet.</p>
+        </div>
+      )}
+    </motion.div>
   );
 }
 

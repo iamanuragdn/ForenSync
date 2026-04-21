@@ -188,6 +188,29 @@
 .arrow-icon { color: var(--border-color); font-weight: bold; transition: transform 0.2s ease, color 0.2s ease; }
 .subject-card:hover .arrow-icon { transform: translateX(4px); color: var(--accent-blue); }
 
+.status-dot {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.status-dot.available {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.status-dot.unavailable {
+  background-color: var(--bg-hover);
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
 
 .dashboard-right { display: flex; flex-direction: column; gap: 20px; }
 

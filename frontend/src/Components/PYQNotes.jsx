@@ -3,16 +3,58 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Home, Loader, Cloud, Book } from 'lucide-react';
 import LoadingState from './LoadingState.jsx';
 import { motion } from 'framer-motion';
-import './PYQNotes.css'; 
+import './PYQNotes.css';
+
+const EXAM_TABS = [
+  { key: 'CA1', label: 'CA 1' },
+  { key: 'CA2', label: 'CA 2 (Mid-Sem)' },
+  { key: 'CA3', label: 'CA 3' },
+  { key: 'CA4', label: 'CA 4 (End-Sem)' }
+];
+
+function normalizeExamKey(categoryName) {
+  const normalized = (categoryName || '').toUpperCase().replace(/\s+/g, '');
+
+  if (normalized === 'CA1') return 'CA1';
+  if (normalized === 'CA2') return 'CA2';
+  if (normalized === 'CA3') return 'CA3';
+  if (normalized === 'CA4') return 'CA4';
+
+  return null;
+}
+
+function deriveCategoryFromPath(displayName) {
+  if (typeof displayName !== 'string' || !displayName.includes('/')) return null;
+
+  const pathSegments = displayName
+    .split('/')
+    .map(segment => segment.trim())
+    .filter(Boolean);
+
+  if (pathSegments.length < 2) return null;
+  return pathSegments[pathSegments.length - 2];
+}
+
+function groupFilesByExam(files) {
+  const groups = { CA1: [], CA2: [], CA3: [], CA4: [], OTHER: [] };
+
+  files.forEach(file => {
+    const examKey = normalizeExamKey(file.category || deriveCategoryFromPath(file.name));
+    groups[examKey || 'OTHER'].push(file);
+  });
+
+  return groups;
+}
 
 function PYQNotes() {
   const { programId, semesterId, subjectId } = useParams();
   const [searchParams] = useSearchParams();
-  const selectedExam = searchParams.get('exam') || 'CA1'; 
-  const [files, setFiles] = useState([]);
+  const initialTab = normalizeExamKey(searchParams.get('exam')) || 'CA1';
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [grouped, setGrouped] = useState({ CA1: [], CA2: [], CA3: [], CA4: [], OTHER: [] });
   const [loading, setLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0); 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [subjectName, setSubjectName] = useState(subjectId);
 
   useEffect(() => {
@@ -20,22 +62,28 @@ function PYQNotes() {
     fetch(`${import.meta.env.VITE_API_URL}/notes/${programId}/${semesterId}/${subjectId}?type=PYQ`)
       .then(res => res.json())
       .then(data => {
-        const sortedFiles = (data.files || []).sort((a, b) => 
-            a.name.localeCompare(b.name, undefined, { numeric: true })
+        const sortedFiles = (data.files || []).sort((a, b) =>
+          a.name.localeCompare(b.name, undefined, { numeric: true })
         );
+        const newGrouped = groupFilesByExam(sortedFiles);
+        setGrouped(newGrouped);
         
-        const filteredByExam = sortedFiles.filter(file => 
-            file.name.toUpperCase().includes(selectedExam.toUpperCase())
-        );
+        // Auto-select populated tab dynamically if no strict URL target was provided
+        const urlExam = normalizeExamKey(searchParams.get('exam'));
+        if (urlExam && newGrouped[urlExam] && newGrouped[urlExam].length > 0) {
+            setActiveTab(urlExam);
+        } else {
+            const firstPopulated = EXAM_TABS.find(t => newGrouped[t.key] && newGrouped[t.key].length > 0);
+            if (firstPopulated) setActiveTab(firstPopulated.key);
+        }
 
-        setFiles(filteredByExam);
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to fetch PYQs:", err);
         setLoading(false);
       });
-  }, [programId, semesterId, subjectId, selectedExam, refreshTrigger]);
+  }, [programId, semesterId, subjectId, refreshTrigger]);
 
 
   useEffect(() => {
@@ -54,26 +102,26 @@ function PYQNotes() {
 
 
   const handleSync = async () => {
-    setIsSyncing(true); 
+    setIsSyncing(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/sync`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            programId: programId,
-            semesterId: semesterId,
-            subjectId: subjectId,
-            type: "PYQ" // Tells Firebase to look in the PYQ collection
+          programId: programId,
+          semesterId: semesterId,
+          subjectId: subjectId,
+          type: "PYQ" // Tells Firebase to look in the PYQ collection
         })
       });
-      
+
       const result = await response.json();
-      
+
       if (response.ok) {
         alert(`🚀 ${result.message}`);
-        setRefreshTrigger(prev => prev + 1); 
+        setRefreshTrigger(prev => prev + 1);
       } else {
         alert("Sync failed: " + result.error);
       }
@@ -86,29 +134,30 @@ function PYQNotes() {
   };
 
   const formattedSem = semesterId ? semesterId.replace('-', ' ').toUpperCase() : '';
+  const currentFiles = grouped[activeTab] || [];
 
   return (
     <div className="pyq-notes-container">
-      
-      
+
+
       <div className="breadcrumb">
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Home size={16} /></span> 
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Home size={16} /></span>
         <Link to="/">Home</Link> <span className="divider">/</span>
         <Link to="/pyq">{formattedSem}</Link> <span className="divider">/</span>
-        <span className="current-page">{subjectName} {selectedExam} Papers</span>
+        <span className="current-page">{subjectName} Papers</span>
       </div>
 
-      
+
       <div className="page-header">
         <div className="header-text">
           <h1>{subjectName}</h1>
-          <p>Study Materials • Past Year Questions ({selectedExam})</p>
+          <p>Study Materials • Past Year Questions</p>
         </div>
         <div className="header-actions">
-          
-          <button 
-            className="sync-btn" 
-            onClick={handleSync} 
+
+          <button
+            className="sync-btn"
+            onClick={handleSync}
             disabled={isSyncing}
             style={{ opacity: isSyncing ? 0.7 : 1, cursor: isSyncing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
@@ -117,28 +166,42 @@ function PYQNotes() {
         </div>
       </div>
 
+      <div className="pyq-tabs-bar">
+        {EXAM_TABS.map(tab => (
+          <button
+            key={tab.key}
+            className={`pyq-tab ${activeTab === tab.key ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.key)}
+          >
+            {tab.label}
+            {!loading && grouped[tab.key]?.length > 0 && (
+              <span className="pyq-tab-count">{grouped[tab.key].length}</span>
+            )}
+          </button>
+        ))}
+      </div>
 
       {loading ? (
-        <LoadingState text={`Loading ${selectedExam} papers...`} />
-      ) : files.length > 0 ? (
+        <LoadingState text="Loading past year questions..." />
+      ) : currentFiles.length > 0 ? (
         <div className="files-list">
-          {files.map((file, index) => (
-            <motion.div 
-              key={file.id} 
-              className="file-item" 
+          {currentFiles.map((file, index) => (
+            <motion.div
+              key={file.id || index}
+              className="file-item"
               style={{ display: 'flex', alignItems: 'center', gap: '15px' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+              transition={{ duration: 0.4, delay: index * 0.06, ease: 'easeOut' }}
             >
-              
+
               <div className="file-icon" style={{ fontSize: '1.5rem', background: 'var(--bg-hover)', padding: '10px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-blue)' }}>
                 <Book size={24} />
               </div>
 
               <div className="file-info" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                 <span className="file-name" title={file.name} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: '600', color: 'var(--text-primary)' }}>
-                  {file.name.replace(`${selectedExam} / `, '')}
+                  {file.name}
                 </span>
               </div>
 
@@ -156,11 +219,11 @@ function PYQNotes() {
         </div>
       ) : (
         <div className="empty-state">
-          <p>No {selectedExam} papers found for this subject yet.</p>
-          <p className="empty-subtext">Make sure your Google Drive has a folder named "{selectedExam}" inside this subject's PYQ folder!</p>
+          <p>No PYQs uploaded for {EXAM_TABS.find(t => t.key === activeTab)?.label || activeTab} yet.</p>
+          <p className="empty-subtext">Papers will appear here once they are synced from the drive.</p>
         </div>
       )}
-      </div>
+    </div>
   );
 }
 
