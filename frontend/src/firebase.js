@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // You get this from your Firebase Console > Project Settings > General > Your Apps
 const firebaseConfig = {
-  apiKey: "AIzaSyBhZUfUCffFbWreZRVLE5lRsTBOcy3JSN4",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "forensync-98f32.firebaseapp.com",
   projectId: "forensync-98f32",
   storageBucket: "forensync-98f32.firebasestorage.app",
