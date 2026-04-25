@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Clock, BarChart, TrendingUp, BookOpen, Sparkles } from 'lucide-react';
 import { subjectIconMap, FallbackIcon as Book } from '../utils/iconMap';
 import LoadingState from './LoadingState.jsx';
+import { Skeleton } from 'boneyard-js/react';
 import { motion } from 'framer-motion';
 import './subjects.css'; 
 
@@ -108,11 +109,12 @@ function Subjects() {
   
   const progressPercentage = getSemesterProgress();
 
-  if (loading || !user) return <div className="home-dashboard" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}><LoadingState text="Loading your dashboard..." /></div>;
+  if (!user) return <div className="home-dashboard" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}><LoadingState text="Loading your dashboard..." /></div>;
 
   const isPureFaculty = user.role === 'Admin' && (!user.adminType || user.adminType === 'Teacher' || user.adminType === 'Administrator');
 
   return (
+    <Skeleton name="subjects-dashboard" loading={loading}>
     <div className="home-dashboard">
       
       <div className="dashboard-left">
@@ -285,6 +287,7 @@ function Subjects() {
 
       </div>
     </div>
+    </Skeleton>
   );
 }
 

@@ -1234,7 +1234,8 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         if (!userDoc.exists) return res.status(401).json({ error: "Unauthorized: User not found" });
         const userData = userDoc.data();
 
-        if (userData.role !== 'Admin' || !userData.isVerifiedAdmin) {
+        const isAuthorizedAdmin = userData.role === 'SuperAdmin' || (userData.role === 'Admin' && userData.isVerifiedAdmin);
+        if (!isAuthorizedAdmin) {
             return res.status(403).json({ error: "Access Denied: Unverified Admin" });
         }
 

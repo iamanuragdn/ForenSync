@@ -506,3 +506,74 @@ input:checked + .mission-slider:before {
 .role-SuperAdmin { --glow-color: rgba(245, 158, 11, 0.5); --glow-color-transparent: rgba(245, 158, 11, 0.15); }
 .role-Admin { --glow-color: rgba(59, 130, 246, 0.5); --glow-color-transparent: rgba(59, 130, 246, 0.15); }
 .role-Student { --glow-color: rgba(16, 185, 129, 0.5); --glow-color-transparent: rgba(16, 185, 129, 0.15); }
+
+/* MOBILE AND TABLET RESPONSIVENESS */
+@media (max-width: 1024px) {
+  .super-admin-container {
+    padding: 15px;
+  }
+  
+  .super-admin-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .super-admin-header-title h1 {
+    font-size: 1.8rem;
+  }
+  
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filters-group {
+    flex-wrap: wrap;
+  }
+  
+  .table-header {
+    display: none;
+  }
+  
+  .user-row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 15px;
+    gap: 8px;
+  }
+  
+  .cell-user {
+    flex: 1 1 100%;
+    margin-bottom: 2px;
+  }
+  
+  .cell-email {
+    flex: 1 1 100%;
+    word-break: break-all;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .cell-role {
+    flex: 0 0 auto;
+  }
+  
+  .cell-verified {
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-right: 35px; /* Leave space for the absolute action icon */
+  }
+  
+  .cell-actions {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+  }
+  
+  .expanded-panel {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 15px;
+  }
+}

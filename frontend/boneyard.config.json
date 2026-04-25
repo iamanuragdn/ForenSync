@@ -1,0 +1,11 @@
+{
+  "breakpoints": [375, 768, 1280],
+  "out": "./src/bones",
+  "animate": "shimmer",
+  "color": "var(--bg-card)",
+  "darkColor": "var(--bg-card)",
+  "shimmerColor": "var(--bg-hover)",
+  "darkShimmerColor": "var(--bg-hover)",
+  "speed": "1.5s",
+  "shimmerAngle": 90
+}

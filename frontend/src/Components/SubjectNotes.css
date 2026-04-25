@@ -38,10 +38,13 @@
 
 .view-toggle {
   display: flex;
+  align-items: center;
   background-color: var(--bg-hover);
   padding: 4px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
+  height: 44px;
+  box-sizing: border-box;
 }
 
 .toggle-btn {
@@ -69,9 +72,15 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 0.75rem 1.25rem;
+  padding: 0 1.2rem;
+  height: 44px;
+  min-width: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -225,10 +234,13 @@
 .community-notes-trigger {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: rgba(59, 130, 246, 0.1);
   border: 1px solid rgba(59, 130, 246, 0.2);
-  padding: 0.65rem 1rem;
+  padding: 0 1.2rem;
+  height: 44px;
+  min-width: 170px;
   border-radius: 8px;
   color: var(--accent-blue);
   font-weight: 600;
@@ -284,7 +296,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--hover-shadow), 0 0 0 1px rgba(255, 255, 255, 0.03);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -434,16 +446,14 @@
 /* -------------------------------------- */
 
 /* NOTES DASHBOARD MOBILE UI OVERHAUL */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .notes-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .list-view .file-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
   .list-view .file-info h3 { width: 100%; }
-}
 
-@media (max-width: 768px) {
   /* 1. Fix the massive desktop padding */
   .notes-dashboard {
-    padding: 16px;
+    padding: 20px;
   }
 
   /* 2. Fix the breadcrumbs so they don't break the layout */
@@ -469,12 +479,27 @@
   .header-actions {
     width: 100%;
     justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
-  .btn-primary-gradient {
-    flex-grow: 1; /* Makes the sync button fill all remaining space */
+  .community-notes-dropdown {
+    left: 0;
+    right: auto;
+    width: 300px;
+    max-width: 90vw;
+  }
+
+  .btn-primary-gradient, .community-notes-trigger {
+    flex: 1; /* Makes them fill space */
     text-align: center;
-    padding: 0.6rem 1rem;
+    padding: 0 0.5rem;
+    min-width: 0;
+    font-size: 0.8rem;
+  }
+  
+  .view-toggle {
+    flex: 0 0 auto;
   }
 
   /* 5. STOP FILE NAME TRUNCATION & MATCH HOMEPAGE SIZE */

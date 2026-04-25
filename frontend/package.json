@@ -13,6 +13,7 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "axios": "^1.13.5",
+    "boneyard-js": "^1.8.1",
     "browser-image-compression": "^2.0.2",
     "firebase": "^12.10.0",
     "framer-motion": "^12.38.0",

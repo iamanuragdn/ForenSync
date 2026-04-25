@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { subjectIconMap, FallbackIcon } from '../utils/iconMap';
-import LoadingState from './LoadingState.jsx';
+import { Skeleton } from 'boneyard-js/react';
 import { motion } from 'framer-motion';
 import './PYQDashboard.css'; 
 
@@ -106,9 +106,8 @@ useEffect(() => {
         </div> */}
       </div>
 
-      {loading ? (
-        <LoadingState text="Loading subjects..." />
-      ) : subjects.length > 0 ? (
+      <Skeleton name="pyq-dashboard" loading={loading}>
+      {subjects.length > 0 ? (
         <div className="subjects-grid">
           {subjects.map((subject, index) => {
             const IconComponent = subjectIconMap[subject.id] || FallbackIcon;
@@ -147,6 +146,7 @@ useEffect(() => {
            <p>No subjects found for {selectedSemester} yet.</p>
         </div>
       )}
+      </Skeleton>
     </motion.div>
   );
 }

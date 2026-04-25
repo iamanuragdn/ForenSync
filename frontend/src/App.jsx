@@ -167,6 +167,18 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      // Allow context menu only on inputs and textareas
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
+    };
+    
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => document.removeEventListener('contextmenu', handleContextMenu);
+  }, []);
+
   return (
     <BrowserRouter>
       <AnimatedRoutes />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
-import LoadingState from './LoadingState.jsx';
+import { Skeleton } from 'boneyard-js/react';
 import { motion } from 'framer-motion';
 import './SubjectSelect.css';
 
@@ -78,11 +78,11 @@ function SubjectSelect() {
       </header>
 
 
-      {isLoading ? (
-        <LoadingState text="Loading subjects..." />
-      ) : error ? (
+      {error ? (
         <div className="status-message error">Error: {error}</div>
-      ) : subjects.length === 0 ? (
+      ) : (
+        <Skeleton name="subject-select" loading={isLoading}>
+        {subjects.length === 0 ? (
         <div className="status-message empty">No subjects found for this semester yet.</div>
       ) : (
         <>
@@ -159,6 +159,8 @@ function SubjectSelect() {
             </table>
           </div>
         </>
+        )}
+        </Skeleton>
       )}
 
     </div>

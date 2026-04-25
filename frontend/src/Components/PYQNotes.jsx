@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Home, Loader, Cloud, Book } from 'lucide-react';
-import LoadingState from './LoadingState.jsx';
+import { Skeleton } from 'boneyard-js/react';
 import { motion } from 'framer-motion';
 import './PYQNotes.css';
 
@@ -181,9 +181,8 @@ function PYQNotes() {
         ))}
       </div>
 
-      {loading ? (
-        <LoadingState text="Loading past year questions..." />
-      ) : currentFiles.length > 0 ? (
+      <Skeleton name="pyq-notes" loading={loading}>
+      {currentFiles.length > 0 ? (
         <div className="files-list">
           {currentFiles.map((file, index) => (
             <motion.div
@@ -223,6 +222,7 @@ function PYQNotes() {
           <p className="empty-subtext">Papers will appear here once they are synced from the drive.</p>
         </div>
       )}
+      </Skeleton>
     </div>
   );
 }

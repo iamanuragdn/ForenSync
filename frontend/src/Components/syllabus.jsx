@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import LoadingState from './LoadingState.jsx';
+import { Skeleton } from 'boneyard-js/react';
 import './syllabus.css';
 
 function Syllabus() {
@@ -40,7 +40,7 @@ function Syllabus() {
     setOpenUnitIndex(openUnitIndex === index ? null : index);
   };
 
-  if (loading) return <div className="syllabus-page"><LoadingState text="Loading Syllabus..." /></div>;
+
 
   if (!subjectData) return (
     <div className="syllabus-page" style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -50,6 +50,7 @@ function Syllabus() {
   );
 
   return (
+    <Skeleton name="syllabus-page" loading={loading}>
     <div className="syllabus-page">
       
 
@@ -111,6 +112,7 @@ function Syllabus() {
         )}
       </div>
     </div>
+    </Skeleton>
   );
 }
 

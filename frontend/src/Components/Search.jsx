@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Search as SearchIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Skeleton } from 'boneyard-js/react';
 import './Search.css';
 
 function Search() {
@@ -46,20 +47,8 @@ useEffect(() => {
         <p>Found {results.length} results across syllabus, notes, and exams.</p>
       </div>
 
-    {loading ? (
-        <div className="results-grid">
-          {[...Array(6)].map((_, index) => (
-            <div key={index} className="result-card" style={{ cursor: 'default', transform: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.01)' }}>
-              <div className="result-card-header">
-                <div className="skeleton-pulse skeleton-title"></div>
-                <div className="skeleton-pulse skeleton-badge"></div>
-              </div>
-              <div className="skeleton-pulse skeleton-line"></div>
-              <div className="skeleton-pulse skeleton-line short"></div>
-            </div>
-          ))}
-        </div>
-      ) : results.length > 0 ? (
+    <Skeleton name="search-results" loading={loading}>
+      {results.length > 0 ? (
         <div className="categorized-search-page">
           {(() => {
             const subjects = results.filter(i => ['Subject', 'Topic', 'Program'].includes(i.type));
@@ -116,6 +105,7 @@ useEffect(() => {
           </button>
         </div>
       )}
+      </Skeleton>
     </div>
   );
 }

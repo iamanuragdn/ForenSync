@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
-import LoadingState from './LoadingState.jsx';
+import { Skeleton } from 'boneyard-js/react';
 import './SyllabusDetail.css';
 
 function SyllabusDetail() {
@@ -59,13 +59,12 @@ function SyllabusDetail() {
         <span className="current-page">{subject?.name || subjectId}</span>
       </div>
 
-      {isLoading ? (
-        <LoadingState text="Loading syllabus details..." />
-      ) : error ? (
+      {error ? (
         <div className="status-message error">Error: {error}</div>
-      ) : !subject ? (
+      ) : !subject && !isLoading ? (
         <div className="status-message empty">Subject details not found.</div>
       ) : (
+        <Skeleton name="syllabus-detail" loading={isLoading}>
         <div className="syllabus-detail-card">
           
           <div className="detail-header-row">
@@ -129,6 +128,7 @@ function SyllabusDetail() {
           </table>
 
         </div>
+        </Skeleton>
       )}
     </div>
   );

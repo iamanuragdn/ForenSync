@@ -86,6 +86,17 @@ body {
   background-attachment: fixed;
   background-size: cover;
   color: var(--text-primary);
+  
+  /* Prevent accidental text selection and long-press menus on touch devices */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection in input fields where it's actually needed */
+input, textarea {
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
 }
 
 body::after {
