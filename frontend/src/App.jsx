@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './Components/sidebar.jsx';
-import Nav from './Components/nav.jsx'; 
+import Nav from './Components/nav.jsx';
 import Subjects from './Components/subjects.jsx';
-import Syllabus from './Components/syllabus'; 
+import Syllabus from './Components/syllabus';
 import ProgramSelect from './Components/ProgramSelect.jsx';
 import SemesterSelect from './Components/SemesterSelect.jsx';
 import SubjectSelect from './Components/SubjectSelect.jsx';
@@ -13,12 +13,13 @@ import PYQDashboard from './Components/PYQDashboard';
 import PYQNotes from './Components/PYQNotes';
 import Exams from './Components/Exams';
 import AdminConsole from './Components/AdminConsole';
-import Login from './Components/Login.jsx'; 
+import Login from './Components/Login.jsx';
 import Onboarding from './Components/Onboarding.jsx';
 import SSOVerifyPage from './Components/SSOVerifyPage.jsx';
+import VerifyEmail from './Components/VerifyEmail.jsx';
 import './App.css';
-import React, { useState, useEffect } from 'react'; 
-import { doc, onSnapshot } from 'firebase/firestore'; 
+import React, { useState, useEffect } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 
 import Search from './Components/Search';
@@ -43,20 +44,20 @@ function ProtectedLayout({ children }) {
     const unsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
       if (docSnap.exists()) {
         const freshData = docSnap.data();
-        
+
         const safeUser = { ...freshData };
         delete safeUser.role;
         delete safeUser.isVerifiedAdmin;
         delete safeUser.adminType;
-        
+
         localStorage.setItem("forensync_user", JSON.stringify(safeUser));
-        
+
         setUser(freshData);
       }
       else {
         localStorage.removeItem("forensync_user");
         setUser(null);
-        window.location.href = '/login'; 
+        window.location.href = '/login';
       }
       setIsAuthenticating(false);
     });
@@ -87,8 +88,8 @@ function ProtectedLayout({ children }) {
           <p style={{ color: '#64748b', lineHeight: '1.6', marginBottom: '25px', fontSize: '0.95rem' }}>
             Your Faculty/Admin account has been created successfully, but it requires manual security verification from a Superadmin before you can access the ForenSync ecosystem.
           </p>
-          <button 
-            onClick={() => { localStorage.removeItem('forensync_user'); window.location.href='/login'; }}
+          <button
+            onClick={() => { localStorage.removeItem('forensync_user'); window.location.href = '/login'; }}
             style={{ padding: '12px 24px', background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}
           >
             Sign Out
@@ -100,9 +101,9 @@ function ProtectedLayout({ children }) {
 
   return (
     <div className="main-layout" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      
-      <div 
-        className="mobile-overlay" 
+
+      <div
+        className="mobile-overlay"
         onClick={() => {
           document.body.classList.remove('tablet-sidebar-open');
           document.body.classList.remove('mobile-sidebar-open');
@@ -110,13 +111,13 @@ function ProtectedLayout({ children }) {
       ></div>
 
       <Sidebar />
-      
+
       <div className="content-area" style={{ flex: 1, backgroundColor: 'transparent', display: 'flex', flexDirection: 'column' }}>
-        <Nav /> 
+        <Nav />
         <div className="page-content" style={{ flex: 1, overflowY: 'auto' }}>
           {children}
         </div>
-      </div> 
+      </div>
     </div>
   );
 }
@@ -129,11 +130,12 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        
+
         <Route path="/" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
         <Route path="/sso-verify" element={<PageTransition><SSOVerifyPage /></PageTransition>} />
+        <Route path="/verify-email" element={<PageTransition><VerifyEmail /></PageTransition>} />
 
         <Route path="/*" element={
           <ProtectedLayout>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Home, Cloud, Loader, FileText, Book, Presentation, File } from 'lucide-react';
+import { Home, Cloud, Loader, FileText, Book, Presentation, File, Users, Download, ExternalLink } from 'lucide-react';
 import LoadingState from './LoadingState.jsx';
 import { motion } from 'framer-motion';
 import './SubjectNotes.css';
@@ -12,7 +12,8 @@ function SubjectNotes() {
   const [subjectName, setSubjectName] = useState(subjectId);
   const [isSyncing, setIsSyncing] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [files, setFiles] = useState([]);
+  const [officialNotes, setOfficialNotes] = useState([]);
+  const [contributorNotes, setContributorNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -62,21 +63,54 @@ function SubjectNotes() {
         if (data.error) {
           setError(data.error);
         } else {
-          const sortedFiles = (data.files || []).sort((a, b) => {
-            return a.name.localeCompare(b.name, undefined, {
-              numeric: true,
-              sensitivity: 'base'
-            });
-          });
+          const allFiles = data.files || [];
           
-          setFiles(sortedFiles); 
+          const colors = [
+            "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+            "linear-gradient(135deg, #4facfe, #00f2fe)",
+            "linear-gradient(135deg, #43e97b, #38f9d7)",
+            "linear-gradient(135deg, #fa709a, #fee140)",
+            "linear-gradient(135deg, #a18cd1, #fbc2eb)"
+          ];
+
+          // Create a bulletproof check for contributor files
+          const isContributor = (file) => 
+            file.source === 'contributor' || 
+            file.category === 'Contributors' || 
+            file.name.includes('Contributors /');
+
+          // Filter Official (If it is NOT a contributor)
+          const sortedOfficial = allFiles
+            .filter(file => !isContributor(file))
+            .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+          // Filter Contributors (If it IS a contributor)
+          const sortedContributors = allFiles
+            .filter(file => isContributor(file))
+            .map((file, index) => {
+               const name = file.contributorName || "Unknown";
+               // Clean up the messy filename just for the UI display
+               const cleanTitle = file.name.replace(/^Contributors\s*\/\s*/i, '');
+               return {
+                  ...file,
+                  contributor: name,
+                  avatar: name.charAt(0).toUpperCase(),
+                  color: colors[index % colors.length],
+                  title: cleanTitle
+               };
+            })
+            .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+          setOfficialNotes(sortedOfficial);
+          setContributorNotes(sortedContributors);
         }
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to fetch notes:", err);
         setError("Failed to connect to the backend server.");
-        setFiles([]); 
+        setOfficialNotes([]);
+        setContributorNotes([]);
         setLoading(false);
       });
       
@@ -118,6 +152,48 @@ function SubjectNotes() {
         
         <div className="header-actions">
 
+            <div className="community-notes-wrapper">
+              <div className="community-notes-trigger">
+                <div className="trigger-icon-container pulse-icon">
+                  <FileText size={18} />
+                  <div className="community-badge-icon">
+                    <Users size={9} strokeWidth={3} />
+                  </div>
+                </div>
+                <span className="trigger-text">Community Notes</span>
+              </div>
+              
+              <div className="community-notes-dropdown">
+                <div className="dropdown-header">
+                  <h4>Contributor Notes</h4>
+                  <span className="cn-badge">{contributorNotes.length} New</span>
+                </div>
+                <div className="dropdown-list">
+                  {contributorNotes.length === 0 ? (
+                    <div className="empty-dropdown" style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                      No community notes uploaded yet.
+                    </div>
+                  ) : (
+                    contributorNotes.map((note) => (
+                      <div key={note.id} className="dropdown-row">
+                        <div className="contributor-avatar" style={{ background: note.color }}>
+                           {note.avatar}
+                        </div>
+                        <div className="note-details">
+                          <span className="contributor-name">{note.contributor}</span>
+                          <span className="note-title">{note.title}</span>
+                        </div>
+                        <div className="note-row-actions">
+                          <a href={note.webViewLink} target="_blank" rel="noreferrer" title="View"><ExternalLink size={14}/></a>
+                          <a href={note.webContentLink} download title="Download"><Download size={14}/></a>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
           <div className="view-toggle">
 
           <button 
@@ -156,10 +232,10 @@ function SubjectNotes() {
         <div className="status-message error">{error}</div>
       ) : (
         <div className={`files-container ${viewMode}-view`}>
-          {files.length === 0 ? (
-            <div className="empty-state">No notes found for this subject yet.</div>
+          {officialNotes.length === 0 ? (
+            <div className="empty-state">No official notes found for this subject yet.</div>
           ) : (
-            files.map((file, index) => (
+            officialNotes.map((file, index) => (
               <motion.div 
                   className="file-card" 
                   key={index}
