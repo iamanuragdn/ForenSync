@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield, ExternalLink } from 'lucide-react';
+import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield, ExternalLink, Crown } from 'lucide-react';
 import './sidebarStyle.css';
 import side_bar_logo from '../assets/sidebar-logo.png';
 import { getAuth } from "firebase/auth";
 
-function Sidebar() {
+function Sidebar({ user }) {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -128,6 +128,13 @@ function Sidebar() {
           <span className="nav-icon"><Shield size={20} /></span>
           <span className="nav-text">Admin</span>
         </NavLink>
+
+        {user?.role === 'SuperAdmin' && (
+          <NavLink to="/superadmin" className="nav-item superadmin-link" style={{ marginTop: 0, color: '#f59e0b' }}>
+            <span className="nav-icon"><Crown size={20} /></span>
+            <span className="nav-text" style={{ fontWeight: 'bold' }}>Super Admin</span>
+          </NavLink>
+        )}
       </div>
     </aside>
   );

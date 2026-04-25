@@ -281,12 +281,10 @@
   top: calc(100% + 12px);
   right: 0;
   width: 320px;
-  background: rgba(20, 20, 24, 0.75); /* Dark Glassmorphism */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -312,11 +310,11 @@
 
 .dropdown-header {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-hover);
 }
 
 .dropdown-header h4 {
@@ -356,7 +354,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-color);
   transition: background 0.2s;
   cursor: default;
 }
@@ -366,7 +364,7 @@
 }
 
 .dropdown-row:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-hover);
 }
 
 .contributor-avatar {
@@ -419,7 +417,7 @@
 
 .note-row-actions a {
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-app);
   padding: 6px;
   border-radius: 6px;
   display: flex;

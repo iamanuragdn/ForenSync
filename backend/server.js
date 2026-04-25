@@ -165,7 +165,7 @@ async function fetchSubjectAndContributorNotes(subjectFolderId, drive) {
         // 1. Scan the Root Subject Folder
         const rootRes = await drive.files.list({
             q: `'${subjectFolderId}' in parents and trashed=false`,
-            fields: 'files(id, name, webViewLink, webContentLink, mimeType)',
+            fields: 'files(id, name, webViewLink, webContentLink, mimeType, appProperties)',
             spaces: 'drive'
         });
 
@@ -184,7 +184,7 @@ async function fetchSubjectAndContributorNotes(subjectFolderId, drive) {
                     // 6. IS "Contributors" -> Perform a second query for inside files
                     const contribRes = await drive.files.list({
                         q: `'${item.id}' in parents and trashed=false`,
-                        fields: 'files(id, name, webViewLink, webContentLink, mimeType)',
+                        fields: 'files(id, name, webViewLink, webContentLink, mimeType, appProperties)',
                         spaces: 'drive'
                     });
 
@@ -281,7 +281,7 @@ app.post("/api/sync-drive", async (req, res) => {
                                     mimeType: file.mimeType,
                                     type: file.mimeType && file.mimeType.includes('pdf') ? 'pdf' : 'doc',
                                     source: "contributor",
-                                    contributorName: "Unknown",
+                                    contributorName: file.appProperties?.uploaderName || "Unknown",
                                     lastSynced: admin.firestore.FieldValue.serverTimestamp()
                                 }, { merge: true });
                             });
@@ -1223,10 +1223,20 @@ app.post('/api/admin/sync-global', async (req, res) => {
 
 app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
     try {
-        let { targetDriveFolderId, programId, semesterId, subjects, subjectId, type, fileName, pathArray } = req.body;
+        let { targetDriveFolderId, programId, semesterId, subjects, subjectId, type, fileName, pathArray, uid, userName, uploadDestination } = req.body;
         const fileObject = req.file;
 
         if (!fileObject) return res.status(400).json({ error: "No file uploaded" });
+        if (!uid) return res.status(401).json({ error: "Unauthorized: Missing user ID" });
+
+        // Secure RBAC Verification from Firestore
+        const userDoc = await db.collection("users").doc(uid).get();
+        if (!userDoc.exists) return res.status(401).json({ error: "Unauthorized: User not found" });
+        const userData = userDoc.data();
+
+        if (userData.role !== 'Admin' || !userData.isVerifiedAdmin) {
+            return res.status(403).json({ error: "Access Denied: Unverified Admin" });
+        }
 
         // Update the logic to extract variables from the path array
         if (pathArray) {
@@ -1243,6 +1253,14 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
                 console.error("Path array parsing failed:", err.message);
             }
         }
+        
+        if (userData.adminType === 'ActiveContributor') {
+            uploadDestination = 'Community Notes';
+        } else if (userData.adminType === 'CR' && type !== 'Attendance') {
+            uploadDestination = 'Community Notes';
+        }
+
+        const isContributorUpload = uploadDestination === 'Community Notes';
 
         // Robust handling of missing subjects that don't match the standard Program -> Semester -> Subject -> Type structure
         let actualSubject = sanitizeSubjectCode(subjects || subjectId);
@@ -1260,13 +1278,47 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
 
         const uploadDrive = google.drive({ version: 'v3', auth: oauth2Client });
 
+        let finalFolderId = targetDriveFolderId;
+        if (isContributorUpload) {
+            const folderQuery = `name='Contributors' and '${targetDriveFolderId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+            const folderRes = await uploadDrive.files.list({
+                q: folderQuery,
+                fields: 'files(id, name)',
+                spaces: 'drive'
+            });
+
+            if (folderRes.data.files && folderRes.data.files.length > 0) {
+                finalFolderId = folderRes.data.files[0].id;
+            } else {
+                const newFolder = await uploadDrive.files.create({
+                    requestBody: {
+                        name: 'Contributors',
+                        mimeType: 'application/vnd.google-apps.folder',
+                        parents: [targetDriveFolderId]
+                    },
+                    fields: 'id'
+                });
+                finalFolderId = newFolder.data.id;
+                
+                await uploadDrive.permissions.create({
+                    fileId: finalFolderId,
+                    requestBody: { role: 'reader', type: 'anyone' },
+                });
+            }
+        }
+
         const bufferStream = new stream.PassThrough();
         bufferStream.end(fileObject.buffer);
 
         const driveResponse = await uploadDrive.files.create({
             requestBody: {
                 name: fileName || fileObject.originalname,
-                parents: [targetDriveFolderId],
+                parents: [finalFolderId],
+                appProperties: {
+                    uploaderName: userName || userData.name || 'Unknown',
+                    uploaderUid: uid,
+                    uploadSource: isContributorUpload ? 'contributor' : 'official'
+                }
             },
             media: {
                 mimeType: fileObject.mimetype,
@@ -1278,10 +1330,10 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
         const fileId = driveResponse.data.id;
         let parentFolderName = null;
 
-        if (targetDriveFolderId) {
+        if (finalFolderId) {
             try {
                 const folderResponse = await uploadDrive.files.get({
-                    fileId: targetDriveFolderId,
+                    fileId: finalFolderId,
                     fields: 'name'
                 });
                 parentFolderName = normalizeFolderName(folderResponse.data?.name);
@@ -1307,15 +1359,23 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
                     .collection(type || 'general').doc(fileId);
             }
 
-            await docRef.set({
+            let dbPayload = {
                 name: fileName || fileObject.originalname,
-                category: parentFolderName,
+                category: parentFolderName || (isContributorUpload ? 'Contributors' : 'Official'),
                 webViewLink: driveResponse.data.webViewLink,
                 webContentLink: driveResponse.data.webContentLink,
                 mimeType: driveResponse.data.mimeType,
                 type: 'pdf',
+                source: isContributorUpload ? 'contributor' : 'official',
                 lastSynced: admin.firestore.FieldValue.serverTimestamp()
-            });
+            };
+
+            if (isContributorUpload) {
+                dbPayload.contributorName = userName || userData.name || 'Unknown';
+                dbPayload.contributorUid = uid;
+            }
+
+            await docRef.set(dbPayload);
 
             // Always returns a 200 OK if the Drive upload and Database sync both succeed
             res.status(200).json({ message: "Upload successful!" });

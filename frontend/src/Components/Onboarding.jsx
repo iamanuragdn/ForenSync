@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'; 
 import { Sun, Moon, Rocket, Loader, Camera } from 'lucide-react';
 import './Onboarding.css';
@@ -46,7 +47,7 @@ function Onboarding() {
     }
   };
 
-  const needsStudentFields = role === 'Student' || (role === 'Admin' && (adminType === 'CR' || adminType === 'ActiveStudent'));
+  const needsStudentFields = role === 'Student' || (role === 'Admin' && (adminType === 'CR' || adminType === 'ActiveContributor'));
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -118,6 +119,18 @@ function Onboarding() {
       delete safeProfile.adminType;
       delete safeProfile.isVerifiedAdmin;
       localStorage.setItem("forensync_user", JSON.stringify(safeProfile));
+      // Wait for Firestore to recognize the new document to prevent premature logout by ProtectedLayout
+      let userExists = false;
+      let attempts = 0;
+      while (!userExists && attempts < 10) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          userExists = true;
+        } else {
+          attempts++;
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
       
       navigate('/dashboard');
 
@@ -194,7 +207,7 @@ function Onboarding() {
                   <option value="Teacher">Teacher / Faculty</option>
                   <option value="Administrator">Administrative Staff</option>
                   <option value="CR">Class Representative (CR)</option>
-                  <option value="ActiveStudent">Active Contributor (Student)</option>
+                  <option value="ActiveContributor">Active Contributor (Student)</option>
                 </select>
               </div>
             )}

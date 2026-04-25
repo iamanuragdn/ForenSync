@@ -45,6 +45,18 @@ function AdminConsole() {
   const [status, setStatus] = useState('');
   const [isGlobalSyncing, setIsGlobalSyncing] = useState(false);
   const [syncReport, setSyncReport] = useState(null);
+  
+  // Advanced RBAC State
+  const [uploadDestination, setUploadDestination] = useState('Official Notes');
+  const isStreamlinedUser = user?.adminType === 'ActiveContributor' || user?.adminType === 'CR';
+
+  // Force destination for streamlined users
+  useEffect(() => {
+    if (isStreamlinedUser) {
+      setUploadDestination('Community Notes');
+    }
+  }, [isStreamlinedUser]);
+
   const currentFolderId = pathHistory[pathHistory.length - 1].id;
 
   const handleGlobalSync = async () => {
@@ -72,8 +84,8 @@ function AdminConsole() {
   };
 
   useEffect(() => {
-    // Only fetch if the user is actually an admin!
-    if (!user || user.role !== 'Admin') return; 
+    // Only fetch if the user is actually an admin or superadmin!
+    if (!user || (user.role !== 'Admin' && user.role !== 'SuperAdmin')) return; 
 
     fetch(`${import.meta.env.VITE_API_URL}/drive/folders?parentId=${currentFolderId}`)
       .then(res => res.json())
@@ -111,6 +123,10 @@ function AdminConsole() {
     formData.append('subjectId', inferredSubject);
     formData.append('type', inferredType);
     formData.append('fileName', fileName || file.name);
+    formData.append('pathArray', JSON.stringify(pathNames));
+    formData.append('uid', user.uid);
+    formData.append('userName', user.name || 'Unknown');
+    formData.append('uploadDestination', uploadDestination);
     formData.append('file', file);
 
     try {
@@ -141,7 +157,12 @@ function AdminConsole() {
     );
   }
 
-  if (!user || user.role !== 'Admin' || !user.isVerifiedAdmin) {
+  const isAuthorized = user && (
+    user.role === 'SuperAdmin' || 
+    (user.role === 'Admin' && user.isVerifiedAdmin)
+  );
+
+  if (!isAuthorized) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center' }}>
         <h2 style={{ fontSize: '2.5rem', color: '#b91c1c', marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
@@ -172,6 +193,7 @@ function AdminConsole() {
 
       <div className="admin-content-wrapper">
 
+        {!isStreamlinedUser && (
         <div className="admin-card global-sync-card">
           <div className="card-header">
             <h3>🚀 Run Global Sync</h3>
@@ -214,7 +236,7 @@ function AdminConsole() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '0.9rem' }}>
                   {syncReport.added.length > 0 && (
-                    <div>
+                     <div>
                       <h5 style={{ color: '#10b981', margin: '0 0 5px 0' }}>➕ Added Files ({syncReport.added.length})</h5>
                       <ul style={{ color: 'var(--text-secondary)', paddingLeft: '20px', margin: 0, maxHeight: '150px', overflowY: 'auto' }}>
                         {syncReport.added.map((name, i) => <li key={i} style={{ padding: '2px 0' }}>{name}</li>)}
@@ -234,6 +256,7 @@ function AdminConsole() {
             </div>
           )}
         </div>
+        )}
         
         <div className="admin-card">
           <div className="card-header">
@@ -273,6 +296,25 @@ function AdminConsole() {
           
           <form onSubmit={handleUpload} className="admin-upload-form">
             
+            <div className="input-group full-width" style={{ marginBottom: '20px' }}>
+              <label>Upload Destination</label>
+              {isStreamlinedUser ? (
+                <div style={{ padding: '12px', background: 'var(--bg-hover)', borderRadius: '8px', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  🔒 Locked to Community Notes
+                </div>
+              ) : (
+                <select 
+                  value={uploadDestination} 
+                  onChange={(e) => setUploadDestination(e.target.value)} 
+                  className="custom-input"
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-card)', color: 'var(--text-primary)' }}
+                >
+                  <option value="Official Notes">Official Subject Notes (Teacher/Admin)</option>
+                  <option value="Community Notes">Community Notes (Contributors)</option>
+                </select>
+              )}
+            </div>
+
             <div className="input-group full-width">
               <label>Custom Display Name (Optional)</label>
               <input 
