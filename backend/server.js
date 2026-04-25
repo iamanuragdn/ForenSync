@@ -729,7 +729,7 @@ app.post("/api/auth/verify-email", async (req, res) => {
             return res.status(400).json({ error: "Verification token is required" });
         }
 
-        const apiKey = "AIzaSyBhZUfUCffFbWreZRVLE5lRsTBOcy3JSN4";
+        const apiKey = process.env.FIREBASE_API_KEY;
         const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
