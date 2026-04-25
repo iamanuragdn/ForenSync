@@ -103,7 +103,7 @@ function SyllabusDetail() {
               </tr>
             </thead>
             <tbody>
-              {subject.units && subject.units.length > 0 ? (
+              {subject?.units && subject.units.length > 0 ? (
                 subject.units.map((unit, index) => (
                   <tr key={index}>
                     <td className="unit-col-data">

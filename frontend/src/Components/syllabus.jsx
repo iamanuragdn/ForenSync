@@ -42,7 +42,7 @@ function Syllabus() {
 
 
 
-  if (!subjectData) return (
+  if (!subjectData && !loading) return (
     <div className="syllabus-page" style={{ textAlign: 'center', marginTop: '50px' }}>
       <h2>Syllabus not found for {subjectId}</h2>
       <button className="btn-primary-gradient" onClick={() => navigate(-1)}>Go Back</button>
@@ -55,13 +55,13 @@ function Syllabus() {
       
 
       <div className="syllabus-header">
-        <h1>{subjectData.name}</h1>
+        <h1>{subjectData?.name}</h1>
         
         <div className="header-meta-row">
           <div className="meta-info">
-            <span className="meta-box">{subjectData.id || subjectId}</span>
-            <span className="meta-text">Credits: <strong>{subjectData.credits}</strong></span>
-            <span className="meta-text">Teacher: <strong>{subjectData.teacher || "TBA"}</strong></span>
+            <span className="meta-box">{subjectData?.id || subjectId}</span>
+            <span className="meta-text">Credits: <strong>{subjectData?.credits}</strong></span>
+            <span className="meta-text">Teacher: <strong>{subjectData?.teacher || "TBA"}</strong></span>
           </div>
           
           <button className="btn-back-semester" onClick={() => navigate(-1)}>
@@ -72,7 +72,7 @@ function Syllabus() {
 
 
       <div className="units-container">
-        {subjectData.units && subjectData.units.length > 0 ? (
+        {subjectData?.units && subjectData.units.length > 0 ? (
           subjectData.units.map((unit, index) => (
             <div 
               key={index} 
