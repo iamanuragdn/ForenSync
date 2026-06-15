@@ -358,13 +358,44 @@ function SuperAdminPortal() {
                       </div>
 
                       <div className="form-group">
-                        <label>Phone Number</label>
+                        <label>Enrollment / Roll Number</label>
                         <input 
                           type="text" 
                           className="mission-input"
-                          defaultValue={user.phone || ''}
+                          placeholder="e.g. 250348004012"
+                          defaultValue={user.enrollmentNumber || user.rollNumber || ''}
                           onBlur={(e) => {
-                            if (e.target.value !== user.phone) handleUpdateUser(user.id, 'phone', e.target.value);
+                            const val = e.target.value;
+                            if (val !== user.enrollmentNumber || val !== user.rollNumber) {
+                              handleUpdateUser(user.id, 'enrollmentNumber', val);
+                              handleUpdateUser(user.id, 'rollNumber', val);
+                            }
+                          }}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Program ID</label>
+                        <input 
+                          type="text" 
+                          className="mission-input"
+                          placeholder="e.g. btech-mtech-cybersecurity"
+                          defaultValue={user.programId || ''}
+                          onBlur={(e) => {
+                            if (e.target.value !== user.programId) handleUpdateUser(user.id, 'programId', e.target.value);
+                          }}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Semester ID</label>
+                        <input 
+                          type="text" 
+                          className="mission-input"
+                          placeholder="e.g. sem-3"
+                          defaultValue={user.semesterId || ''}
+                          onBlur={(e) => {
+                            if (e.target.value !== user.semesterId) handleUpdateUser(user.id, 'semesterId', e.target.value);
                           }}
                         />
                       </div>
