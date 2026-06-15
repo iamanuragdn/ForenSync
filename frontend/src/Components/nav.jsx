@@ -354,6 +354,10 @@ function Navbar() {
                       <span className="item-label">Semester</span>
                       <span className="item-value">{user.semesterId || "--"}</span>
                     </div>
+                    <div className="dropdown-item">
+                      <span className="item-label">Batch</span>
+                      <span className="item-value">{user.batch || ""}</span>
+                    </div>
                 </div>
 
                 <div className="dropdown-footer" style={{ borderTop: 'none', paddingBottom: '20px', paddingTop: '10px' }}>

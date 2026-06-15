@@ -331,19 +331,58 @@ function SuperAdminPortal() {
 
                     {/* Right Column: Account Info & Danger Zone */}
                     <div className="panel-column">
-                      <h4 className="panel-title">Node Diagnostics</h4>
+                      <h4 className="panel-title">Node Diagnostics & Editing</h4>
                       
-                      <div className="info-row">
-                        <span className="info-label">Node Created</span>
-                        <span className="info-value">Dec 2024 (Classified)</span>
+                      <div className="form-group">
+                        <label>User Identity (Name)</label>
+                        <input 
+                          type="text" 
+                          className="mission-input"
+                          defaultValue={user.name || ''}
+                          onBlur={(e) => {
+                            if (e.target.value !== user.name) handleUpdateUser(user.id, 'name', e.target.value);
+                          }}
+                        />
                       </div>
                       
-                      <div className="info-row">
-                        <span className="info-label">Comm Protocol</span>
-                        <span className="info-value" style={{ color: '#60a5fa' }}>{user.email}</span>
+                      <div className="form-group">
+                        <label>Secure Comm (Email)</label>
+                        <input 
+                          type="email" 
+                          className="mission-input"
+                          defaultValue={user.email || ''}
+                          onBlur={(e) => {
+                            if (e.target.value !== user.email) handleUpdateUser(user.id, 'email', e.target.value);
+                          }}
+                        />
                       </div>
-                      
-                      <div className="info-row">
+
+                      <div className="form-group">
+                        <label>Phone Number</label>
+                        <input 
+                          type="text" 
+                          className="mission-input"
+                          defaultValue={user.phone || ''}
+                          onBlur={(e) => {
+                            if (e.target.value !== user.phone) handleUpdateUser(user.id, 'phone', e.target.value);
+                          }}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Academic Batch</label>
+                        <input 
+                          type="text" 
+                          className="mission-input"
+                          placeholder="e.g. 2025-2030"
+                          defaultValue={user.batch || ''}
+                          onBlur={(e) => {
+                            if (e.target.value !== user.batch) handleUpdateUser(user.id, 'batch', e.target.value);
+                          }}
+                        />
+                      </div>
+
+                      <div className="info-row" style={{ marginTop: '20px' }}>
                         <span className="info-label">Unique UID</span>
                         <span className="info-value">{user.id}</span>
                       </div>

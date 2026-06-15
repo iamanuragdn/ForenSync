@@ -374,8 +374,21 @@
   transition: border-color 0.2s;
 }
 
-.mission-select:focus {
-  border-color: var(--accent-blue);
+.mission-select:focus, .mission-input:focus {
+  border-color: #3b82f6;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.mission-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s ease;
+  outline: none;
 }
 
 /* Custom Toggle Switch */

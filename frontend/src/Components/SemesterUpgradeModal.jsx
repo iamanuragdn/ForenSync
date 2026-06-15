@@ -27,27 +27,25 @@ function SemesterUpgradeModal({ user }) {
     ['#64748b', '#ffffff']
   );
 
-  const calculateMaxAllowedSemester = (enrollmentNumber) => {
-    if (!enrollmentNumber || typeof enrollmentNumber !== 'string') return 10;
+  const calculateMaxAllowedSemester = (userProfile) => {
+    // If the admin hasn't assigned a batch yet, do not enforce chronological limits
+    if (!userProfile || !userProfile.batch) return 10;
     
-    // Assuming enrollmentNumber starts with the 2-digit year (e.g. "2503...")
-    const yearStr = enrollmentNumber.substring(0, 2);
-    let batchYear = parseInt(yearStr, 10);
+    // Extract the start year from the batch string (e.g., "2025-2030" -> 2025)
+    const batchYear = parseInt(userProfile.batch.substring(0, 4), 10);
     if (isNaN(batchYear)) return 10;
-    
-    batchYear += 2000; // Convert 25 to 2025
     
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth(); // 0-indexed: 5 is June, 11 is Dec
     
-    // Every passing year adds 2 semesters
+    // Calculate academic years elapsed
     let maxSem = (currentYear - batchYear) * 2;
     
-    // In June (5) or later, exams are over, they can upgrade to the next odd semester
+    // In June (5) or later, even semesters end, so they can enter the next odd semester
     if (currentMonth >= 5) maxSem += 1;
     
-    // In December (11) or later, exams are over, they can upgrade to the next even semester
+    // In December (11) or later, odd semesters end, so they can enter the next even semester
     if (currentMonth >= 11) maxSem += 1;
     
     return Math.max(1, Math.min(maxSem, 10)); // Cap between 1 and 10
@@ -64,8 +62,8 @@ function SemesterUpgradeModal({ user }) {
       const nextSemNum = currentSemNum + 1;
       if (currentSemNum >= 10) return;
 
-      // Restrict upgrades based on their batch timeline
-      const maxAllowed = calculateMaxAllowedSemester(user.enrollmentNumber);
+      // Restrict upgrades based on their chronological batch timeline
+      const maxAllowed = calculateMaxAllowedSemester(user);
       if (nextSemNum > maxAllowed) return;
 
       if (user[`semester${currentSemNum}Done`]) return;
