@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase'; 
-import { Search, Zap, Eye, Camera, Lock, Mail, Book, FileText, Clock, PenTool } from 'lucide-react';
-import imageCompression from 'browser-image-compression';
+import { Search, Zap, Eye, Camera, Lock, Mail, Book, FileText, Clock, PenTool, Shield } from 'lucide-react';
+import { uploadWithCompression } from '../utils/fileCompression';
 import { db } from '../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import './nav.css';
 
 function Navbar() {
@@ -28,7 +28,20 @@ function Navbar() {
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+      
+      // Silently fetch the latest user data to sync any role or batch updates
+      if (parsedUser.uid) {
+        getDoc(doc(db, "users", parsedUser.uid)).then((docSnap) => {
+          if (docSnap.exists()) {
+            const latestData = docSnap.data();
+            const updatedUser = { ...parsedUser, ...latestData };
+            setUser(updatedUser);
+            localStorage.setItem("forensync_user", JSON.stringify(updatedUser));
+          }
+        }).catch(err => console.error("Failed to fetch latest user data", err));
+      }
     }
   }, []);
 
@@ -110,8 +123,7 @@ function Navbar() {
 
     try {
       console.log("1. File selected:", file);
-      const options = { maxSizeMB: 0.05, maxWidthOrHeight: 400, useWebWorker: true };
-      const compressedFile = await imageCompression(file, options);
+      const compressedFile = await uploadWithCompression(file);
       console.log("2. Compression finished");
 
       const url = await new Promise((resolve, reject) => {
@@ -297,7 +309,13 @@ function Navbar() {
 
             {dropdownOpen && user && (
               <div className="profile-dropdown">
-                <div className="dropdown-header">
+                <div className="dropdown-header" style={{ position: 'relative' }}>
+                  {user && (user.role === 'Admin' || user.role === 'SuperAdmin') && (
+                    <div className="admin-badge-pill" title={user.role}>
+                      <Shield size={10} fill="currentColor" /> 
+                      {user.role === 'SuperAdmin' ? 'Super Admin' : 'Admin'}
+                    </div>
+                  )}
                   <div className="avatar-edit-wrapper">
                     <div className="dropdown-avatar-large">
                       {user && user.profilePictureUrl ? (
@@ -323,8 +341,10 @@ function Navbar() {
                 
                 <div className="dropdown-body">
                     <div className="dropdown-item">
-                      <span className="item-label">Roll No.</span>
-                      <span className="item-value">{user.rollNumber || "Admin"}</span> 
+                      <span className="item-label">{user.role === 'Admin' || user.role === 'SuperAdmin' ? 'Role / Roll No.' : 'Roll No.'}</span>
+                      <span className="item-value">
+                        {user.enrollmentNumber || user.rollNumber || (user.role === 'Admin' || user.role === 'SuperAdmin' ? user.role : "N/A")}
+                      </span> 
                     </div>
                     <div className="dropdown-item">
                       <span className="item-label">Program</span>

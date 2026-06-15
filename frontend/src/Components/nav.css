@@ -139,7 +139,25 @@
   align-items: center;
   font-weight: bold;
   font-size: 2rem;
-  font-size: 2rem;
+}
+
+.admin-badge-pill {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  z-index: 5;
 }
 
 .avatar-edit-wrapper {

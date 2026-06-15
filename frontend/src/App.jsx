@@ -14,10 +14,12 @@ import PYQNotes from './Components/PYQNotes';
 import Exams from './Components/Exams';
 import AdminConsole from './Components/AdminConsole';
 import SuperAdminPortal from './Components/SuperAdminPortal.jsx';
+import Faculty from './Components/Faculty';
 import Login from './Components/Login.jsx';
 import Onboarding from './Components/Onboarding.jsx';
 import SSOVerifyPage from './Components/SSOVerifyPage.jsx';
 import VerifyEmail from './Components/VerifyEmail.jsx';
+import SemesterUpgradeModal from './Components/SemesterUpgradeModal.jsx';
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -112,6 +114,7 @@ function ProtectedLayout({ children }) {
       ></div>
 
       <Sidebar user={user} />
+      <SemesterUpgradeModal user={user} />
 
       <div className="content-area" style={{ flex: 1, backgroundColor: 'transparent', display: 'flex', flexDirection: 'column' }}>
         <Nav />
@@ -155,6 +158,7 @@ function AnimatedRoutes() {
                 <Route path="/exams" element={<PageTransition><Exams /></PageTransition>} />
                 <Route path="/admin" element={<PageTransition><AdminConsole /></PageTransition>} />
                 <Route path="/superadmin" element={<PageTransition><SuperAdminPortal /></PageTransition>} />
+                <Route path="/faculty" element={<PageTransition><Faculty /></PageTransition>} />
                 <Route path="/search" element={<PageTransition><Search /></PageTransition>} />
               </Routes>
             </AnimatePresence>

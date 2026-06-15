@@ -125,6 +125,16 @@ const examData = {
         dotColor: '#22c55e'
       },
       {
+       code: 'CTBT-HSM-201',
+        name: 'Professional Ethics',
+        examDate: '2026-04-30', // Back-to-back (common for minor subjects)
+        type: 'CA4 (End Semester)',
+        fullMarks: 100,
+        time: '02:30 PM - 05:30 PM',
+        colorClass: 'exam-blue',
+        dotColor: '#3b82f6' 
+      },
+      {
         code: 'CTBT-PCC-201',
         name: 'Object Oriented Programming with C++',
         examDate: '2026-04-29', // 1 day gap
@@ -133,16 +143,6 @@ const examData = {
         time: '02:30 PM - 05:30 PM',
         colorClass: 'exam-yellow',
         dotColor: '#eab308'
-      },
-      {
-        code: 'CTBT-HSM-201',
-        name: 'Professional Ethics',
-        examDate: '2026-04-30', // Back-to-back (common for minor subjects)
-        type: 'CA4 (End Semester)',
-        fullMarks: 100,
-        time: '02:30 PM - 05:30 PM',
-        colorClass: 'exam-blue',
-        dotColor: '#3b82f6'
       }
     ]
   },

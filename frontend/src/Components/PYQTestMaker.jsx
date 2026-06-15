@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Loader, Rocket, Folder } from 'lucide-react';
+import { uploadWithCompression } from '../utils/fileCompression';
 
 function PYQTestMaker() {
 
@@ -21,8 +22,20 @@ function PYQTestMaker() {
     setLoading(true);
     setError(null);
 
+    let compressedFile = file;
+    try {
+      compressedFile = await uploadWithCompression(file);
+    } catch (err) {
+      setLoading(false);
+      if (err.message === 'FILE_TOO_LARGE') {
+        return; // Toast already shown
+      }
+      setError("Compression failed. Please try a different file.");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("paper", file);
+    formData.append("paper", compressedFile);
 
     try {
       // Calls instant-test route!

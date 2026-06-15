@@ -11,7 +11,7 @@ const { google } = require('googleapis');
 const syllabusData = require("./syllabusData");
 const examData = require("./examData");
 
-const { extractQuestions } = require("./extractor");
+const { extractQuestions, extractDocument } = require("./extractor");
 
 const stream = require("stream");
 
@@ -62,6 +62,162 @@ app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const upload = multer({ storage: multer.memoryStorage() });
+
+// ==========================================
+// AI DOCUMENT INGESTION
+// ==========================================
+app.post('/api/admin/extract-document', upload.single('document'), async (req, res) => {
+    try {
+        const file = req.file;
+        const { documentType, programId, semesterId } = req.body;
+
+        if (!file) {
+            return res.status(400).json({ error: "No document provided." });
+        }
+        if (!documentType || !['syllabus', 'exams', 'both'].includes(documentType)) {
+            return res.status(400).json({ error: "Invalid document type." });
+        }
+        if (!programId || !semesterId) {
+            return res.status(400).json({ error: "Program ID and Semester ID are required." });
+        }
+
+        console.log(`Extracting ${documentType} document for ${programId} -> ${semesterId}...`);
+
+        // Parse using Gemini
+        const extractedData = await extractDocument(file.buffer, file.mimetype, documentType);
+
+        // Check for Collisions
+        const extractedSemesters = new Set();
+        if (extractedData.syllabus) {
+            Object.values(extractedData.syllabus).forEach(s => {
+                if (s.semester) extractedSemesters.add(s.semester);
+            });
+        }
+        if (extractedData.exams) {
+            Object.values(extractedData.exams).forEach(e => {
+                if (e.semester) extractedSemesters.add(e.semester);
+            });
+        }
+
+        // If the AI didn't find any specific semesters natively, it defaults to the dropdown one
+        if (extractedSemesters.size === 0) {
+            extractedSemesters.add(semesterId);
+        }
+
+        const existingSemesters = [];
+        for (const sem of extractedSemesters) {
+            const checkRef = await db.collection('programs').doc(programId)
+                .collection('semesters').doc(sem)
+                .collection('subjects').limit(1).get();
+            if (!checkRef.empty) {
+                existingSemesters.push(sem);
+            }
+        }
+
+        // Return raw extracted data for preview/edit
+        res.json({ message: "Document extracted successfully! Please review.", data: extractedData, existingSemesters });
+    } catch (error) {
+        console.error("Extraction failed:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==========================================
+// AI DATA APPROVE & SAVE
+// ==========================================
+app.post('/api/admin/save-document', async (req, res) => {
+    try {
+        const { programId, semesterId, extractedData } = req.body;
+
+        if (!programId || !semesterId || !extractedData) {
+            return res.status(400).json({ error: "Missing required fields for saving." });
+        }
+
+        const fs = require('fs');
+        const path = require('path');
+        const { exec } = require('child_process');
+
+        // 1. If it's a Syllabus, update the local syllabusData.js file instead of writing directly to Firestore
+        if (extractedData.syllabus) {
+            const syllabusFilePath = path.join(__dirname, 'syllabusData.js');
+
+            // Invalidate the cache to ensure we get the latest file if modified manually
+            delete require.cache[require.resolve('./syllabusData.js')];
+            const syllabusData = require('./syllabusData.js');
+
+            // Ensure the program exists
+            if (!syllabusData[programId]) {
+                syllabusData[programId] = { programName: programId, semesters: {} };
+            }
+            if (!syllabusData[programId].semesters) {
+                syllabusData[programId].semesters = {};
+            }
+
+            for (const [subjectCodeStr, subjectData] of Object.entries(extractedData.syllabus)) {
+                const assignedSemester = subjectData.semester || semesterId;
+
+                // Ensure the semester exists
+                if (!syllabusData[programId].semesters[assignedSemester]) {
+                    syllabusData[programId].semesters[assignedSemester] = {};
+                }
+
+                // Overwrite or add the subject inside the hard-coded object
+                syllabusData[programId].semesters[assignedSemester][subjectCodeStr] = {
+                    name: subjectData.name || subjectCodeStr,
+                    credits: subjectData.credits || 0,
+                    teacher: subjectData.teacherName || "TBA",
+                    type: subjectData.type || "Core",
+                    units: subjectData.units || []
+                };
+            }
+
+            // Write it back to the file system as valid JS code
+            const newContent = 'const syllabusData = ' + JSON.stringify(syllabusData, null, 2) + ';\n\nmodule.exports = syllabusData;\n';
+            fs.writeFileSync(syllabusFilePath, newContent, 'utf8');
+
+            // 2. Automatically run the user's migrate script to sync it perfectly
+            console.log("Triggering migrateTeachersAndSyllabus.js automatically...");
+            const util = require('util');
+            const execPromise = util.promisify(exec);
+            let scriptOutput = "";
+            try {
+                const { stdout, stderr } = await execPromise('node migrateTeachersAndSyllabus.js', { cwd: __dirname });
+                scriptOutput = stdout;
+                console.log(`migrate Output: ${stdout}`);
+            } catch (err) {
+                console.error(`Error executing migrate: ${err}`);
+                return res.status(500).json({ error: "Syllabus updated locally, but upload failed: " + err.message });
+            }
+        }
+
+        // 3. Keep the old batch logic ONLY for exams (since they go to examData / Firestore directly)
+        if (extractedData.exams) {
+            const batch = db.batch();
+            for (const [subjectCode, examDataObj] of Object.entries(extractedData.exams)) {
+                const sanitizedCode = sanitizeSubjectCode(subjectCode);
+                const assignedSemester = examDataObj.semester || semesterId;
+
+                const examRef = db.collection('exams').doc(sanitizedCode + "-" + assignedSemester);
+
+                batch.set(examRef, {
+                    subjectCode: sanitizedCode,
+                    programId: programId,
+                    semesterId: assignedSemester,
+                    subjectName: examDataObj.subjectName || sanitizedCode,
+                    date: examDataObj.date || "",
+                    time: examDataObj.time || "",
+                    type: examDataObj.type || "Unknown"
+                }, { merge: true });
+            }
+            await batch.commit();
+        }
+
+        res.json({ message: "Data successfully saved to syllabusData.js!\n\n" + (typeof scriptOutput !== 'undefined' ? scriptOutput : '') });
+    } catch (error) {
+        console.error("Save failed:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // ==========================================
 // HEALTH CHECK
@@ -565,9 +721,8 @@ app.get('/api/syllabus/:programId/:semesterId/:subjects', async (req, res) => {
         const { programId, semesterId, subjects } = req.params;
         const sanitizedSubject = sanitizeSubjectCode(subjects);
 
-        const docRef = db.collection('programs').doc(programId)
-            .collection('semesters').doc(semesterId)
-            .collection('subjects').doc(sanitizedSubject);
+        // Fetch from the root 'subjects' collection which is the source of truth for full syllabus details (including units)
+        const docRef = db.collection('subjects').doc(sanitizedSubject);
 
         const doc = await docRef.get();
 
@@ -608,16 +763,33 @@ app.get('/api/semester-info/:programId/:semesterId', async (req, res) => {
 app.get('/api/exams/:programId/:semesterId', async (req, res) => {
     try {
         const { programId, semesterId } = req.params;
-        const programExams = examData[programId];
+        const examsRef = db.collection('exams');
+        const q = examsRef.where('programId', '==', programId).where('semesterId', '==', semesterId);
 
-        if (programExams && programExams[semesterId]) {
-            const sortedExams = programExams[semesterId].sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
-            return res.status(200).json(sortedExams);
+        const snapshot = await q.get();
+        if (snapshot.empty) {
+            return res.status(200).json([]);
         }
 
-        return res.status(200).json([]);
+        const exams = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                code: data.subjectCode,
+                name: data.subjectName,
+                examDate: data.date,
+                time: data.time,
+                type: data.type,
+                fullMarks: data.fullMarks || 100,
+                colorClass: data.colorClass || 'exam-blue',
+                dotColor: data.dotColor || '#3b82f6'
+            };
+        });
+
+        const sortedExams = exams.sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+        return res.status(200).json(sortedExams);
     } catch (error) {
-        console.error("Error fetching exams from local file:", error);
+        console.error("Error fetching exams from Firestore:", error);
         res.status(500).json({ error: "Failed to fetch exams" });
     }
 });
@@ -1254,7 +1426,7 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
                 console.error("Path array parsing failed:", err.message);
             }
         }
-        
+
         if (userData.adminType === 'ActiveContributor') {
             uploadDestination = 'Community Notes';
         } else if (userData.adminType === 'CR' && type !== 'Attendance') {
@@ -1300,7 +1472,7 @@ app.post('/api/admin/upload', upload.single('file'), async (req, res) => {
                     fields: 'id'
                 });
                 finalFolderId = newFolder.data.id;
-                
+
                 await uploadDrive.permissions.create({
                     fileId: finalFolderId,
                     requestBody: { role: 'reader', type: 'anyone' },
@@ -1612,6 +1784,16 @@ app.get('/api/db/programs/:programId/semesters/:semesterId/subjects', async (req
     } catch (error) {
         console.error("Subject fetch error:", error);
         res.status(500).json({ error: "Failed to fetch subjects" });
+    }
+});
+
+// 4. Fetch Global Subject Dictionary Map
+app.get('/api/db/subjects/dictionary', (req, res) => {
+    try {
+        res.json(subjectDictionary);
+    } catch (error) {
+        console.error("Dictionary fetch error:", error);
+        res.status(500).json({ error: "Failed to fetch subject dictionary" });
     }
 });
 

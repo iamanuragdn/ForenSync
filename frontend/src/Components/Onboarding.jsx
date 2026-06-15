@@ -5,9 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'; 
 import { Sun, Moon, Rocket, Loader, Camera } from 'lucide-react';
 import './Onboarding.css';
-
-import imageCompression from 'browser-image-compression';
-
+import { uploadWithCompression } from '../utils/fileCompression';
 import logoImage from '../assets/logo_muted_blue.png'; 
 
 
@@ -70,12 +68,7 @@ function Onboarding() {
       if (profilePicture) {
         setApiError('Compressing and uploading image...');
         try {
-          const options = {
-            maxSizeMB: 0.05,
-            maxWidthOrHeight: 400,
-            useWebWorker: true,
-          };
-          const compressedFile = await imageCompression(profilePicture, options);
+          const compressedFile = await uploadWithCompression(profilePicture);
           
           profilePictureUrl = await new Promise((resolve, reject) => {
             const reader = new FileReader();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Target, FileText, Settings, CloudUpload } from 'lucide-react';
+import { uploadWithCompression } from '../utils/fileCompression';
 import './MockTest.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -84,9 +85,19 @@ export default function MockTest() {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return setUploadStatus("Please select a file first.");
+    setUploadStatus("Compressing and preparing file... ⏳");
+    
+    let compressedFile = file;
+    try {
+      compressedFile = await uploadWithCompression(file);
+    } catch (err) {
+      if (err.message === 'FILE_TOO_LARGE') return;
+      return setUploadStatus("❌ Compression failed.");
+    }
+
     setUploadStatus("Uploading to database... ⏳");
     const formData = new FormData();
-    formData.append("paper", file); 
+    formData.append("paper", compressedFile);
 
     try {
       const response = await fetch(`${API_BASE_URL}/upload-pyq`, { method: "POST", body: formData });
@@ -121,9 +132,19 @@ export default function MockTest() {
   const handleInstantTest = async (e) => {
     e.preventDefault();
     if (!instantFile) return setInstantStatus("Please select a PDF first.");
+    setInstantStatus("Compressing PDF... ⏳");
+    
+    let compressedFile = instantFile;
+    try {
+      compressedFile = await uploadWithCompression(instantFile);
+    } catch (err) {
+      if (err.message === 'FILE_TOO_LARGE') return;
+      return setInstantStatus("❌ Compression failed.");
+    }
+
     setInstantStatus("Analyzing PDF... ⏳ (~15 seconds)");
     const formData = new FormData();
-    formData.append("paper", instantFile);
+    formData.append("paper", compressedFile);
 
     try {
       const response = await fetch(`${API_BASE_URL}/instant-test`, { method: "POST", body: formData });

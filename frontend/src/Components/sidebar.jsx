@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield, ExternalLink, Crown } from 'lucide-react';
+import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield, ExternalLink, Crown, Users } from 'lucide-react';
 import './sidebarStyle.css';
 import side_bar_logo from '../assets/sidebar-logo.png';
 import { getAuth } from "firebase/auth";
@@ -74,6 +74,11 @@ function Sidebar({ user }) {
           <span className="nav-text">Syllabus</span>
         </NavLink>
 
+        <NavLink to="/faculty" className="nav-item">
+          <span className="nav-icon"><Users size={20} /></span>
+          <span className="nav-text">Faculty</span>
+        </NavLink>
+
         <NavLink to="/practice" className="nav-item">
           <span className="nav-icon"><Target size={20} /></span>
           <span className="nav-text">Practice</span>
@@ -124,10 +129,12 @@ function Sidebar({ user }) {
           <span className="nav-text" style={{ fontWeight: '500' }}>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
         </button>
         
-        <NavLink to="/admin" className="nav-item admin-link" style={{ marginTop: 0 }}>
-          <span className="nav-icon"><Shield size={20} /></span>
-          <span className="nav-text">Admin</span>
-        </NavLink>
+        {(user?.role === 'Admin' || user?.role === 'SuperAdmin') && (
+          <NavLink to="/admin" className="nav-item admin-link" style={{ marginTop: 0 }}>
+            <span className="nav-icon"><Shield size={20} /></span>
+            <span className="nav-text">Admin</span>
+          </NavLink>
+        )}
 
         {user?.role === 'SuperAdmin' && (
           <NavLink to="/superadmin" className="nav-item superadmin-link" style={{ marginTop: 0, color: '#f59e0b' }}>

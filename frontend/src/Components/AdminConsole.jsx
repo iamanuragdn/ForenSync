@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import { ShieldAlert, Folder, Rocket, Loader } from 'lucide-react';
+import { ShieldAlert, Folder, Rocket, Loader, Database, UploadCloud, FileText, CheckCircle, HardDrive } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { uploadWithCompression } from '../utils/fileCompression';
 import './AdminConsole.css';
 
 function AdminConsole() {
@@ -45,6 +46,49 @@ function AdminConsole() {
   const [status, setStatus] = useState('');
   const [isGlobalSyncing, setIsGlobalSyncing] = useState(false);
   const [syncReport, setSyncReport] = useState(null);
+  const [subjectDictionary, setSubjectDictionary] = useState({});
+
+  // UI State
+  const [activeTab, setActiveTab] = useState('drive');
+
+  // Ingestion State
+  const [ingestFile, setIngestFile] = useState(null);
+  const [ingestDocType, setIngestDocType] = useState('both');
+  const [ingestProgram, setIngestProgram] = useState('btech-mtech-cybersecurity');
+  const [ingestSemester, setIngestSemester] = useState('year-1');
+  const [ingesting, setIngesting] = useState(false);
+  const [ingestMessage, setIngestMessage] = useState(null);
+
+  // Edit & Approve Workflow
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [previewViewMode, setPreviewViewMode] = useState('human'); // 'human' or 'json'
+  const [collisionSemesters, setCollisionSemesters] = useState([]);
+  const [previewText, setPreviewText] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/db/subjects/dictionary`)
+      .then(res => res.json())
+      .then(data => setSubjectDictionary(data))
+      .catch(err => console.error("Failed to load subject dictionary:", err));
+  }, []);
+
+  const sanitizeSubjectCode = (text) => {
+    if (typeof text !== 'string') return '';
+    const homoglyphs = {
+        'А': 'A', 'В': 'B', 'С': 'C', 'Е': 'E', 'Н': 'H',
+        'К': 'K', 'М': 'M', 'О': 'O', 'Р': 'P', 'Т': 'T',
+        'Х': 'X', 'У': 'Y', 'а': 'a', 'в': 'b', 'с': 'c',
+        'е': 'e', 'н': 'h', 'к': 'k', 'м': 'm', 'о': 'o',
+        'р': 'p', 'т': 't', 'х': 'x', 'у': 'y'
+    };
+    // Replace homoglyphs
+    let clean = Array.from(text).map(char => homoglyphs[char] || char).join('');
+    // Replace special dashes with standard hyphen
+    clean = clean.replace(/[–—_]/g, '-');
+    // Remove all whitespace and invalid characters, then uppercase
+    return clean.replace(/[^A-Za-z0-9\-]/g, '').toUpperCase();
+  };
   
   // Advanced RBAC State
   const [uploadDestination, setUploadDestination] = useState('Official Notes');
@@ -107,6 +151,20 @@ function AdminConsole() {
     e.preventDefault();
     if (!file) return setStatus("❌ Please select a file.");
 
+    setStatus("⏳ Compressing and Preparing File...");
+    let compressedFile = file;
+    try {
+      compressedFile = await uploadWithCompression(file);
+    } catch (err) {
+      if (err.message === 'FILE_TOO_LARGE') {
+        setStatus("❌ File exceeds 10MB limit.");
+        return;
+      }
+      console.error("Compression Error:", err);
+      setStatus("❌ Compression failed. Please try a different file.");
+      return;
+    }
+
     setStatus("⏳ Uploading to Drive and syncing to Firebase...");
 
     // Auto-extract metadata from current folder path
@@ -127,7 +185,7 @@ function AdminConsole() {
     formData.append('uid', user.uid);
     formData.append('userName', user.name || 'Unknown');
     formData.append('uploadDestination', uploadDestination);
-    formData.append('file', file);
+    formData.append('file', compressedFile);
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload`, {
@@ -145,6 +203,100 @@ function AdminConsole() {
       }
     } catch (error) {
       setStatus("❌ Server connection error.");
+    }
+  };
+
+  const handleIngestFileChange = (e) => {
+    if (e.target.files[0]) {
+      setIngestFile(e.target.files[0]);
+    }
+  };
+
+  const handleIngest = async () => {
+    if (!ingestFile) return alert('Please select a file first.');
+    setIngesting(true);
+    setIngestMessage(null);
+    
+    const formData = new FormData();
+    formData.append('document', ingestFile);
+    formData.append('documentType', ingestDocType);
+    formData.append('programId', ingestProgram);
+    formData.append('semesterId', ingestSemester);
+    
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/extract-document`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPreviewText(JSON.stringify(data.data, null, 2));
+        setCollisionSemesters(data.existingSemesters || []);
+        setPreviewViewMode('human');
+        setIsPreviewMode(true);
+      } else {
+        setIngestMessage({ type: 'error', text: data.error || 'Failed to extract.' });
+      }
+    } catch (error) {
+      console.error(error);
+      setIngestMessage({ type: 'error', text: 'Network error during extraction.' });
+    } finally {
+      setIngesting(false);
+    }
+  };
+
+  const handleSaveDocument = async () => {
+    setIsSaving(true);
+    setIngestMessage(null);
+
+    let finalData;
+    try {
+      finalData = JSON.parse(previewText);
+    } catch (err) {
+      setIngestMessage({ type: 'error', text: 'Invalid JSON format. Please check your syntax.' });
+      setIsSaving(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/save-document`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          programId: ingestProgram,
+          semesterId: ingestSemester,
+          extractedData: finalData
+        })
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setIngestMessage({ type: 'success', text: data.message || 'Data approved and securely bound to Firestore!' });
+        setIsPreviewMode(false);
+        setIngestFile(null);
+        if (document.getElementById('ingest-file-upload')) {
+          document.getElementById('ingest-file-upload').value = '';
+        }
+      } else {
+        setIngestMessage({ type: 'error', text: data.error || 'Failed to save.' });
+      }
+    } catch (error) {
+      console.error(error);
+      setIngestMessage({ type: 'error', text: 'Network error while saving data.' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDiscard = () => {
+    if (window.confirm("Are you sure you want to discard this extraction?")) {
+      setIsPreviewMode(false);
+      setPreviewText('');
+      setIngestMessage(null);
+      setIngestFile(null);
+      if (document.getElementById('ingest-file-upload')) {
+        document.getElementById('ingest-file-upload').value = '';
+      }
     }
   };
 
@@ -185,12 +337,24 @@ function AdminConsole() {
     <div className="admin-dashboard-container">
       
       <div className="page-header">
-        <div className="header-text">
-          <h1>Admin Console</h1>
-          <p>Navigate to the correct Google Drive folder, then upload your file metadata to Firestore.</p>
+        <div className="header-text" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <div>
+            <h1>Admin Console</h1>
+            <p>Manage standard Drive documents or utilize Gemini AI to automate Syllabus and Exam ingestion.</p>
+          </div>
         </div>
       </div>
 
+      <div className="admin-tabs">
+        <button className={`admin-tab ${activeTab === 'drive' ? 'active' : ''}`} onClick={() => setActiveTab('drive')}>
+          <HardDrive size={18} /> Notes Drive Sync
+        </button>
+        <button className={`admin-tab ${activeTab === 'ingestion' ? 'active' : ''}`} onClick={() => setActiveTab('ingestion')}>
+          <Database size={18} /> AI Data Ingestion
+        </button>
+      </div>
+
+      {activeTab === 'drive' ? (
       <div className="admin-content-wrapper">
 
         {!isStreamlinedUser && (
@@ -264,7 +428,7 @@ function AdminConsole() {
             
             <div className="path-display">
               <span className="path-label">Current Path:</span>
-              <span className="path-text">{pathHistory.map(p => p.name).join(' / ')}</span>
+              <span className="path-text">{pathHistory.map(p => subjectDictionary[sanitizeSubjectCode(p.name)] || p.name).join(' / ')}</span>
             </div>
           </div>
 
@@ -282,7 +446,7 @@ function AdminConsole() {
                 className="folder-item"
               >
                 <span className="folder-icon"><Folder size={20} /></span> 
-                <span className="folder-name">{folder.name}</span>
+                <span className="folder-name">{subjectDictionary[sanitizeSubjectCode(folder.name)] || folder.name}</span>
               </div>
             ))}
             {folders.length === 0 && (
@@ -351,6 +515,199 @@ function AdminConsole() {
         </div>
 
       </div>
+      ) : (
+        <div className="ingestion-container">
+          <div className="ingestion-header">
+            <h2><FileText size={24} color="#3b82f6" /> Document Ingestion Pipeline</h2>
+            <p>Upload official university Syllabus or Exam Date PDFs. The Gemini AI engine will perfectly extract and securely bind them to the relational database in real-time.</p>
+          </div>
+
+          {isPreviewMode ? (
+            <div className="preview-container admin-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', margin: 0 }}>
+                  <CheckCircle size={22} /> Review & Edit Extracted Data
+                </h3>
+                <button 
+                  onClick={() => setPreviewViewMode(previewViewMode === 'human' ? 'json' : 'human')}
+                  className="btn-setting-minimal"
+                  style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.85rem' }}
+                >
+                  <FileText size={16} /> {previewViewMode === 'human' ? "Edit Raw JSON" : "Show Human View"}
+                </button>
+              </div>
+
+              {collisionSemesters && collisionSemesters.length > 0 && (
+                <div style={{ background: 'rgba(239, 68, 68, 0.1)', borderLeft: '4px solid #ef4444', padding: '15px', borderRadius: '4px', marginBottom: '20px' }}>
+                  <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', margin: '0 0 5px 0' }}>
+                    <ShieldAlert size={18} /> Overwrite Warning
+                  </h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
+                    Syllabus or Exam data already exists for <strong>{collisionSemesters.join(', ')}</strong>. Saving will merge and update the existing records, keeping any manual edits.
+                  </p>
+                </div>
+              )}
+              
+              {previewViewMode === 'human' ? (
+                <div className="human-readable-preview" style={{ maxHeight: '500px', overflowY: 'auto', paddingRight: '10px' }}>
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '15px', fontSize: '0.95rem' }}>
+                    Gemini AI has parsed the document into the following structured data. Click "Edit Raw JSON" in the top right to make corrections.
+                  </p>
+                  
+                  {(() => {
+                    try {
+                      const data = JSON.parse(previewText);
+                      return (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                          {data.syllabus && Object.keys(data.syllabus).length > 0 && (
+                            <div>
+                              <h4 style={{ color: '#3b82f6', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', marginBottom: '15px' }}>Syllabus Subjects</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
+                                {Object.values(data.syllabus).map((subj, idx) => (
+                                  <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <strong style={{ color: '#e2e8f0', display: 'block', fontSize: '1.05rem', marginBottom: '5px' }}>{subj.name || 'Unknown Subject'}</strong>
+                                    <div style={{ color: '#94a3b8', fontSize: '0.85rem', display: 'grid', gridTemplateColumns: '80px 1fr', gap: '4px' }}>
+                                      <span>Semester:</span> <strong style={{ color: '#f59e0b' }}>{subj.semester || 'N/A'}</strong>
+                                      <span>Credits:</span> <span style={{ color: '#e2e8f0' }}>{subj.credits || 'N/A'}</span>
+                                      <span>Teacher:</span> <span style={{ color: '#e2e8f0' }}>{subj.teacherName || 'TBA'}</span>
+                                      <span>Type:</span> <span style={{ color: '#e2e8f0' }}>{subj.type || 'N/A'}</span>
+                                      <span>Units:</span> <span style={{ color: '#e2e8f0' }}>{subj.units ? subj.units.length : 0} found</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {data.exams && Object.keys(data.exams).length > 0 && (
+                            <div>
+                              <h4 style={{ color: '#10b981', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', marginBottom: '15px' }}>Exam Schedules</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
+                                {Object.values(data.exams).map((exam, idx) => (
+                                  <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <strong style={{ color: '#e2e8f0', display: 'block', fontSize: '1.05rem', marginBottom: '5px' }}>{exam.subjectName || 'Unknown Exam'}</strong>
+                                    <div style={{ color: '#94a3b8', fontSize: '0.85rem', display: 'grid', gridTemplateColumns: '80px 1fr', gap: '4px' }}>
+                                      <span>Semester:</span> <strong style={{ color: '#f59e0b' }}>{exam.semester || 'N/A'}</strong>
+                                      <span>Date:</span> <span style={{ color: '#e2e8f0' }}>{exam.date || 'TBA'}</span>
+                                      <span>Time:</span> <span style={{ color: '#e2e8f0' }}>{exam.time || 'TBA'}</span>
+                                      <span>Type:</span> <span style={{ color: '#e2e8f0' }}>{exam.type || 'N/A'}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    } catch (e) {
+                      return <div style={{ color: '#ef4444' }}>Invalid JSON preview. Please switch to "Edit Raw JSON" to fix the syntax.</div>;
+                    }
+                  })()}
+                </div>
+              ) : (
+                <>
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '10px', fontSize: '0.95rem' }}>
+                    You can freely edit the text, dates, or teacher names in the JSON structure below before granting final approval. Make sure the JSON remains valid.
+                  </p>
+                  <textarea 
+                    className="json-editor" 
+                    value={previewText} 
+                    onChange={(e) => setPreviewText(e.target.value)}
+                    spellCheck="false"
+                  ></textarea>
+                </>
+              )}
+
+              <div className="preview-actions" style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
+                <button 
+                  className="btn-upload-submit" 
+                  style={{ flex: 2, background: '#10b981' }} 
+                  onClick={handleSaveDocument}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <Loader size={18} className="spin" /> : "Approve & Save to Database"}
+                </button>
+                <button 
+                  className="btn-upload-submit" 
+                  style={{ flex: 1, background: 'transparent', border: '1px solid #ef4444', color: '#ef4444' }} 
+                  onClick={handleDiscard}
+                  disabled={isSaving}
+                >
+                  Discard
+                </button>
+              </div>
+
+              {ingestMessage && (
+                <div className={`ingest-message ${ingestMessage.type === 'success' ? 'success' : 'error'}`} style={{ marginTop: '15px' }}>
+                  {ingestMessage.type === 'success' ? <CheckCircle size={20} /> : <ShieldAlert size={20} />}
+                  {ingestMessage.text}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="ingestion-grid">
+              <div className="ingest-card">
+                <h3>1. Target Destination</h3>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)' }}>TARGET PROGRAM</label>
+                  <select className="custom-select" value={ingestProgram} onChange={(e) => setIngestProgram(e.target.value)} style={{ marginTop: '8px' }}>
+                    <option value="btech-mtech-cybersecurity">B.Tech-M.Tech Cybersecurity</option>
+                    <option value="bsc-msc-forensic">B.Sc-M.Sc Forensic Science</option>
+                  </select>
+                </div>
+                <div className="form-group" style={{ marginTop: '15px' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)' }}>TARGET YEAR / SEMESTER</label>
+                  <select className="custom-select" value={ingestSemester} onChange={(e) => setIngestSemester(e.target.value)} style={{ marginTop: '8px' }}>
+                    <option value="year-1">Year 1 (Semesters 1 & 2)</option>
+                    <option value="year-2">Year 2 (Semesters 3 & 4)</option>
+                    <option value="year-3">Year 3 (Semesters 5 & 6)</option>
+                    <option value="year-4">Year 4 (Semesters 7 & 8)</option>
+                    <option value="year-5">Year 5 (Semesters 9 & 10)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="ingest-card">
+                <h3>2. Document Context</h3>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)' }}>WHAT DATA DOES THIS DOCUMENT CONTAIN?</label>
+                  <select className="custom-select" value={ingestDocType} onChange={(e) => setIngestDocType(e.target.value)} style={{ marginTop: '8px' }}>
+                    <option value="both">Both (Syllabus & Exams)</option>
+                    <option value="syllabus">Syllabus Details Only</option>
+                    <option value="exams">Exam Schedule Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="ingest-card full-width">
+                <h3>3. Neural Extraction Upload</h3>
+                <div className="upload-zone">
+                  <input type="file" id="ingest-file-upload" accept=".pdf,image/*" onChange={handleIngestFileChange} />
+                  <label htmlFor="ingest-file-upload" className="upload-label">
+                    <UploadCloud size={40} color="#94a3b8" />
+                    <span>{ingestFile ? ingestFile.name : "Drag & Drop or Click to Browse PDF/Image"}</span>
+                  </label>
+                </div>
+                
+                <button 
+                  className="ingest-btn" 
+                  disabled={ingesting || !ingestFile} 
+                  onClick={handleIngest}
+                >
+                  {ingesting ? <><Loader size={18} className="spin" /> Processing via Gemini AI...</> : "Start AI Extraction"}
+                </button>
+
+                {ingestMessage && (
+                  <div className={`ingest-message ${ingestMessage.type === 'success' ? 'success' : 'error'}`} style={{ marginTop: '15px' }}>
+                    {ingestMessage.type === 'success' ? <CheckCircle size={20} /> : <ShieldAlert size={20} />}
+                    {ingestMessage.text}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
