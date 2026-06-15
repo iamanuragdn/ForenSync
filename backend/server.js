@@ -749,7 +749,8 @@ app.get('/api/semester-info/:programId/:semesterId', async (req, res) => {
         if (!doc.exists || !doc.data().startDate) {
             return res.json({
                 startDate: "2026-01-01",
-                endDate: "2026-06-01"
+                endDate: "2026-06-01",
+                isDefaultFallback: true
             });
         }
 

@@ -78,7 +78,8 @@ function SemesterUpgradeModal({ user }) {
         
         const data = await response.json();
         
-        if (data.endDate) {
+        // Ignore fallback dummy dates—we only auto-upgrade if the admin explicitly set a real past end date
+        if (data.endDate && !data.isDefaultFallback) {
           const end = new Date(data.endDate).getTime();
           const now = Date.now();
           
@@ -120,6 +121,17 @@ function SemesterUpgradeModal({ user }) {
       }
 
       await updateDoc(userRef, updateData);
+      
+      // Instantly update localStorage so a page refresh doesn't temporarily revert state
+      const savedUser = localStorage.getItem("forensync_user");
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        const updatedLocalUser = { ...parsed, semesterId: newSemesterId, [`semester${currentSemesterNum}Done`]: true };
+        if (sgpa.trim() !== '') {
+          updatedLocalUser[`semester${currentSemesterNum}SGPA`] = parseFloat(sgpa);
+        }
+        localStorage.setItem("forensync_user", JSON.stringify(updatedLocalUser));
+      }
       
       // Trigger Success View & Confetti
       setShowSuccessAnim(true);
