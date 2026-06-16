@@ -1,55 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, FileText, BookOpen, Target, Files, Sun, Moon, Shield, ExternalLink, Crown, Users } from 'lucide-react';
+import { Home, FileText, BookOpen, Target, Files, Shield, Crown, Users, ChevronDown, ChevronUp, GraduationCap } from 'lucide-react';
 import './sidebarStyle.css';
 import side_bar_logo from '../assets/sidebar-logo.png';
-import { getAuth } from "firebase/auth";
 
 function Sidebar({ user }) {
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'light';
-  });
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
-  const handleGoToGrievance = async () => {
-    try {
-        // Grab the current logged-in user directly from Firebase
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-            console.error("No user is logged in!");
-            return;
-        }
-
-        // Show a loading state if you want, or just redirect instantly
-        const response = await fetch('https://forensync-backend.onrender.com/api/sso/generate-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                email: user.email, 
-                name: user.displayName || "ForenSync User" // Fallback just in case
-            })
-        });
-        
-        const data = await response.json();
-
-        // Redirect to their portal with the secure ticket!
-        if (data.code) {
-            window.location.href = `https://nfsu-student-grievance-portal.vercel.app/sso-login?code=${data.code}`;
-        }
-    } catch (error) {
-        console.error("SSO failed", error);
-    }
-};
+  const [isPrepOpen, setIsPrepOpen] = useState(false);
 
   return (
     <aside className="app-sidebar">
@@ -79,55 +35,35 @@ function Sidebar({ user }) {
           <span className="nav-text">Faculty</span>
         </NavLink>
 
-        <NavLink to="/practice" className="nav-item">
-          <span className="nav-icon"><Target size={20} /></span>
-          <span className="nav-text">Practice</span>
-        </NavLink>
+        <div className={`collapsible-menu ${isPrepOpen ? 'open' : ''}`}>
+          <button 
+            className="nav-item collapsible-header" 
+            onClick={() => setIsPrepOpen(!isPrepOpen)}
+          >
+            <span className="nav-icon"><GraduationCap size={20} /></span>
+            <span className="nav-text">Preparation</span>
+            <span className="collapse-icon">
+              <ChevronDown size={16} />
+            </span>
+          </button>
+          
+          <div className="collapsible-content">
+            <NavLink to="/practice" className="nav-item nested-nav-item">
+              <span className="nav-icon"><Target size={18} /></span>
+              <span className="nav-text">Practice</span>
+            </NavLink>
 
-        <NavLink to="/pyq" className="nav-item">
-          <span className="nav-icon"><Files size={20} /></span>
-          <span className="nav-text">PYQ</span>
-        </NavLink>
+            <NavLink to="/pyq" className="nav-item nested-nav-item">
+              <span className="nav-icon"><Files size={18} /></span>
+              <span className="nav-text">PYQ</span>
+            </NavLink>
+          </div>
+        </div>
       </nav>
       
       <div className="sidebar-bottom-actions" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
 
-        <button 
-          onClick={handleGoToGrievance} 
-          className="nav-item" 
-          style={{ 
-            background: 'transparent', 
-            border: 'none', 
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            width: '100%',
-            textAlign: 'left',
-            padding: '0.85rem 1rem'
-          }}
-        >
-          <span className="nav-icon"><ExternalLink size={20} /></span>
-          <span className="nav-text" style={{ fontWeight: '500' }}>Grievance Portal</span>
-        </button>
 
-        <button onClick={toggleTheme} className="nav-item theme-toggle-btn" style={{ 
-          background: 'transparent', 
-          border: 'none', 
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-          fontSize: 'inherit',
-          width: '100%',
-          textAlign: 'left',
-          color: 'var(--text-secondary)',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0.85rem 1rem'
-        }}>
-          <span className="nav-icon" style={{ marginRight: '1rem', display: 'flex', alignItems: 'center' }}>
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-          </span>
-          <span className="nav-text" style={{ fontWeight: '500' }}>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-        </button>
         
         {(user?.role === 'Admin' || user?.role === 'SuperAdmin') && (
           <NavLink to="/admin" className="nav-item admin-link" style={{ marginTop: 0 }}>

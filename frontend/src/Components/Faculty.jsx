@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { collection, getDocs, query, where, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Users, BookOpen, Search, Loader, Mail, GraduationCap, ArrowRight, X, Edit2, Save, Phone, Camera } from 'lucide-react';
+import { Users, BookOpen, Search, Loader, Mail, GraduationCap, ArrowRight, ArrowLeft, X, Edit2, Save, Phone, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from 'boneyard-js/react';
 import { uploadWithCompression } from '../utils/fileCompression';
@@ -240,7 +240,7 @@ function Faculty() {
         )}
       </AnimatePresence>
             
-      <div className="faculty-detail-panel">
+      <div className={`faculty-detail-panel ${selectedTeacher ? 'open' : ''}`}>
         <AnimatePresence mode="wait">
           {selectedTeacher ? (
             <motion.div 
@@ -252,14 +252,20 @@ function Faculty() {
               transition={{ duration: 0.2 }}
             >
               <div className="panel-header">
-                {isSuperAdmin && !isEditing && (
-                  <button className="edit-btn" onClick={handleEditClick} style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-light)', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-main)' }}>
-                    <Edit2 size={16} /> Edit Profile
-                  </button>
-                )}
-                <button className="close-btn" onClick={closeSidebar}>
-                  <X size={24} />
+                <button className="back-btn mobile-only" onClick={closeSidebar}>
+                  <ArrowLeft size={20} /> Back
                 </button>
+
+                <div className="header-right-actions">
+                  {isSuperAdmin && !isEditing && (
+                    <button className="edit-btn" onClick={handleEditClick} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-light)', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-main)' }}>
+                      <Edit2 size={16} /> Edit Profile
+                    </button>
+                  )}
+                  <button className="close-btn desktop-only" onClick={closeSidebar}>
+                    <X size={24} />
+                  </button>
+                </div>
               </div>
               
               <div className="panel-body">

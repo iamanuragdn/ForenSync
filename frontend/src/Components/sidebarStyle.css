@@ -96,3 +96,58 @@
   background-color: var(--border-color);    
   color: var(--accent-blue);
 }
+
+/* Collapsible Menu Styles */
+.collapsible-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.collapsible-header {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.collapse-icon {
+  margin-left: auto;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.collapsible-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  padding-left: 1.5rem;
+  margin-top: 0;
+}
+
+.collapsible-menu.open .collapsible-content,
+.collapsible-menu:hover .collapsible-content {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.collapsible-menu.open .collapse-icon,
+.collapsible-menu:hover .collapse-icon {
+  transform: rotate(180deg);
+}
+
+.nested-nav-item {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+}

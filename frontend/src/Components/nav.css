@@ -7,17 +7,26 @@
   align-items: center;
   position: relative;
   z-index: 100;
+  gap: 24px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
 }
 
 .search-container {
-  flex: 1;
-  max-width: 500px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
 }
 
 .navbar-search {
   width: 100%;
   padding: 10px 16px;
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-app);
   outline: none;
@@ -45,6 +54,68 @@
 
 .notifications:hover {
   transform: scale(1.1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: 8px;
+}
+
+.nav-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.nav-action-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--accent-blue);
+  transform: translateY(-1px);
+}
+
+.nav-action-btn.theme-btn {
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.nav-action-text {
+  display: inline-block;
+}
+
+.grievance-short-text {
+  display: none;
+}
+
+@media (max-width: 1250px) and (min-width: 1025px) {
+  .grievance-full-text {
+    display: none;
+  }
+  .grievance-short-text {
+    display: inline-block;
+  }
+}
+
+@media (max-width: 1024px) {
+  .nav-action-text {
+    display: none;
+  }
+  .nav-action-btn {
+    padding: 8px;
+    border-radius: 50%;
+  }
 }
 
 .profile-wrapper {
@@ -413,12 +484,40 @@
 @media (max-width: 1024px) {
   .top-navbar {
     padding: 12px 20px;
+    gap: 16px;
   }
 }
 
 @media (max-width: 768px) {
   .top-navbar {
-    padding: 12px 16px;
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .nav-left {
+    gap: 8px;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .navbar-search {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .nav-right {
+    gap: 6px;
+  }
+
+  .nav-actions {
+    margin-right: 0;
+    gap: 4px;
+  }
+
+  .user-profile-btn {
+    padding: 4px;
   }
 
   .user-info {

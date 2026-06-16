@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase'; 
-import { Search, Zap, Eye, Camera, Lock, Mail, Book, FileText, Clock, PenTool, Shield } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { auth } from '../firebase';
+import { getAuth } from "firebase/auth";
+import { Search, Zap, Eye, Camera, Lock, Mail, Book, FileText, Clock, PenTool, Shield, Sun, Moon, ExternalLink } from 'lucide-react';
 import { uploadWithCompression } from '../utils/fileCompression';
 import { db } from '../firebase';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
@@ -14,6 +16,9 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState(''); 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [liveSuggestions, setLiveSuggestions] = useState([]); 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'light';
+  });
   
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -24,6 +29,44 @@ function Navbar() {
     "Digital Forensics Notes",
     "Network Security Mock Test"
   ];
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  const handleGoToGrievance = async () => {
+    try {
+        const authInstance = getAuth();
+        const currentUser = authInstance.currentUser;
+
+        if (!currentUser) {
+            console.error("No user is logged in!");
+            return;
+        }
+
+        const response = await fetch('https://forensync-backend.onrender.com/api/sso/generate-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email: currentUser.email, 
+                name: currentUser.displayName || "ForenSync User" 
+            })
+        });
+        
+        const data = await response.json();
+
+        if (data.code) {
+            window.location.href = `https://nfsu-student-grievance-portal.vercel.app/sso-login?code=${data.code}`;
+        }
+    } catch (error) {
+        console.error("SSO failed", error);
+    }
+  };
 
   useEffect(() => {
     const savedUser = localStorage.getItem("forensync_user");
@@ -172,22 +215,22 @@ function Navbar() {
   return (
     <>
       <div className="top-navbar">
-        
-        <button 
-          className="hamburger-btn" 
-          onClick={() => {
-            document.body.classList.toggle('tablet-sidebar-open');
-            document.body.classList.toggle('mobile-sidebar-open');
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
+        <div className="nav-left">
+          <button 
+            className="hamburger-btn" 
+            onClick={() => {
+              document.body.classList.toggle('tablet-sidebar-open');
+              document.body.classList.toggle('mobile-sidebar-open');
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
 
-        <div className="search-container" style={{ position: 'relative' }}>
+          <div className="search-container" style={{ position: 'relative' }}>
           <form onSubmit={handleSearchSubmit} style={{ width: '100%', display: 'flex' }}>
             <input 
               type="text" 
@@ -289,8 +332,31 @@ function Navbar() {
             </div>
           )}
         </div>
+      </div>
 
-        <div className="nav-right">
+      <div className="nav-right">
+          <div className="nav-actions">
+            <button onClick={handleGoToGrievance} className="nav-action-btn grievance-btn" title="Grievance Portal">
+              <ExternalLink size={18} />
+              <span className="nav-action-text grievance-full-text">Grievance Portal</span>
+              <span className="nav-action-text grievance-short-text">Portal</span>
+            </button>
+            <button onClick={toggleTheme} className="nav-action-btn theme-btn" title={theme === 'light' ? 'Dark Mode' : 'Light Mode'} style={{ width: '36px', height: '36px', overflow: 'hidden' }}>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={theme}
+                  initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                </motion.div>
+              </AnimatePresence>
+            </button>
+          </div>
+
           <div className="profile-wrapper" ref={dropdownRef}>
             
             <div className="user-profile-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
