@@ -198,7 +198,6 @@ function Faculty() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
               >
-                <div className="card-top-accent" style={{ background: getAvatarGradient(teacher.teacherCode) }}></div>
                 {teacher.profilePictureUrl ? (
                   <img src={teacher.profilePictureUrl} alt={teacher.name} className="card-avatar" style={{ objectFit: 'cover' }} />
                 ) : (
