@@ -13,3 +13,14 @@ createRoot(document.getElementById('root')).render(
     <SpeedInsights />
   </React.StrictMode>,
 )
+
+// Automatically reload the page when a new version of the app is available and the service worker is updated
+if ('serviceWorker' in navigator) {
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+}
