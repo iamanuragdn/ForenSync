@@ -214,7 +214,7 @@ function Exams() {
           <div className="section-title">
             <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <CalendarDays size={20} /> 
-              {isSelectedDateToday ? "Upcoming Exams" : `Events for ${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}
+              <span className="elegant-subtitle">{isSelectedDateToday ? "Upcoming Exams" : `Events for ${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}</span>
             </h3>
             
             {!isSelectedDateToday && (
@@ -282,7 +282,7 @@ function Exams() {
             ) : (
               <div className="empty-state">
                 <p className="empty-title">No exams scheduled.</p>
-                <p className="empty-sub">Enjoy your free time!</p>
+                <p className="empty-sub elegant-subtitle" style={{ fontSize: '1.2rem', marginTop: '8px' }}>Enjoy your free time!</p>
               </div>
             )}
           </div>

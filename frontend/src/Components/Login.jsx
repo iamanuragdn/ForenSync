@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider, db } from '../firebase'; 
 import { doc, getDoc } from 'firebase/firestore'; 
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from 'firebase/auth';
-import { Sun, Moon, Cloud, FileText, Calendar, Lock, Loader } from 'lucide-react';
+import { Sun, Moon, Library, Target, Bell, Search, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './Login.css';
 
@@ -257,43 +257,43 @@ function Login() {
       <section id="about-section" className="about-section">
         <h2>Why ForenSync?</h2>
         <div className="features-grid">
-  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.1 }}>
-    <div className="feature-icon icon-blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Cloud size={24} color="white" /></div>
-    <h3>Drive Synced Notes</h3>
-    <p>Faculty uploads sync directly to your personalized dashboard.</p>
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}>
+    <div className="feature-icon icon-blue" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Library size={24} color="#2563eb" /></div>
+    <h3>Comprehensive Notes</h3>
+    <p>Access all study materials instantly from a centralized hub.</p>
     <ul className="feature-list">
-      <li>Centralized PDF storage</li>
-      <li>Auto-categorized by subject</li>
+      <li>Official teacher notes</li>
+      <li>Community helper notes</li>
     </ul>
   </motion.div>
 
-  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.2 }}>
-    <div className="feature-icon icon-purple" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FileText size={24} color="white" /></div>
-    <h3>PYQ & Mock Tests</h3>
-    <p>Master your subjects with intelligent exam prep tools.</p>
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}>
+    <div className="feature-icon icon-purple" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Target size={24} color="#9333ea" /></div>
+    <h3>Exam Preparation</h3>
+    <p>Master your subjects with intelligent and structured exam prep.</p>
     <ul className="feature-list">
-      <li>5+ years of past papers</li>
-      <li>AI-generated practice exams</li>
+      <li>Past year questions (PYQ)</li>
+      <li>Practice mock tests</li>
     </ul>
   </motion.div>
 
-  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.3 }}>
-    <div className="feature-icon icon-orange" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Calendar size={24} color="white" /></div>
-    <h3>Smart Scheduling</h3>
-    <p>Never miss a deadline with real-time academic tracking.</p>
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}>
+    <div className="feature-icon icon-orange" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Bell size={24} color="#ea580c" /></div>
+    <h3>Notices & Tracking</h3>
+    <p>Stay updated on exam durations, time left, and analyze results.</p>
     <ul className="feature-list">
       <li>Live exam countdowns</li>
-      <li>Syllabus progress bars</li>
+      <li>Reflect on your marks</li>
     </ul>
   </motion.div>
 
-  <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ delay: 0.4 }}>
-    <div className="feature-icon icon-green" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Lock size={24} color="white" /></div>
-    <h3>Role-Based Security</h3>
-    <p>Enterprise-grade architecture for verified campus access.</p>
+  <motion.div className="feature-card" initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}>
+    <div className="feature-icon icon-green" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Search size={24} color="#16a34a" /></div>
+    <h3>Faculty & Global Search</h3>
+    <p>Find teacher contacts and locate any resource across the platform.</p>
     <ul className="feature-list">
-      <li>Faculty-only upload portals</li>
-      <li>Admin-verified clearance</li>
+      <li>Detailed faculty profiles</li>
+      <li>Omnipresent global search</li>
     </ul>
   </motion.div>
 </div>

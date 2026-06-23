@@ -490,12 +490,17 @@
 
 @media (max-width: 768px) {
   .top-navbar {
-    padding: 12px 10px;
-    gap: 8px;
+    padding: 8px;
+    gap: 4px;
   }
 
   .nav-left {
-    gap: 8px;
+    gap: 4px;
+  }
+
+  .hamburger-btn {
+    padding: 4px 6px;
+    margin-right: 2px;
   }
 
   .search-container {
@@ -503,21 +508,31 @@
   }
 
   .navbar-search {
-    padding: 8px 10px;
-    font-size: 0.85rem;
+    padding: 6px 8px;
+    font-size: 0.8rem;
   }
 
   .nav-right {
-    gap: 6px;
+    gap: 4px;
   }
 
   .nav-actions {
     margin-right: 0;
-    gap: 4px;
+    gap: 2px;
+  }
+
+  .nav-action-btn {
+    padding: 6px;
   }
 
   .user-profile-btn {
-    padding: 4px;
+    padding: 2px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
 
   .user-info {
